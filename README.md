@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# rentals-marrakech
 
-## Getting Started
+CRM + site public pour agences immobilières luxe. Pilote : Marrakech Realty. Vision : SaaS multi-tenant.
 
-First, run the development server:
+**Stack** : Next.js 16 (Turbopack) · React 19 · Tailwind v4 · Supabase · Resend · Sentry · Leaflet · TypeScript.
+
+---
+
+## Démarrage rapide
 
 ```bash
+# 1. Installer les dépendances
+npm install
+
+# 2. Copier le template d'env et remplir les valeurs
+cp .env.example .env.local
+
+# 3. Lancer le serveur de dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Le site tourne sur [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Variables d'env nécessaires : voir [`.env.example`](./.env.example).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Documentation — où trouver quoi
 
-To learn more about Next.js, take a look at the following resources:
+Le projet suit une discipline de doc explicite. Chaque fichier a **un seul rôle** :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Fichier | Rôle |
+|---|---|
+| [`README.md`](./README.md) | Front door — ce que tu lis là |
+| [`ROADMAP.md`](./ROADMAP.md) | État actuel + sprints + phases long-terme |
+| [`CHANGELOG.md`](./CHANGELOG.md) | Historique de ce qui a été shippé |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Workflow : branches, commits, PRs, tests |
+| [`CLAUDE.md`](./CLAUDE.md) | Règles d'archi (lues par les agents IA et les humains) |
+| [`docs/adr/`](./docs/adr/) | Architecture Decision Records — une décision majeure = un fichier |
+| [`docs/runbooks/`](./docs/runbooks/) | Procédures ops (deploy, rollback, incidents) |
+| [`docs/audit-*.md`](./docs/) | Audits ponctuels du produit |
+| [`pitch/`](./pitch/) | Assets commerciaux (proposal, outreach, case study) |
+| [`supabase/migrations/`](./supabase/migrations/) | Historique du schéma DB (numéroté, idempotent) |
+| [`.env.example`](./.env.example) | Contrat des variables d'env |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Si tu cherches** :
+- *où on en est aujourd'hui* → [`ROADMAP.md`](./ROADMAP.md)
+- *pourquoi telle décision a été prise* → [`docs/adr/`](./docs/adr/)
+- *comment je contribue / merge une PR* → [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+- *comment l'archi marche* → [`CLAUDE.md`](./CLAUDE.md)
+- *que faire si Supabase est en pause* → [`docs/runbooks/supabase-paused.md`](./docs/runbooks/supabase-paused.md)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Commandes utiles
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev                              # serveur dev (:3000)
+npm run build                            # build prod (test local de Vercel)
+npm run lint                             # ESLint
+npx tsc --noEmit                         # typecheck
+
+npx tsx scripts/seed-supabase.ts         # seed biens/advisors/articles
+npx tsx scripts/seed-leads.ts            # seed 50 leads démo
+```
+
+---
+
+## Déploiement
+
+Vercel **redéploie automatiquement** à chaque push :
+- `main` → production (`https://rentals-marrakech.vercel.app`)
+- toute autre branche dans une PR → preview URL dédiée
+
+Voir [`docs/runbooks/deploy.md`](./docs/runbooks/deploy.md) pour les procédures détaillées (rollback, hotfix, etc.).
