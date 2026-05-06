@@ -1,0 +1,293 @@
+@import "tailwindcss";
+
+@theme {
+  /* ═══ PALETTE v3 — fond blanc + accent cuir élégant ═══════════════
+     Direction : Christie's / Barnes. Single-accent discipline.
+     Ne jamais ajouter une 4ème couleur sans arbitrage explicite. */
+
+  /* ── Backgrounds ────────────────────────────────────────────────*/
+  --color-bg: #ffffff;                /* default body, cards */
+  --color-bg-alt: #faf8f4;            /* sections alternées, ~2% warm */
+  --color-bg-tint: #f2ede4;           /* sidebar, hover, aside zones */
+
+  /* ── Encre / texte ──────────────────────────────────────────────*/
+  --color-ink: #1a1814;               /* titres, body primary */
+  --color-ink-soft: #3d3731;          /* mid-emphasis */
+  --color-ink-muted: #78726b;         /* meta, labels */
+  --color-ink-hint: #a9a39a;          /* placeholder, hint */
+
+  /* ── Accent cuir — marron patiné, unique accent du site ────────*/
+  --color-accent: #6e4f3a;            /* CTA, liens actifs, eyebrows */
+  --color-accent-deep: #4e3625;       /* hover / pressed */
+  --color-accent-light: #8e6b4b;      /* sur fond sombre */
+  --color-accent-soft: #f3ece1;       /* tint bg */
+  --color-accent-veil: rgba(110, 79, 58, 0.06);
+
+  /* ── Bordures / hairlines ──────────────────────────────────────*/
+  --color-border: #e8e3d8;
+  --color-border-strong: #c9bfae;
+
+  /* ── Zones sombres (footer, overlays, admin accents) ──────────*/
+  --color-dark: var(--color-ink);
+  --color-dark-soft: #2d2823;
+
+  /* ── Status tokens — teintes sourdes uniquement ───────────────*/
+  --color-success: #5e7266;
+  --color-success-soft: #e5ebe6;
+  --color-warning: var(--color-accent-light);
+  --color-warning-soft: var(--color-accent-soft);
+  --color-alert: #8a3d2a;
+  --color-alert-soft: #f3e3dc;
+
+  /* ── LEGACY ALIASES — maintient compat code existant ─────────
+     Nouveau code : utiliser les tokens sémantiques ci-dessus. */
+  --color-charcoal: var(--color-ink);
+  --color-charcoal-soft: var(--color-dark-soft);
+  --color-cream: var(--color-bg-alt);
+  --color-beige: var(--color-bg-tint);
+  --color-beige-warm: var(--color-border);
+  --color-sand: var(--color-border-strong);
+  --color-stone: var(--color-ink-muted);
+  --color-stone-soft: var(--color-ink-hint);
+  --color-terracotta: var(--color-accent);
+  --color-terracotta-deep: var(--color-accent-deep);
+  --color-terracotta-light: var(--color-accent-light);
+  --color-terracotta-veil: var(--color-accent-veil);
+  --color-gold: var(--color-accent);
+  --color-gold-dark: var(--color-accent-deep);
+  --color-gold-leaf: var(--color-accent-light);
+
+  /* ── Typographies ───────────────────────────────────────────────*/
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  /* ── Ombres minimales ──────────────────────────────────────────*/
+  --shadow-luxe: 0 24px 60px -24px rgba(26, 24, 20, 0.22), 0 6px 16px -8px rgba(26, 24, 20, 0.08);
+  --shadow-card: 0 1px 3px rgba(26, 24, 20, 0.04), 0 2px 12px -6px rgba(26, 24, 20, 0.06);
+  --shadow-inner-soft: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus-visible — accessibilité + raffinement. Apparaît uniquement
+     au clavier, invisible au pointeur. */
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  /* :where() maintient la spécificité à 0 pour que `text-white` du parent
+     puisse cascader sur les sections sombres. Avant : h2 charcoal dans
+     <section bg-charcoal text-white> → invisible. */
+  :where(h1, h2, h3, h4, h5) {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-charcoal);
+  }
+
+  /* Sélection : neutre élégant (pas un bloc terracotta) */
+  ::selection {
+    background: var(--color-charcoal);
+    color: var(--color-cream);
+  }
+  ::-moz-selection {
+    background: var(--color-charcoal);
+    color: var(--color-cream);
+  }
+}
+
+@layer components {
+  .container-luxe {
+    @apply mx-auto w-full max-w-[1280px] px-6 lg:px-10;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-none bg-[var(--color-charcoal)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-[var(--color-terracotta)];
+  }
+
+  .btn-terracotta,
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-none bg-[var(--color-terracotta)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-[var(--color-terracotta-deep)];
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-none border border-[var(--color-charcoal)] bg-transparent px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-all duration-300 hover:bg-[var(--color-charcoal)] hover:text-white;
+  }
+
+  .btn-outline-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-none border border-white/70 bg-transparent px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-white hover:text-[var(--color-charcoal)];
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta)];
+  }
+
+  .gold-rule,
+  .terracotta-rule {
+    @apply mx-auto my-6 h-px w-16 bg-[var(--color-terracotta)];
+  }
+
+  .hairline-top {
+    box-shadow: inset 0 1px 0 rgba(148, 91, 44, 0.15);
+  }
+
+  /* ── Hero overlays standardisés ────────────────────────────────────
+     Garantissent la lisibilité du texte sur *toute* image (claire ou
+     sombre, Essaouira ou Palmeraie). Règle : là où le texte se pose,
+     l'overlay est >= 75% charcoal. */
+
+  /* Texte positionné en BAS du hero (fiche bien, quartier, journal, SectionHero) */
+  .hero-overlay-bottom {
+    background: linear-gradient(
+      to top,
+      rgba(23, 20, 15, 0.92) 0%,
+      rgba(23, 20, 15, 0.75) 28%,
+      rgba(23, 20, 15, 0.35) 60%,
+      rgba(23, 20, 15, 0.10) 100%
+    );
+  }
+
+  /* Texte positionné en HAUT du hero (bannière Catalogue) */
+  .hero-overlay-top {
+    background: linear-gradient(
+      to bottom,
+      rgba(23, 20, 15, 0.88) 0%,
+      rgba(23, 20, 15, 0.65) 40%,
+      rgba(23, 20, 15, 0.55) 70%,
+      rgba(23, 20, 15, 0.80) 100%
+    );
+  }
+
+  /* Voile horizontal subtil — pour renforcer côté gauche (texte aligné gauche) */
+  .hero-overlay-left {
+    background: linear-gradient(
+      to right,
+      rgba(23, 20, 15, 0.45) 0%,
+      rgba(23, 20, 15, 0.15) 50%,
+      transparent 100%
+    );
+  }
+
+  /* Text-shadow défensif — garantit lisibilité quel que soit le pixel
+     d'image derrière. Appliqué sur tout texte reposant sur image. */
+  .hero-text {
+    text-shadow:
+      0 2px 16px rgba(0, 0, 0, 0.6),
+      0 1px 4px rgba(0, 0, 0, 0.45),
+      0 0 1px rgba(0, 0, 0, 0.3);
+  }
+  .hero-text-soft {
+    text-shadow:
+      0 2px 12px rgba(0, 0, 0, 0.55),
+      0 1px 3px rgba(0, 0, 0, 0.35);
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s ease-out both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out both;
+}
+
+@keyframes slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ══ Ken Burns — slow zoom cinematic sur hero images ═══════════════ */
+@keyframes ken-burns {
+  0%   { transform: scale(1.00) translate3d(0, 0, 0); }
+  100% { transform: scale(1.08) translate3d(0, -1%, 0); }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 16s ease-out both;
+  will-change: transform;
+}
+
+/* Respect des préférences utilisateur */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ken-burns,
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-slide-in,
+  .animate-scale-in,
+  [data-fade-in] {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ══ Fade-in-on-scroll (IntersectionObserver piloté) ══════════════ */
+/* L'élément part caché, le JS applique data-visible="true" pour animer */
+[data-fade-in] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+[data-fade-in][data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delays incrémentaux */
+[data-fade-in][data-delay="1"] { transition-delay: 0.08s; }
+[data-fade-in][data-delay="2"] { transition-delay: 0.16s; }
+[data-fade-in][data-delay="3"] { transition-delay: 0.24s; }
+[data-fade-in][data-delay="4"] { transition-delay: 0.32s; }
+
+/* ══ Scroll indicator subtle bounce remplacé par pulse lente ═════ */
+@keyframes slow-pulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.9; }
+}
+
+.animate-slow-pulse {
+  animation: slow-pulse 2.5s ease-in-out infinite;
+}

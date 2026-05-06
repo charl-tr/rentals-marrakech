@@ -1,0 +1,58 @@
+# URLs de fiches biens marrakechrealty.com à scraper.
+# Format : <type>/<slug>  (sans https:// ni trailing slash)
+# Commentaires avec # ignorés.
+#
+# Pour étendre :
+# 1. Fetcher une listing page (ex. /vente-villa/)
+# 2. Extraire les liens /vente/<slug>/ visibles
+# 3. Coller ici
+#
+# Dernière mise à jour : 2026-04-17
+
+# ── Biens depuis la home MR ─────────────────────────────────────
+vente/villa-de-charme-3-chambres-a-vendre-en-residence-securisee-route-de-casa
+vente/appartement-2-chambre-a-vendre-a-semlalia
+vente/terrain-sd1-avec-vna-a-vendre-route-de-lourika
+vente/maison-dhotes-de-prestige-7-chambres-medina-marrakech
+vente/elegant-riad-hotel-de-5-suites-a-vendre-au-pied-des-remparts-dessaouira
+vente/exceptionnelle-villa-moderniste-de-5-chambres-les-pieds-dans-leau
+location/villa-de-luxe-3-suites-a-louer-meublee-domaine-residentiel-golfique-premium
+programme/villas-haut-standing-de-prestige-3-a-4-suites-a-vendre-a-partir-de
+
+# ── Riads à rénover (depuis /vente-riad-a-renover/) ─────────────
+vente/a-saisir-riad-titre-a-renover-a-marrakech-avec-acces-voiture-devant
+vente/authentique-riad-titre-a-renover-idealement-situe
+vente/beau-riad-a-renover-a-vendre-dans-un-quartier-tres-recherche
+vente/beau-riad-ancien-a-renover-idealement-situe
+vente/beau-riad-de-5-chambres-a-rafraichir-belle-opportunite
+vente/charmant-riad-a-renover-au-coeur-de-la-medina
+vente/charmant-riad-a-renover-avec-acces-voiture-proche
+vente/charmant-riad-a-renover-dans-le-quartier-le-plus-prise-de-la-medina
+vente/exceptionnel-vaste-riad-titre-a-renover-avec-acces-voiture-direct-superbe-potentiel
+vente/magnifique-riad-a-renover-kasbah-derb-chtouka
+vente/maison-traditionnelle-r3-a-vendre-fort-potentiel-riad
+vente/majestueux-riad-a-renover-avec-acces-voiture-proche
+vente/opportunite-rare-2-riads-mitoyens-a-renover-kasbah-marrakech
+vente/petit-riad-a-renover-et-titrer-bel-emplacement
+vente/riad-4-chambres-a-vendre-quartier-kasbah-marrakech
+vente/riad-a-renover-a-proximite-de-la-place-jemaa-el-fna
+vente/riad-a-renover-avec-bel-emplacement
+vente/riad-a-renover-avec-tres-bel-emplacement
+vente/riad-a-renover-place-des-epices
+vente/riad-de-4-chambres-a-rafraichir-avec-bel-emplacement
+vente/riad-melkia-de-2-chambres-dans-la-medina
+vente/riad-titre-a-renover-avec-emplacement-de-premier-ordre
+vente/spacieux-riad-a-renove-quartier-de-bab-thaghzout
+vente/sublime-riad-a-renover-avec-super-emplacement
+vente/superbe-potentiel-et-emplacement-ideal-pour-ce-charmant-riad-a-renover
+vente/superbe-riad-a-renover-avec-emplacement
+vente/superbe-riad-titre-a-marrakech-en-partie-renove-super-potentiel
+vente/terrain-titre-avec-vue-sur-dar-el-bacha
+vente/vaste-riad-a-renover-avec-acces-voiture-direct
+
+# ── À compléter ─────────────────────────────────────────────────
+# Une fois la machine dé-bannie, fetcher et ajouter les slugs depuis :
+# /vente-villa/  /vente-villa-a-la-palmeraie-a-marrakech/  /vente-villa-a-targa-marrakech/
+# /vente-appartement/  /vente-terrain/  /vente-riad-renove/
+# /location-villa/  /location-appartement/  /locations-saisonnieres/
+# /programmes-neufs/  /essaouira/ (+ sous-catégories)
