@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import SectionHero from "@/components/SectionHero";
+import EstimationGate from "@/components/EstimationGate";
 import { estimateProperty } from "@/lib/estimation";
 import {
   ALL_TYPES,
@@ -9,7 +10,6 @@ import {
   propertyTypeLabel,
   type PropertyType,
 } from "@/data/properties";
-import { formatInCurrency } from "@/hooks/useCurrency";
 
 export const metadata: Metadata = {
   title: "Estimer votre bien à Marrakech — Marrakech Realty",
@@ -157,87 +157,15 @@ export default async function EstimerPage({
             </button>
           </form>
 
-          {/* RESULT */}
+          {/* ── Result: gated behind email ──────────────────────── */}
           {hasInput && result && (
-            <div className="mt-8 border-l-4 border-[var(--color-terracotta)] bg-white p-8">
-              <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
-                <Sparkles size={12} />
-                Votre fourchette estimée
-              </div>
-
-              <div className="mt-4 grid gap-6 md:grid-cols-3">
-                <div>
-                  <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
-                    Borne basse
-                  </div>
-                  <div className="mt-1 font-serif text-2xl text-[var(--color-stone)]">
-                    {formatInCurrency(result.estimatedPriceLow, "EUR")}
-                  </div>
-                </div>
-                <div className="border-l border-r border-[var(--color-beige-warm)] px-4">
-                  <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--color-terracotta)]">
-                    Médiane
-                  </div>
-                  <div className="mt-1 font-serif text-3xl text-[var(--color-charcoal)]">
-                    {formatInCurrency(result.estimatedPriceMid, "EUR")}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
-                    Borne haute
-                  </div>
-                  <div className="mt-1 font-serif text-2xl text-[var(--color-stone)]">
-                    {formatInCurrency(result.estimatedPriceHigh, "EUR")}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--color-beige-warm)] pt-4 text-xs text-[var(--color-stone)]">
-                <span className="flex items-center gap-1.5">
-                  <TrendingUp size={12} className="text-[var(--color-terracotta)]" />
-                  {result.pricePerSqm.toLocaleString("fr-FR")} € / m² médian
-                </span>
-                <span>·</span>
-                <span>
-                  Confiance :{" "}
-                  <strong className="text-[var(--color-charcoal)]">
-                    {result.confidence === "strong"
-                      ? "forte"
-                      : result.confidence === "moderate"
-                      ? "modérée"
-                      : "faible"}
-                  </strong>
-                </span>
-                <span>·</span>
-                <span>
-                  {result.comparablesCount} biens comparables analysés
-                </span>
-              </div>
-
-              {result.notes.length > 0 && (
-                <ul className="mt-4 space-y-1 text-xs italic text-[var(--color-stone)]">
-                  {result.notes.map((n, i) => (
-                    <li key={i}>— {n}</li>
-                  ))}
-                </ul>
-              )}
-
-              <div className="mt-8 border-t border-[var(--color-beige-warm)] pt-6">
-                <p className="text-sm text-[var(--color-charcoal)]">
-                  Cette fourchette est indicative. Pour une estimation précise
-                  qui prend en compte l&apos;état du bien, les rénovations
-                  récentes, les transactions off-market et le contexte du
-                  marché — parlez à un de nos conseillers.
-                </p>
-                <Link
-                  href={`/contact?project=${encodeURIComponent("Vendre — estimation")}`}
-                  className="btn-outline mt-5"
-                >
-                  Finaliser avec un conseiller
-                  <ArrowRight size={14} />
-                </Link>
-              </div>
-            </div>
+            <EstimationGate
+              result={result}
+              type={type!}
+              zone={zone!}
+              surface={surface!}
+              bedrooms={bedrooms}
+            />
           )}
 
           {hasInput && !result && (
@@ -261,7 +189,6 @@ export default async function EstimerPage({
         </div>
       </section>
 
-      {/* Pourquoi cette estimation */}
       <section className="bg-white py-16">
         <div className="container-luxe max-w-3xl">
           <div className="eyebrow">Notre méthode</div>
