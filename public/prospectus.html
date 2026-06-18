@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marrakech Realty — Rapport technique et proposition de valeur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--alt:#faf8f4;--tint:#f2ede4;--ink:#1a1814;--soft:#3d3731;--muted:#78726b;--hint:#a9a39a;--accent:#6e4f3a;--deep:#4e3625;--asoft:#f3ece1;--border:#e8e3d8;--strong:#c9bfae;--success:#5e7266;--alert:#8a3d2a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.7}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:500;letter-spacing:-.02em}
+.w{max-width:960px;margin:0 auto;padding:0 40px}
+.ey{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.32em;color:var(--accent)}
+
+.cover{background:var(--ink);color:white;padding:120px 0 80px;text-align:center}
+.cover h1{font-size:clamp(2rem,4vw,3.2rem);line-height:1.15;color:white}
+.cover p{margin-top:20px;color:var(--hint);max-width:560px;margin-left:auto;margin-right:auto}
+.cover-meta{margin-top:40px;font-size:12px;color:var(--hint);letter-spacing:.05em}
+
+section{padding:64px 0;border-bottom:1px solid var(--border)}
+section:last-of-type{border-bottom:none}
+.sh{margin-bottom:40px}
+.sh h2{font-size:clamp(1.4rem,2.5vw,2rem);margin-top:10px}
+.sh p{margin-top:12px;color:var(--muted);max-width:640px;font-size:14px}
+
+table{width:100%;border-collapse:collapse;margin:24px 0}
+th{text-align:left;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);padding:0 12px 10px 0;border-bottom:1px solid var(--border)}
+td{padding:12px 12px 12px 0;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--soft)}
+.ta{font-weight:500;color:var(--ink)}
+.num{font-variant-numeric:tabular-nums}
+.highlight td{background:var(--alt)}
+.tag{display:inline-block;font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;padding:2px 6px;vertical-align:middle;margin-left:4px}
+.tag-ok{background:var(--success);color:white}
+.tag-part{background:var(--asoft);color:var(--accent)}
+.tag-no{background:#f3e3dc;color:var(--alert)}
+.tag-us{background:var(--accent);color:white}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin:32px 0}
+.kpi{background:var(--bg);padding:28px 20px;text-align:center}
+.kpi-v{font-family:'Playfair Display',serif;font-size:1.6rem}
+.kpi-l{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:4px}
+
+.compare{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--border);margin:24px 0}
+.compare>div{background:var(--bg);padding:16px;font-size:12px}
+.compare>div:first-child{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);display:flex;align-items:center}
+.c-head{background:var(--alt) !important;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink);text-align:center}
+.c-us{background:var(--asoft) !important;text-align:center;font-weight:500}
+.c-them{text-align:center;color:var(--muted)}
+.check{color:var(--success);font-weight:600}
+.cross{color:var(--hint)}
+
+.insight{border-top:2px solid var(--accent);padding:20px 0;margin-bottom:24px}
+.insight-n{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--accent);opacity:.35}
+.insight-t{font-family:'Playfair Display',serif;font-size:1rem;margin-top:8px}
+.insight-x{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6}
+.insight-x strong{color:var(--ink);font-weight:500}
+
+.fn{font-size:11px;color:var(--hint);margin-top:8px;line-height:1.5}
+.alt{background:var(--alt)}
+
+@media(max-width:768px){.w{padding:0 20px}.kpi-row{grid-template-columns:1fr 1fr}.compare{grid-template-columns:1fr 1fr}}
+@media print{.cover{padding:60px 0 40px}section{padding:32px 0;page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+<div class="w">
+<div class="ey" style="color:var(--hint)">Rapport technique et commercial</div>
+<h1>Marrakech Realty.<br>Plateforme immobiliere de nouvelle generation.</h1>
+<p>Audit complet de la plateforme, proposition de valeur, et comparaison avec les solutions existantes du marche.</p>
+<div class="cover-meta">Juin 2026 &middot; Document confidentiel</div>
+</div>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<section><div class="w">
+<div class="sh"><div class="ey">Synthese</div><h2>En un coup d'oeil.</h2></div>
+<div class="kpi-row">
+<div class="kpi"><div class="kpi-v">26 500</div><div class="kpi-l">Lignes de code</div></div>
+<div class="kpi"><div class="kpi-v">158</div><div class="kpi-l">Fichiers source</div></div>
+<div class="kpi"><div class="kpi-v">88 %</div><div class="kpi-l">Taux de completion</div></div>
+<div class="kpi"><div class="kpi-v">41 400 &euro;</div><div class="kpi-l">Cout equivalent dev</div></div>
+</div>
+<p style="color:var(--muted);font-size:14px;margin-top:16px">Chiffrage base sur 69 jours-homme au tarif d'un developpeur senior Next.js/Supabase (600 &euro;/jour, tarif marche Paris). Ce chiffrage n'inclut pas le design UI/UX, la redaction editoriale, l'administration Supabase ni le deploiement.</p>
+</div></section>
+
+<!-- STACK -->
+<section class="alt"><div class="w">
+<div class="sh"><div class="ey">Architecture</div><h2>Stack technique.</h2></div>
+<table>
+<thead><tr><th>Couche</th><th>Technologie</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td class="ta">Frontend</td><td>Next.js 16 + React 19</td><td>SSR/RSC, routing, streaming</td></tr>
+<tr><td class="ta">Styles</td><td>Tailwind CSS v4 + design system custom</td><td>Palette Christie's/Barnes, zero composant tiers</td></tr>
+<tr><td class="ta">Base de donnees</td><td>Supabase (PostgreSQL)</td><td>10 tables, 24 index, 17 policies RLS</td></tr>
+<tr><td class="ta">Auth</td><td>Supabase Auth + whitelist advisors</td><td>Magic link, roles director/advisor</td></tr>
+<tr><td class="ta">Email</td><td>Resend</td><td>Transactionnel (confirmation client, notification conseiller)</td></tr>
+<tr><td class="ta">Cartographie</td><td>Leaflet + React-Leaflet</td><td>Carte interactive avec clusters</td></tr>
+<tr><td class="ta">Charts</td><td>Recharts</td><td>Rapport marche (prix/m&sup2;, types)</td></tr>
+<tr><td class="ta">Monitoring</td><td>Sentry</td><td>Error tracking client + server</td></tr>
+<tr><td class="ta">Deploiement</td><td>Vercel</td><td>Edge, preview deploys, auto-scaling</td></tr>
+</tbody>
+</table>
+</div></section>
+
+<!-- FEATURES -->
+<section><div class="w">
+<div class="sh"><div class="ey">Fonctionnalites</div><h2>55 features en production. 8 partielles.</h2>
+<p>Chaque feature a ete auditee par lecture du code source. Les statuts refletent l'etat reel, pas les intentions.</p></div>
+
+<h3 style="font-size:1rem;margin:32px 0 16px">Experience publique (21 features)</h3>
+<table>
+<thead><tr><th>Feature</th><th>Description</th><th>Statut</th></tr></thead>
+<tbody>
+<tr><td class="ta">Homepage</td><td>Hero Ken Burns, recherche rapide, biens vedettes DB, sections services/presse</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Catalogue acheter</td><td>Route catch-all 4 niveaux, filtres URL, SEO dynamique</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Catalogue louer</td><td>5 sous-routes, filtre duree saisonniere/longue</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Fiche bien</td><td>Galerie lightbox, JSON-LD, multi-devise, story editoriale, biens similaires</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Carte interactive</td><td>Leaflet plein viewport, clusters, filtrage type/quartier</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Estimation en ligne</td><td>Algorithme median comparables, gate email, lead capture</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Comparaison</td><td>Cote-a-cote multi-biens, highlighting gagnant par critere</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Favoris</td><td>localStorage, fetch Supabase</td><td><span class="tag tag-part">Partiel</span></td></tr>
+<tr><td class="ta">Collections</td><td>Curations thematiques, SSG</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Quartiers</td><td>10 fiches editoriales, guide "Un jour a", biens du quartier</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Rapport marche</td><td>KPI, charts prix/m&sup2; par quartier, repartition par type</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Calculette frais</td><td>5 postes acquisition + plus-value, baremes 2026</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Contact</td><td>Formulaire multi-usage, pre-remplissage contextuel, pipeline email</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Deposer un bien</td><td>UI 4 etapes complete</td><td><span class="tag tag-part">Partiel</span> submit non wire</td></tr>
+<tr><td class="ta">Journal</td><td>Listing + detail articles DB</td><td><span class="tag tag-part">Partiel</span> newsletter decorative</td></tr>
+<tr><td class="ta">Hub Essaouira</td><td>Hub + 4 sous-routes dediees</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Portail acheteur</td><td>Token-gate, timeline 6 etapes, shortlist curee, fiche conseiller</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Portail proprietaire</td><td>Pipeline vente/location, KPI, timeline events, stats marche</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">SEO</td><td>Sitemap dynamique, robots.txt, JSON-LD, 30+ redirects, metadata</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Pages legales</td><td>FAQ, CGU, mentions, cookies, confidentialite, a propos, equipe</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Design system</td><td>Palette cuir/charcoal, Playfair+Inter, animations, responsive, a11y</td><td><span class="tag tag-ok">Production</span></td></tr>
+</tbody>
+</table>
+
+<h3 style="font-size:1rem;margin:32px 0 16px">CRM &amp; Administration (12 features)</h3>
+<table>
+<thead><tr><th>Feature</th><th>Description</th><th>Statut</th></tr></thead>
+<tbody>
+<tr><td class="ta">Dashboard</td><td>4 KPI, leads urgents, top matching, pipeline mini, team distribution</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Leads CRM</td><td>Table + Kanban, 8 statuts, filtres, export CSV, SLA tracking</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Fiche lead</td><td>Profil buyer, timeline comms, shortlist, offre, visite, raccourcis clavier</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Next-Best-Action</td><td>10 regles prioritisees, action suggeree 1-clic sur chaque lead</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Matching inverse</td><td>Score 0-100, 4 criteres (budget/type/quartier/chambres)</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Gestion biens</td><td>Table + grille, actions admin (status, prix, publish, featured)</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Mandats</td><td>Lifecycle complet (draft &rarr; active &rarr; closed), commission, proprietaire</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Shortlist manager</td><td>Curation biens pour chaque acheteur avec notes</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Agenda visites</td><td>Timeline chronologique, role-aware</td><td><span class="tag tag-part">Partiel</span></td></tr>
+<tr><td class="ta">Gestion equipe</td><td>KPI par conseiller, portfolio individuel, temps median reponse</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Command Palette</td><td>Cmd+K, recherche leads/biens/conseillers</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Auth &amp; roles</td><td>Magic link, director/advisor, scoping par session</td><td><span class="tag tag-ok">Production</span></td></tr>
+</tbody>
+</table>
+
+<h3 style="font-size:1rem;margin:32px 0 16px">Backend &amp; infrastructure (10 features)</h3>
+<table>
+<thead><tr><th>Feature</th><th>Description</th><th>Statut</th></tr></thead>
+<tbody>
+<tr><td class="ta">Database</td><td>10 tables, 24 index, 17 policies RLS, 10 migrations idempotentes</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">33 fonctions DB</td><td>CRUD complet, mapping type-safe, parallel fetches, session-scoped</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">8 server actions</td><td>Factory defineMutation, validation Zod, revalidation automatique</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Email transactionnel</td><td>Resend, 2 templates HTML, fallback console en dev</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Moteur estimation</td><td>Median comparables, 3 fallbacks, indice confiance</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Calculateur frais</td><td>Baremes 2026, 5 postes acquisition + plus-value</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Moteur matching</td><td>Score multi-criteres, seuil configurable</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Next-Best-Action</td><td>10 regles, priorite, action 1-clic, couvre tout le lifecycle</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Realtime sync</td><td>Supabase Realtime, refresh RSC sur changements DB</td><td><span class="tag tag-ok">Production</span></td></tr>
+<tr><td class="ta">Sentry</td><td>Error tracking client 20% + server 10%</td><td><span class="tag tag-ok">Production</span></td></tr>
+</tbody>
+</table>
+</div></section>
+
+<!-- COMPARAISON -->
+<section class="alt"><div class="w">
+<div class="sh"><div class="ey">Comparaison</div><h2>Face aux solutions existantes.</h2>
+<p>Comparaison fonctionnelle avec les outils les plus utilises par les agences immobilieres.</p></div>
+
+<div class="compare">
+<div class="c-head"></div><div class="c-head" style="background:var(--asoft) !important;color:var(--accent)">Marrakech Realty</div><div class="c-head">Apimo / Hektor</div><div class="c-head">HubSpot CRM</div>
+
+<div>Site public integre</div><div class="c-us"><span class="check">&check;</span> Sur-mesure, SEO</div><div class="c-them"><span class="check">&check;</span> Template generique</div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Design haut de gamme</div><div class="c-us"><span class="check">&check;</span> Christie's level</div><div class="c-them"><span class="cross">&times;</span> Standard</div><div class="c-them"><span class="cross">&times;</span> N/A</div>
+
+<div>CRM pipeline leads</div><div class="c-us"><span class="check">&check;</span> Kanban + table</div><div class="c-them"><span class="check">&check;</span> Basique</div><div class="c-them"><span class="check">&check;</span> Complet</div>
+
+<div>Portail acheteur</div><div class="c-us"><span class="check">&check;</span> Token-gate, shortlist</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Portail proprietaire</div><div class="c-us"><span class="check">&check;</span> Pipeline, KPI, events</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Matching inverse</div><div class="c-us"><span class="check">&check;</span> Score 0-100</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Next-Best-Action</div><div class="c-us"><span class="check">&check;</span> 10 regles, 1-clic</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span> Workflows payants</div>
+
+<div>Estimation en ligne</div><div class="c-us"><span class="check">&check;</span> Lead capture</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Carte interactive</div><div class="c-us"><span class="check">&check;</span> Leaflet, clusters</div><div class="c-them"><span class="check">&check;</span> Basique</div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Comparaison biens</div><div class="c-us"><span class="check">&check;</span> Cote-a-cote</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Calculette frais Maroc</div><div class="c-us"><span class="check">&check;</span> Baremes 2026</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>SLA tracking</div><div class="c-us"><span class="check">&check;</span> Urgent/standard</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="check">&check;</span> Payant</div>
+
+<div>Rapport marche</div><div class="c-us"><span class="check">&check;</span> Donnees DB live</div><div class="c-them"><span class="cross">&times;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Multi-devise</div><div class="c-us"><span class="check">&check;</span> EUR/MAD/GBP/USD</div><div class="c-them"><span class="check">&check;</span></div><div class="c-them"><span class="cross">&times;</span></div>
+
+<div>Prix mensuel</div><div class="c-us" style="font-weight:600;color:var(--accent)">Sur-mesure</div><div class="c-them">200-500 &euro;/mois</div><div class="c-them">0-1 600 &euro;/mois</div>
+</div>
+<p class="fn">Apimo et Hektor sont les CRM immo francophones les plus utilises. HubSpot est le CRM generique le plus repandu. Aucun des trois ne propose de portails client token-gate, de matching inverse, de next-best-action, ni d'estimation en ligne avec lead capture. La plateforme Marrakech Realty combine site public haut de gamme + CRM vertical en une seule solution.</p>
+</div></section>
+
+<!-- PROPOSITION DE VALEUR -->
+<section><div class="w">
+<div class="sh"><div class="ey">Proposition de valeur</div><h2>Ce que ca change pour une agence.</h2></div>
+
+<div class="insight"><div class="insight-n">01</div><div class="insight-t">Zero lead oublie.</div><div class="insight-x">Le pipeline CRM avec <strong>SLA tracking</strong> et <strong>Next-Best-Action</strong> rend physiquement impossible d'oublier un lead. Chaque matin, le conseiller voit exactement quoi faire en premier. Un lead rappele en &lt; 4h convertit <strong>7x plus</strong> qu'un lead rappele a J+2.</div></div>
+
+<div class="insight"><div class="insight-n">02</div><div class="insight-t">Le proprio ne va pas voir ailleurs.</div><div class="insight-x">Le <strong>portail proprietaire</strong> donne au vendeur une visibilite en temps reel sur l'avancement de son mandat : nombre de visites, offres, timeline. Plus de coups de fil "vous en etes ou ?". Le proprio se sent pris en charge. <strong>Moins de mandats perdus.</strong></div></div>
+
+<div class="insight"><div class="insight-n">03</div><div class="insight-t">Matching instantane.</div><div class="insight-x">Un bien rentre, les acheteurs compatibles sont identifies en <strong>0 secondes</strong> (score 0-100 sur budget, type, quartier, chambres). Le conseiller envoie la shortlist le jour meme. Sans l'outil, il fouille dans sa tete ou son carnet — et rate des opportunites.</div></div>
+
+<div class="insight"><div class="insight-n">04</div><div class="insight-t">L'estimation qui convertit.</div><div class="insight-x">L'outil d'estimation en ligne est le <strong>premier point de contact</strong> avec les proprios vendeurs. Fourchette basee sur les vrais comparables du portefeuille, gate email pour capturer le lead. Chaque visiteur qui estime son bien entre dans le pipeline. <strong>Funnel d'acquisition #1.</strong></div></div>
+
+<div class="insight"><div class="insight-n">05</div><div class="insight-t">Un site qui fait le travail.</div><div class="insight-x">Ce n'est pas un template WordPress avec un plugin immo. C'est un site <strong>sur-mesure niveau Barnes/Christie's</strong> : galeries, carte, comparaison, collections, quartiers, calculette frais, multi-devise, JSON-LD, SEO complet. L'acheteur international se sent en confiance. Le site <strong>genere des leads</strong> au lieu de simplement exister.</div></div>
+</div></section>
+
+<!-- CHIFFRAGE -->
+<section class="alt"><div class="w">
+<div class="sh"><div class="ey">Chiffrage</div><h2>Investissement et cout equivalent.</h2></div>
+<table>
+<thead><tr><th>Poste</th><th>Jours</th><th>Cout (600 &euro;/j)</th></tr></thead>
+<tbody>
+<tr><td class="ta">Pages publiques (21 features)</td><td class="num">22</td><td class="num">13 200 &euro;</td></tr>
+<tr><td class="ta">CRM &amp; admin (12 features)</td><td class="num">16</td><td class="num">9 600 &euro;</td></tr>
+<tr><td class="ta">Composants (56 composants)</td><td class="num">14</td><td class="num">8 400 &euro;</td></tr>
+<tr><td class="ta">Backend &amp; lib (10 modules)</td><td class="num">10</td><td class="num">6 000 &euro;</td></tr>
+<tr><td class="ta">Infrastructure (migrations, config, SEO)</td><td class="num">4.5</td><td class="num">2 700 &euro;</td></tr>
+<tr><td class="ta">Design system</td><td class="num">2.5</td><td class="num">1 500 &euro;</td></tr>
+<tr class="highlight"><td class="ta" style="font-weight:600">Total</td><td class="num" style="font-weight:600">69 jours</td><td class="num" style="font-weight:600">41 400 &euro;</td></tr>
+</tbody>
+</table>
+<p class="fn">Tarif journalier base sur le taux moyen d'un developpeur senior Next.js/Supabase en region parisienne (source : Malt, Comet, 2025-2026). Ce chiffrage n'inclut pas le design UI/UX (estimation +8 000 &euro;), la redaction editoriale (+3 000 &euro;), ni l'accompagnement deploiement (+2 000 &euro;). Cout total "cle en main" estimable a 55 000 &euro; via agence parisienne.</p>
+</div></section>
+
+<div style="background:var(--ink);color:white;padding:60px 0;text-align:center">
+<div class="w">
+<div class="ey" style="color:var(--hint)">Prochaine etape</div>
+<h2 style="color:white;margin-top:12px;font-size:1.6rem">Pret a en discuter ?</h2>
+<p style="color:var(--hint);margin-top:12px;font-size:14px;max-width:480px;margin-left:auto;margin-right:auto">Ce document est un point de depart. L'etape suivante est une demonstration live de la plateforme, suivie d'un plan de deploiement personnalise a votre agence.</p>
+<p style="margin-top:24px;font-size:13px;color:var(--hint)">charles.terrier.7@gmail.com</p>
+</div>
+</div>
+
+</body>
+</html>
