@@ -218,7 +218,7 @@ export default function CatalogueBrowser({
               <button
                 type="button"
                 onClick={() => set({ piscine: filters.piscine === "1" ? undefined : "1" })}
-                className={`whitespace-nowrap border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
+                className={`whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
                   filters.piscine === "1"
                     ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
                     : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
@@ -357,7 +357,7 @@ function Pill({
             ? `inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.24em] transition-colors ${
                 active ? "text-[var(--color-accent)]" : "text-[var(--color-charcoal)] hover:text-[var(--color-accent)]"
               }`
-            : `inline-flex items-center gap-2 whitespace-nowrap border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
+            : `inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
                 active
                   ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
                   : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
@@ -371,7 +371,7 @@ function Pill({
 
       {open && (
         <div
-          className={`animate-mega-in absolute top-[calc(100%+8px)] z-50 max-h-80 min-w-[240px] overflow-y-auto border border-[var(--color-border)] bg-white py-1.5 shadow-[var(--shadow-luxe)] ${
+          className={`animate-mega-in absolute top-[calc(100%+8px)] z-50 max-h-80 min-w-[240px] overflow-y-auto rounded-[14px] border border-[var(--color-border)] bg-white py-1.5 shadow-[var(--shadow-luxe)] ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
