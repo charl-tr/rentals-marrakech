@@ -122,8 +122,7 @@ export default function CatalogueBrowser({
       if (v) params.set(k, v);
     });
     const qs = params.toString();
-    const url = qs ? `${baseHref}?${qs}` : baseHref;
-    window.history.replaceState(null, "", url);
+    window.history.replaceState(null, "", qs ? `${baseHref}?${qs}` : baseHref);
   }, [filters, baseHref]);
 
   const set = useCallback((patch: Partial<Filters>) => {
@@ -131,7 +130,11 @@ export default function CatalogueBrowser({
     setOpenKey(null);
   }, []);
 
-  // Liste filtrée + triée — INSTANTANÉ, côté client
+  const clearAll = useCallback(() => {
+    setFilters((f) => ({ tri: f.tri, vue: f.vue }));
+    setOpenKey(null);
+  }, []);
+
   const items = useMemo(() => {
     let out = properties.filter((p) => matches(p, filters, buckets, mode));
     if (filters.tri === "price-asc") out = [...out].sort((a, b) => a.price - b.price);
@@ -160,91 +163,102 @@ export default function CatalogueBrowser({
   return (
     <>
       {/* ═══ BARRE — filtres en ligne, instantanés ═══ */}
-      <div className="sticky top-14 z-40 border-b border-[var(--color-border)] bg-white/95 backdrop-blur-md lg:top-16">
-        <div className="container-luxe flex items-center gap-3 py-3.5 md:py-4">
-          {/* Compteur */}
-          <div className="hidden shrink-0 items-baseline gap-2 md:flex">
-            <span className="font-serif text-xl text-[var(--color-charcoal)]">{items.length}</span>
-            <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-              {items.length > 1 ? "biens" : "bien"}
-            </span>
-          </div>
+      <div className="sticky top-14 z-40 border-b border-[var(--color-border)] bg-white/95 backdrop-blur-xl lg:top-16">
+        <div className="container-luxe py-4">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-3">
+            {/* Groupe filtres (gauche) */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div className="mr-1 hidden items-baseline gap-2 md:flex">
+                <span className="font-serif text-2xl text-[var(--color-charcoal)]">{items.length}</span>
+                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
+                  {items.length > 1 ? "biens" : "bien"}
+                </span>
+              </div>
 
-          {/* Filtres en ligne — scroll horizontal sur mobile */}
-          <div className="flex flex-1 items-center gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {visibleFilters.type && (
-              <Pill label="Type" value={filters.type} display={filters.type ? propertyTypeLabel(filters.type as PropertyType) : undefined}
-                options={typeOpts} open={openKey === "type"} onToggle={() => setOpenKey((k) => (k === "type" ? null : "type"))}
-                onSelect={(v) => set({ type: v })} onClose={() => setOpenKey(null)} allLabel="Tous les types" />
-            )}
-            {visibleFilters.neighborhood && (
-              <Pill label="Quartier" value={filters.quartier} display={filters.quartier ? NEIGHBORHOODS.find((n) => n.slug === filters.quartier)?.label : undefined}
-                options={zoneOpts} open={openKey === "quartier"} onToggle={() => setOpenKey((k) => (k === "quartier" ? null : "quartier"))}
-                onSelect={(v) => set({ quartier: v })} onClose={() => setOpenKey(null)} allLabel="Tous les quartiers" />
-            )}
-            {visibleFilters.budget && (
-              <Pill label="Budget" value={filters.budget} display={filters.budget ? budgetOpts.find((b) => b.value === filters.budget)?.label : undefined}
-                options={budgetOpts} open={openKey === "budget"} onToggle={() => setOpenKey((k) => (k === "budget" ? null : "budget"))}
-                onSelect={(v) => set({ budget: v })} onClose={() => setOpenKey(null)} allLabel="Tous budgets" />
-            )}
-            {visibleFilters.bedrooms && (
-              <Pill label="Chambres" value={filters.chambres} display={filters.chambres ? `${filters.chambres}+ ch.` : undefined}
-                options={BEDROOM_OPTIONS} open={openKey === "chambres"} onToggle={() => setOpenKey((k) => (k === "chambres" ? null : "chambres"))}
-                onSelect={(v) => set({ chambres: v })} onClose={() => setOpenKey(null)} allLabel="Indifférent" />
-            )}
-            {visibleFilters.city && (
-              <Pill label="Ville" value={filters.ville} display={filters.ville}
-                options={cityOpts} open={openKey === "ville"} onToggle={() => setOpenKey((k) => (k === "ville" ? null : "ville"))}
-                onSelect={(v) => set({ ville: v })} onClose={() => setOpenKey(null)} allLabel="Toutes les villes" />
-            )}
-            {visibleFilters.duration && (
-              <Pill label="Durée" value={filters.duree} display={filters.duree ? DURATION_OPTIONS.find((d) => d.value === filters.duree)?.label : undefined}
-                options={DURATION_OPTIONS} open={openKey === "duree"} onToggle={() => setOpenKey((k) => (k === "duree" ? null : "duree"))}
-                onSelect={(v) => set({ duree: v })} onClose={() => setOpenKey(null)} allLabel="Toutes durées" />
-            )}
-            {/* Piscine — toggle direct */}
-            <button
-              type="button"
-              onClick={() => set({ piscine: filters.piscine === "1" ? undefined : "1" })}
-              className={`shrink-0 whitespace-nowrap border px-4 py-2 text-[12px] transition-colors ${
-                filters.piscine === "1"
-                  ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
-                  : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
-              }`}
-            >
-              Piscine
-            </button>
-
-            {activeCount > 0 && (
+              {visibleFilters.type && (
+                <Pill label="Type" value={filters.type}
+                  display={filters.type ? propertyTypeLabel(filters.type as PropertyType) : undefined}
+                  options={typeOpts} open={openKey === "type"}
+                  onToggle={() => setOpenKey((k) => (k === "type" ? null : "type"))}
+                  onSelect={(v) => set({ type: v })} onClose={() => setOpenKey(null)} allLabel="Tous les types" />
+              )}
+              {visibleFilters.neighborhood && (
+                <Pill label="Quartier" value={filters.quartier}
+                  display={filters.quartier ? NEIGHBORHOODS.find((n) => n.slug === filters.quartier)?.label : undefined}
+                  options={zoneOpts} open={openKey === "quartier"}
+                  onToggle={() => setOpenKey((k) => (k === "quartier" ? null : "quartier"))}
+                  onSelect={(v) => set({ quartier: v })} onClose={() => setOpenKey(null)} allLabel="Tous les quartiers" />
+              )}
+              {visibleFilters.budget && (
+                <Pill label="Budget" value={filters.budget}
+                  display={filters.budget ? budgetOpts.find((b) => b.value === filters.budget)?.label : undefined}
+                  options={budgetOpts} open={openKey === "budget"}
+                  onToggle={() => setOpenKey((k) => (k === "budget" ? null : "budget"))}
+                  onSelect={(v) => set({ budget: v })} onClose={() => setOpenKey(null)} allLabel="Tous budgets" />
+              )}
+              {visibleFilters.bedrooms && (
+                <Pill label="Chambres" value={filters.chambres}
+                  display={filters.chambres ? `${filters.chambres}+ ch.` : undefined}
+                  options={BEDROOM_OPTIONS} open={openKey === "chambres"}
+                  onToggle={() => setOpenKey((k) => (k === "chambres" ? null : "chambres"))}
+                  onSelect={(v) => set({ chambres: v })} onClose={() => setOpenKey(null)} allLabel="Indifférent" />
+              )}
+              {visibleFilters.city && (
+                <Pill label="Ville" value={filters.ville} display={filters.ville}
+                  options={cityOpts} open={openKey === "ville"}
+                  onToggle={() => setOpenKey((k) => (k === "ville" ? null : "ville"))}
+                  onSelect={(v) => set({ ville: v })} onClose={() => setOpenKey(null)} allLabel="Toutes les villes" />
+              )}
+              {visibleFilters.duration && (
+                <Pill label="Durée" value={filters.duree}
+                  display={filters.duree ? DURATION_OPTIONS.find((d) => d.value === filters.duree)?.label : undefined}
+                  options={DURATION_OPTIONS} open={openKey === "duree"}
+                  onToggle={() => setOpenKey((k) => (k === "duree" ? null : "duree"))}
+                  onSelect={(v) => set({ duree: v })} onClose={() => setOpenKey(null)} allLabel="Toutes durées" />
+              )}
               <button
                 type="button"
-                onClick={() => set({ type: undefined, quartier: undefined, ville: undefined, budget: undefined, chambres: undefined, duree: undefined, piscine: undefined })}
-                className="ml-1 shrink-0 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:text-[var(--color-terracotta)]"
+                onClick={() => set({ piscine: filters.piscine === "1" ? undefined : "1" })}
+                className={`whitespace-nowrap border px-4 py-2.5 text-[12px] transition-colors ${
+                  filters.piscine === "1"
+                    ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
+                    : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
+                }`}
               >
-                Effacer
+                Piscine
               </button>
-            )}
-          </div>
 
-          {/* Tri + Vue — fixes à droite */}
-          <div className="flex shrink-0 items-center gap-5 md:gap-7">
-            {!isMap && (
-              <Pill label="Trier" value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
-                display={filters.tri && filters.tri !== "default" ? sortLabel : undefined}
-                options={SORT_OPTIONS.filter((o) => o.value !== "default")} open={openKey === "tri"}
-                onToggle={() => setOpenKey((k) => (k === "tri" ? null : "tri"))}
-                onSelect={(v) => set({ tri: v })} onClose={() => setOpenKey(null)} allLabel="Pertinence"
-                bare align="right" />
-            )}
-            <button
-              type="button"
-              onClick={() => set({ vue: isMap ? undefined : "carte" })}
-              aria-label={isMap ? "Afficher en liste" : "Afficher sur une carte"}
-              className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
-            >
-              {isMap ? <LayoutGrid size={13} /> : <MapIcon size={13} />}
-              <span className="hidden sm:inline">{isMap ? "Liste" : "Carte"}</span>
-            </button>
+              {activeCount > 0 && (
+                <button
+                  type="button"
+                  onClick={clearAll}
+                  className="ml-1 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:text-[var(--color-terracotta)]"
+                >
+                  Effacer ({activeCount})
+                </button>
+              )}
+            </div>
+
+            {/* Groupe Tri + Vue (droite) */}
+            <div className="flex items-center gap-5 md:gap-7">
+              {!isMap && (
+                <Pill label="Trier" value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
+                  display={filters.tri && filters.tri !== "default" ? sortLabel : undefined}
+                  options={SORT_OPTIONS.filter((o) => o.value !== "default")} open={openKey === "tri"}
+                  onToggle={() => setOpenKey((k) => (k === "tri" ? null : "tri"))}
+                  onSelect={(v) => set({ tri: v })} onClose={() => setOpenKey(null)} allLabel="Pertinence"
+                  bare align="right" />
+              )}
+              <button
+                type="button"
+                onClick={() => set({ vue: isMap ? undefined : "carte" })}
+                aria-label={isMap ? "Afficher en liste" : "Afficher sur une carte"}
+                className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
+              >
+                {isMap ? <LayoutGrid size={13} /> : <MapIcon size={13} />}
+                <span className="hidden sm:inline">{isMap ? "Liste" : "Carte"}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -268,11 +282,7 @@ export default function CatalogueBrowser({
                   activerons notre réseau et notre fichier off-market.
                 </p>
                 <div className="mt-8 flex items-center justify-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => set({ type: undefined, quartier: undefined, ville: undefined, budget: undefined, chambres: undefined, duree: undefined, piscine: undefined })}
-                    className="btn-outline"
-                  >
+                  <button type="button" onClick={clearAll} className="btn-outline">
                     Réinitialiser
                   </button>
                   <Link href="/contact" className="btn-gold">
@@ -339,7 +349,7 @@ function Pill({
   }, [open, onClose]);
 
   return (
-    <div ref={ref} className="relative shrink-0">
+    <div ref={ref} className="relative">
       <button
         type="button"
         onClick={onToggle}
@@ -348,7 +358,7 @@ function Pill({
             ? `inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${
                 active ? "text-[var(--color-terracotta)]" : "text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
               }`
-            : `inline-flex items-center gap-2 whitespace-nowrap border px-4 py-2 text-[12px] transition-colors ${
+            : `inline-flex items-center gap-2 whitespace-nowrap border px-4 py-2.5 text-[12px] transition-all duration-200 ${
                 active
                   ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
                   : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
@@ -362,14 +372,14 @@ function Pill({
 
       {open && (
         <div
-          className={`animate-fade-in absolute top-[calc(100%+8px)] z-30 max-h-72 min-w-[220px] overflow-y-auto border border-[var(--color-border)] bg-white py-1 shadow-[var(--shadow-luxe)] ${
+          className={`animate-mega-in absolute top-[calc(100%+8px)] z-50 max-h-80 min-w-[240px] overflow-y-auto border border-[var(--color-border)] bg-white py-1.5 shadow-[var(--shadow-luxe)] ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
           <button
             type="button"
             onClick={() => onSelect(undefined)}
-            className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-[13px] transition-colors hover:bg-[var(--color-cream)] ${
+            className={`flex w-full items-center justify-between gap-3 px-5 py-3 text-left text-[13px] transition-colors hover:bg-[var(--color-cream)] ${
               !value ? "text-[var(--color-terracotta)]" : "text-[var(--color-stone)]"
             }`}
           >
@@ -383,7 +393,7 @@ function Pill({
                 key={o.value}
                 type="button"
                 onClick={() => onSelect(o.value)}
-                className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-[13px] transition-colors hover:bg-[var(--color-cream)] ${
+                className={`flex w-full items-center justify-between gap-3 px-5 py-3 text-left text-[13px] transition-colors hover:bg-[var(--color-cream)] ${
                   sel ? "text-[var(--color-terracotta)]" : "text-[var(--color-charcoal)]"
                 }`}
               >
