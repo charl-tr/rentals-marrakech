@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
@@ -6,11 +5,7 @@ import Breadcrumbs, { type Crumb } from "@/components/Breadcrumbs";
 import BackToList from "@/components/BackToList";
 import FilterToolbar, { type FilterMode } from "@/components/FilterToolbar";
 import MapClientWrapper from "@/components/MapClientWrapper";
-import {
-  propertyTypeLabel,
-  type Property,
-  type PropertyType,
-} from "@/data/properties";
+import { type Property, type PropertyType } from "@/data/properties";
 import { getAllProperties, type PropertyPin } from "@/lib/db";
 
 export type { FilterMode };
@@ -68,7 +63,6 @@ const TYPES_LOCATION: PropertyType[] = [
   "maison-hotes",
 ];
 
-// Version server-side du matching (même logique que FilterToolbar côté client)
 function matchesFilters(
   p: Property,
   f: Record<string, string | undefined>,
@@ -140,15 +134,6 @@ export default async function Catalogue({
 
   const prefiltered = all.filter(prefilter);
 
-  // Hero = premier bien pertinent du contexte (featured desc déjà appliqué côté DB).
-  // On prend images[1] si dispo (shot architectural) plutôt que la photo de garde [0]
-  // qui sert de thumb dans la grille juste en dessous — évite la répétition visuelle.
-  const heroSource =
-    prefiltered.find((p) => p.images.length > 0) ??
-    all.find((p) => p.images.length > 0);
-  const heroImage = heroSource?.images[1] ?? heroSource?.images[0];
-  const heroAlt = heroSource?.title ?? title;
-
   let items = prefiltered.filter((p) =>
     matchesFilters(p, selectedFilters, BUCKETS, filterMode)
   );
@@ -162,38 +147,25 @@ export default async function Catalogue({
 
   return (
     <>
-      {/* HERO COMPACT — image contextualisée + overlay standardisé */}
-      <section className="relative overflow-hidden bg-[var(--color-charcoal)] text-white">
-        {heroImage && (
-          <Image
-            src={heroImage}
-            alt={heroAlt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-        )}
-        <div aria-hidden className="absolute inset-0 hero-overlay-top" />
-        <div aria-hidden className="absolute inset-0 hero-overlay-left" />
-
-        <div className="container-luxe relative z-10 pt-[96px] pb-10 md:pt-[108px] md:pb-12">
+      {/* HEADER — éditorial, bandeau noir, ZÉRO image stock */}
+      <section className="bg-[var(--color-charcoal-deep)] text-white">
+        <div className="container-luxe pt-28 pb-12 md:pt-32 md:pb-16">
           {(breadcrumbs || backFallbackHref) && (
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
               <BackToList fallbackHref={backFallbackHref} variant="dark" />
               {breadcrumbs && breadcrumbs.length > 0 && (
                 <Breadcrumbs variant="dark" items={breadcrumbs} />
               )}
             </div>
           )}
-          <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
             {eyebrow}
           </div>
-          <h1 className="hero-text mt-3 max-w-3xl font-serif text-3xl leading-[1.08] text-white md:text-4xl lg:text-5xl">
+          <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-[1.06] text-white md:text-5xl lg:text-6xl">
             {title}
           </h1>
           {subtitle && (
-            <p className="hero-text-soft mt-4 max-w-2xl text-sm leading-relaxed text-white/90 md:text-base">
+            <p className="mt-5 max-w-2xl leading-relaxed text-white/60 md:text-lg">
               {subtitle}
             </p>
           )}
@@ -217,17 +189,18 @@ export default async function Catalogue({
           <MapClientWrapper pins={items.map(propertyToPin)} />
         </div>
       ) : (
-        /* GRID VIEW */
-        <section className="bg-[var(--color-cream)] py-12 md:py-16">
+        /* GRID VIEW — blanc crisp, grille aérée */
+        <section className="bg-white py-14 md:py-20">
           <div className="container-luxe">
             {items.length === 0 ? (
-              <div className="border border-[var(--color-beige-warm)] bg-white p-12 text-center">
-                <div className="font-serif text-2xl text-[var(--color-charcoal)]">
-                  Aucun bien correspondant.
+              <div className="mx-auto max-w-lg py-20 text-center">
+                <div className="eyebrow">Aucun résultat</div>
+                <div className="mt-4 font-serif text-2xl text-[var(--color-charcoal)] md:text-3xl">
+                  Aucun bien correspondant<br />à ces critères.
                 </div>
-                <p className="mt-3 text-sm text-[var(--color-stone)]">
-                  Notre portefeuille évolue chaque semaine — confiez-nous vos critères,
-                  nous activerons notre réseau.
+                <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[var(--color-stone)]">
+                  Notre portefeuille évolue chaque semaine — confiez-nous vos
+                  critères, nous activerons notre réseau et notre fichier off-market.
                 </p>
                 <Link href="/contact" className="btn-gold mt-8 inline-flex">
                   Nous décrire votre projet
@@ -235,7 +208,7 @@ export default async function Catalogue({
                 </Link>
               </div>
             ) : (
-              <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
                 {items.map((p, i) => (
                   <PropertyCard key={p.slug} property={p} priority={i < 3} />
                 ))}
