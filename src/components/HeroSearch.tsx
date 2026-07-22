@@ -6,11 +6,7 @@ import { Search, ChevronDown, Check } from "lucide-react";
 
 // ════════════════════════════════════════════════════════════════════
 // HeroSearch — barre de recherche du hero avec dropdowns custom.
-//
-// Pourquoi custom : les <select> natifs ouvrent un menu système qui se
-// fait couper en bas de viewport (la barre est posée bas dans le hero).
-// Nos dropdowns s'ouvrent VERS LE HAUT, restent dans la DA, et ne sont
-// jamais tronqués.
+// Dropdowns qui s'ouvrent VERS LE HAUT (jamais tronqués), angles doux.
 // ════════════════════════════════════════════════════════════════════
 
 type Opt = { value: string; label: string };
@@ -63,7 +59,7 @@ export default function HeroSearch() {
   }
 
   return (
-    <div className="max-w-4xl animate-fade-up border border-white/15 bg-[rgba(23,20,15,0.42)] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+    <div className="max-w-4xl animate-fade-up overflow-hidden rounded-[16px] border border-white/15 bg-[rgba(23,20,15,0.42)] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
       <div className="grid grid-cols-1 gap-0 md:grid-cols-[1fr_1fr_1fr_auto]">
         <Field
           id="type"
@@ -101,7 +97,7 @@ export default function HeroSearch() {
         <button
           type="button"
           onClick={submit}
-          className="flex items-center justify-center gap-2 bg-white/10 px-8 py-5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all hover:bg-white hover:text-[var(--color-charcoal)]"
+          className="flex items-center justify-center gap-2 rounded-[10px] bg-white/10 px-8 py-5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all hover:bg-white hover:text-[var(--color-charcoal)]"
         >
           <Search size={15} />
           Rechercher
@@ -183,7 +179,7 @@ function Field({
       {open && (
         <ul
           role="listbox"
-          className="animate-fade-in absolute bottom-full left-0 z-30 mb-2 max-h-72 w-full min-w-[220px] overflow-y-auto border border-[var(--color-border)] bg-[var(--color-cream)] py-1 shadow-[var(--shadow-luxe)]"
+          className="animate-fade-in absolute bottom-full left-0 z-30 mb-2 max-h-72 w-full min-w-[220px] overflow-y-auto rounded-[12px] border border-[var(--color-border)] bg-[var(--color-cream)] py-1 shadow-[var(--shadow-luxe)]"
         >
           {options.map((o) => {
             const active = o.value === value;
@@ -199,7 +195,7 @@ function Field({
                   }}
                   className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-[13px] transition-colors hover:bg-white ${
                     active
-                      ? "text-[var(--color-terracotta)]"
+                      ? "text-[var(--color-accent)]"
                       : "text-[var(--color-charcoal)]"
                   }`}
                 >
