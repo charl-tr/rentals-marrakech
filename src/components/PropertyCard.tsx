@@ -16,9 +16,8 @@ interface Props {
   priority?: boolean;
 }
 
-// ── Carte de bien — éditoriale, sans chrome (façon Barnes/Christie's).
-// L'image et l'espace portent la carte. Zéro icône décorative, specs en
-// texte pur. Un seul accent : la révélation "Découvrir" au survol.
+// ── Carte de bien — Soft premium 2026 : image arrondie, la carte lève au
+// survol (spring), l'ombre grandit, zoom lent de l'image. Typo éditoriale.
 export default function PropertyCard({ property, priority = false }: Props) {
   const isLocation = property.listing !== "vente";
   const href = `${isLocation ? "/louer" : "/acheter"}/${property.slug}`;
@@ -34,22 +33,24 @@ export default function PropertyCard({ property, priority = false }: Props) {
       : null,
   ]
     .filter(Boolean)
-    .join(" · ");
+    .join(" · ");
 
   return (
     <Link
       href={href}
-      className={`group block ${isUnavailable ? "opacity-80" : ""}`}
+      className={`group block transition-transform duration-[450ms] [transition-timing-function:var(--ease-spring)] hover:-translate-y-1.5 ${
+        isUnavailable ? "opacity-80" : ""
+      }`}
     >
-      {/* Image */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-[var(--color-charcoal-deep)]">
+      {/* Image — arrondie, ombre douce qui grandit au survol */}
+      <div className="card-media relative aspect-[4/5] bg-[var(--color-charcoal-deep)]">
         <Image
           src={property.images[0]}
           alt={property.title}
           fill
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className={`object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04] ${
+          className={`object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06] ${
             isUnavailable ? "grayscale-[40%]" : ""
           }`}
         />
@@ -58,16 +59,16 @@ export default function PropertyCard({ property, priority = false }: Props) {
         <div className="absolute left-0 top-0 p-4">
           {property.status && property.status !== "available" ? (
             <span
-              className={`px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] ${
+              className={`rounded-[8px] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] ${
                 property.status === "new"
                   ? "bg-[var(--color-terracotta)] text-white"
-                  : "bg-[var(--color-charcoal-deep)] text-white"
+                  : "bg-[var(--color-charcoal-deep)]/90 text-white backdrop-blur-sm"
               }`}
             >
               {STATUS_LABELS[property.status]}
             </span>
           ) : property.exclusivity ? (
-            <span className="bg-[var(--color-charcoal-deep)] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white">
+            <span className="rounded-[8px] bg-[var(--color-charcoal-deep)]/90 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
               Exclusivité
             </span>
           ) : null}
