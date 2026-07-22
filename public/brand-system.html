@@ -3,80 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marrakech Realty — Systeme de design</title>
+<title>Marrakech Realty — Système de design</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#ffffff;--alt:#faf8f4;--tint:#f2ede4;--ink:#1a1814;--soft:#3d3731;--muted:#78726b;--hint:#a9a39a;--accent:#6e4f3a;--deep:#4e3625;--alight:#8e6b4b;--asoft:#f3ece1;--border:#e8e3d8;--strong:#c9bfae;--success:#5e7266;--alert:#8a3d2a}
+/* ═══════════════════════════════════════════════════════════════════════
+   SOURCE DE VÉRITÉ — miroir exact de src/app/globals.css (@theme, palette v7).
+   Aucun hex en dur dans les composants : tout référence var(--color-*) /
+   var(--radius-*). Changer un token ici = référence pour toute l'app.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root{
+  /* Canvas */
+  --color-bg:#ffffff; --color-bg-alt:#f7f5f0; --color-bg-tint:#efeae1; --color-noir:#17140f; --color-dark-soft:#262119;
+  /* Encre */
+  --color-ink:#23201b; --color-ink-soft:#4a443c; --color-ink-muted:#877f73; --color-ink-hint:#b3aa9c;
+  /* Accent cuir / clay */
+  --color-accent:#9c7256; --color-accent-deep:#7c5942; --color-accent-light:#b3927a; --color-accent-glow:#d8c3ab; --color-accent-soft:#f1ebe3;
+  /* Bordures */
+  --color-border:#e6e0d5; --color-border-strong:#cabfad;
+  /* Statut */
+  --color-success:#5e7266; --color-alert:#9a4632;
+  /* Rayons — angles doux, cohérents */
+  --radius-btn:10px; --radius-card:14px; --radius-img:16px;
+  /* Ombres — plates, à peine visibles */
+  --shadow-soft:0 1px 2px rgba(23,20,15,.03);
+  --shadow-card:0 1px 2px rgba(23,20,15,.03),0 6px 20px -12px rgba(23,20,15,.08);
+  --shadow-hover:0 8px 28px -14px rgba(23,20,15,.14);
+  --shadow-luxe:0 20px 50px -28px rgba(23,20,15,.18);
+  /* Fontes */
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'Inter',system-ui,-apple-system,sans-serif;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.7}
-h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:500;letter-spacing:-.02em}
-::selection{background:var(--ink);color:var(--alt)}
+body{font-family:var(--font-sans);background:var(--color-bg);color:var(--color-ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.7}
+h1,h2,h3,h4{font-family:var(--font-serif);font-weight:500;letter-spacing:-.005em}
+::selection{background:var(--color-ink);color:var(--color-bg-alt)}
 
-.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.layout{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
 
-.sidebar{position:sticky;top:0;height:100vh;padding:48px 24px;border-right:1px solid var(--border);overflow-y:auto;background:var(--alt)}
-.sidebar-logo{font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
-.sidebar-sub{font-size:10px;text-transform:uppercase;letter-spacing:.28em;color:var(--muted);margin-top:6px}
-.sidebar-nav{margin-top:40px;display:flex;flex-direction:column;gap:2px}
-.sidebar-nav a{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);text-decoration:none;padding:8px 0 8px 14px;border-left:2px solid transparent;transition:.2s}
-.sidebar-nav a:hover{color:var(--ink)}
-.sidebar-nav a.active{color:var(--accent);border-left-color:var(--accent)}
+.sidebar{position:sticky;top:0;height:100vh;padding:48px 24px;border-right:1px solid var(--color-border);overflow-y:auto;background:var(--color-bg-alt)}
+.sidebar-logo{font-family:var(--font-serif);font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase;color:var(--color-ink)}
+.sidebar-sub{font-size:10px;text-transform:uppercase;letter-spacing:.28em;color:var(--color-ink-muted);margin-top:6px}
+.sidebar-nav{margin-top:40px;display:flex;flex-direction:column;gap:1px}
+.sidebar-nav a{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--color-ink-muted);text-decoration:none;padding:8px 0 8px 14px;border-left:2px solid transparent;transition:.2s}
+.sidebar-nav a:hover{color:var(--color-ink)}
+.sidebar-nav a.active{color:var(--color-accent);border-left-color:var(--color-accent)}
 
-.main{padding:64px 64px 120px;max-width:860px}
-.section{margin-bottom:80px}
-.section-num{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.28em;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:8px}
-.section-num::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.section-title{font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;margin-bottom:20px}
-.section-body{font-size:15px;color:var(--muted);line-height:1.8;max-width:600px}
-.section-body strong{color:var(--ink);font-weight:500}
+.main{padding:64px 64px 120px;max-width:900px}
+.section{margin-bottom:80px;scroll-margin-top:48px}
+.section-num{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.28em;color:var(--color-accent);margin-bottom:24px;display:flex;align-items:center;gap:8px}
+.section-num::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--color-accent)}
+.section-title{font-size:clamp(1.9rem,3.5vw,3rem);line-height:1.1;margin-bottom:20px;color:var(--color-ink)}
+.section-body{font-size:15px;color:var(--color-ink-muted);line-height:1.8;max-width:620px}
+.section-body strong{color:var(--color-ink);font-weight:500}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 
-.rule{width:100%;height:1px;background:var(--border);margin:40px 0}
+.specimen{background:var(--color-bg-alt);border:1px solid var(--color-border);border-radius:var(--radius-card);padding:32px;margin-top:24px}
+.specimen-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--color-ink-muted);margin-bottom:14px}
+.code-note{margin-top:18px;font-size:10px;color:var(--color-ink-hint);font-family:ui-monospace,monospace;line-height:2}
 
-.specimen{background:var(--alt);border:1px solid var(--border);padding:32px;margin-top:24px}
-.specimen-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--muted);margin-bottom:12px}
-
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:20px}
-.swatch{overflow:hidden;border:1px solid var(--border)}
+/* Couleurs */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:16px}
+.swatch{overflow:hidden;border:1px solid var(--color-border);border-radius:12px}
 .swatch-color{height:64px}
-.swatch-info{padding:10px;background:var(--bg)}
-.swatch-name{font-size:11px;font-weight:500;color:var(--ink)}
-.swatch-hex{font-size:10px;color:var(--muted);margin-top:2px;font-family:monospace}
-.swatch-var{font-size:9px;color:var(--hint);margin-top:1px;font-family:monospace}
+.swatch-info{padding:10px 12px;background:var(--color-bg)}
+.swatch-name{font-size:11px;font-weight:500;color:var(--color-ink)}
+.swatch-hex{font-size:10px;color:var(--color-ink-muted);margin-top:2px;font-family:ui-monospace,monospace}
+.swatch-var{font-size:9px;color:var(--color-ink-hint);margin-top:1px;font-family:ui-monospace,monospace}
+.group-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--color-ink-muted);margin-top:26px}
 
-.type-row{display:flex;align-items:baseline;gap:20px;padding:14px 0;border-bottom:1px solid var(--border)}
-.type-meta{width:80px;flex-shrink:0;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.16em;color:var(--muted)}
-.type-sample{flex:1}
-.type-spec{font-size:10px;color:var(--hint);margin-top:4px;font-family:monospace}
+/* Typo */
+.type-row{display:flex;align-items:baseline;gap:20px;padding:14px 0;border-bottom:1px solid var(--color-border)}
+.type-row:last-child{border-bottom:none}
+.type-meta{width:84px;flex-shrink:0;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.16em;color:var(--color-ink-muted)}
+.type-sample{flex:1;min-width:0}
+.type-spec{font-size:10px;color:var(--color-ink-hint);margin-top:4px;font-family:ui-monospace,monospace}
 
-.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-.btn-demo{padding:14px 28px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;border:none;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+/* Radius */
+.radius-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px}
+.radius-chip{width:110px}
+.radius-box{height:78px;background:var(--color-accent-soft);border:1px solid var(--color-border-strong)}
+.radius-name{font-size:11px;font-weight:500;color:var(--color-ink);margin-top:10px}
+.radius-val{font-size:10px;color:var(--color-ink-hint);font-family:ui-monospace,monospace;margin-top:2px}
 
-.space-row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
-.space-bar{background:var(--accent);opacity:.2;height:6px}
-.space-label{font-size:10px;color:var(--muted);width:50px;flex-shrink:0;text-align:right;font-family:monospace}
-.space-px{font-size:10px;color:var(--hint);font-family:monospace}
+/* Boutons */
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{padding:14px 28px;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.2em;border:none;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-sans);border-radius:var(--radius-btn)}
+.btn-primary{background:var(--color-ink);color:#fff}
+.btn-primary:hover{background:var(--color-accent)}
+.btn-gold{background:var(--color-accent);color:#fff}
+.btn-gold:hover{background:var(--color-accent-deep)}
+.btn-outline{background:transparent;color:var(--color-ink);border:1px solid var(--color-ink)}
+.btn-outline:hover{background:var(--color-ink);color:#fff}
+.on-dark{background:var(--color-noir);padding:24px;border-radius:var(--radius-card);display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.btn-outline-light{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}
+.btn-outline-light:hover{background:#fff;color:var(--color-ink)}
+.btn-back{background:transparent;color:var(--color-ink);border:1px solid rgba(35,32,27,.25);padding:10px 16px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;border-radius:var(--radius-btn);cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-back:hover{border-color:var(--color-ink);background:var(--color-ink);color:#fff}
+.btn-back-dark{background:transparent;color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.3);padding:10px 16px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;border-radius:var(--radius-btn);cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-back-dark:hover{border-color:#fff;background:#fff;color:var(--color-ink)}
 
+/* Champs */
+.field{width:100%;border:1px solid var(--color-border);background:#fff;padding:12px 16px;font-size:14px;color:var(--color-ink);border-radius:var(--radius-btn);transition:.2s;font-family:var(--font-sans)}
+.field::placeholder{color:var(--color-ink-hint)}
+.field:focus{outline:none;border-color:var(--color-ink)}
+.field-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--color-ink-muted);margin-bottom:8px;display:block}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:4px}
+
+/* Badges / pills */
+.pill{display:inline-flex;align-items:center;padding:6px 14px;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;border-radius:9999px}
+.pill-accent{background:var(--color-accent);color:#fff}
+.pill-dark{background:rgba(23,20,15,.85);color:#fff}
+.pill-soft{background:var(--color-accent-soft);color:var(--color-accent-deep)}
+.pill-success{background:var(--color-success);color:#fff}
+
+/* Carte bien — réplique du composant PropertyCard */
+.card{overflow:hidden;border:1px solid var(--color-border);background:#fff;border-radius:18px;box-shadow:var(--shadow-card);max-width:360px;transition:box-shadow .5s}
+.card:hover{box-shadow:var(--shadow-hover)}
+.card-media{position:relative;aspect-ratio:4/3;background:var(--color-noir);overflow:hidden}
+.card-media img{width:100%;height:100%;object-fit:cover;display:block}
+.card-badges{position:absolute;left:0;top:0;padding:16px}
+.card-actions{position:absolute;right:0;top:0;padding:16px;display:flex;flex-direction:column;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:9999px;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;color:var(--color-ink)}
+.card-body{padding:24px}
+.card-meta{display:flex;justify-content:space-between;gap:12px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--color-ink-muted)}
+.card-meta .type{color:var(--color-accent)}
+.card-title{margin-top:10px;font-family:var(--font-serif);font-size:1.5rem;line-height:1.25;color:var(--color-ink)}
+.card-specs{margin-top:20px;margin-bottom:32px;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--color-ink-soft)}
+.card-specs span{display:inline-flex;align-items:center;gap:6px}
+.card-specs svg{color:var(--color-ink-hint)}
+.card-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-top:1px solid var(--color-border);padding-top:24px}
+.card-price{font-family:var(--font-serif);font-size:1.7rem;line-height:1;color:var(--color-ink)}
+.card-cta{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--color-ink)}
+
+/* Menu déroulant — réplique du sous-menu nav */
+.menu{overflow:hidden;border:1px solid var(--color-border);background:#fff;border-radius:16px;box-shadow:var(--shadow-luxe);max-width:280px}
+.menu ul{list-style:none;padding:8px}
+.menu a{display:flex;align-items:center;justify-content:space-between;border-radius:var(--radius-btn);padding:10px 14px;font-size:13px;color:var(--color-ink-soft);text-decoration:none;transition:.2s}
+.menu a:hover{background:var(--color-bg-alt);color:var(--color-ink)}
+.menu a .chev{color:var(--color-accent);opacity:0;transform:translateX(-4px);transition:.2s}
+.menu a:hover .chev{opacity:1;transform:translateX(0)}
+.menu-foot{display:flex;align-items:center;justify-content:center;gap:6px;border-top:1px solid var(--color-border);background:var(--color-bg-alt);padding:12px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--color-accent);text-decoration:none;transition:.2s}
+.menu-foot:hover{background:var(--color-ink);color:#fff}
+
+/* Surfaces */
+.surface-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.surface{padding:28px 24px;text-align:center;border-radius:var(--radius-card);border:1px solid var(--color-border)}
+.surface .lvl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.16em;color:var(--color-ink-muted)}
+.surface .nm{font-family:var(--font-serif);font-size:1.3rem;margin-top:8px}
+.surface .vr{font-size:10px;color:var(--color-ink-hint);margin-top:4px;font-family:ui-monospace,monospace}
+
+/* Espacement */
+.space-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.space-bar{background:var(--color-accent);opacity:.28;height:8px;border-radius:9999px}
+.space-label{font-size:10px;color:var(--color-ink-muted);width:54px;flex-shrink:0;text-align:right;font-family:ui-monospace,monospace}
+.space-px{font-size:10px;color:var(--color-ink-hint);font-family:ui-monospace,monospace}
+
+/* Overlays */
 .overlay-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
-.overlay-box{height:100px;display:flex;align-items:end;padding:10px;position:relative;overflow:hidden}
-.overlay-box span{position:relative;z-index:1;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:white}
-.overlay-bg{position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect fill="%23888" width="200" height="100"/><rect fill="%23aaa" x="20" y="10" width="60" height="40" rx="2"/><rect fill="%23999" x="100" y="30" width="80" height="50" rx="2"/></svg>') center/cover}
+.overlay-box{height:110px;display:flex;align-items:end;padding:12px;position:relative;overflow:hidden;border-radius:var(--radius-img)}
+.overlay-box span{position:relative;z-index:1;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:#fff}
+.overlay-bg{position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="110"><rect fill="%23b3927a" width="200" height="110"/><rect fill="%239c7256" x="18" y="14" width="70" height="46" rx="4"/><rect fill="%237c5942" x="104" y="40" width="80" height="56" rx="4"/></svg>') center/cover}
 
-.principle{display:grid;grid-template-columns:40px 1fr;gap:16px;margin-bottom:24px}
-.principle-n{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--accent);opacity:.3;text-align:right;padding-top:2px}
-.principle-title{font-weight:500;font-size:14px;color:var(--ink)}
-.principle-text{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.6}
-
+/* Do / Dont */
 .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
-.do,.dont{padding:20px;font-size:13px;line-height:1.6}
-.do{background:var(--alt);border-left:3px solid var(--success);color:var(--soft)}
-.dont{background:var(--alt);border-left:3px solid var(--alert);color:var(--soft)}
+.do,.dont{padding:20px;font-size:13px;line-height:1.6;border-radius:var(--radius-card)}
+.do{background:var(--color-bg-alt);border-left:3px solid var(--color-success);color:var(--color-ink-soft)}
+.dont{background:var(--color-bg-alt);border-left:3px solid var(--color-alert);color:var(--color-ink-soft)}
 .do-label,.dont-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;margin-bottom:8px}
-.do-label{color:var(--success)}
-.dont-label{color:var(--alert)}
+.do-label{color:var(--color-success)}
+.dont-label{color:var(--color-alert)}
 
-@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:40px 24px 80px}}
+/* Principes */
+.principle{display:grid;grid-template-columns:44px 1fr;gap:16px;margin-bottom:24px}
+.principle-n{font-family:var(--font-serif);font-size:1.5rem;color:var(--color-accent);opacity:.35;text-align:right;padding-top:2px}
+.principle-title{font-weight:500;font-size:14px;color:var(--color-ink)}
+.principle-text{font-size:13px;color:var(--color-ink-muted);margin-top:4px;line-height:1.6}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}.main{padding:40px 24px 80px}.field-grid,.surface-grid,.overlay-row,.do-dont{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -84,17 +190,21 @@ h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:500;letter-
 
 <aside class="sidebar">
 <div class="sidebar-logo">Marrakech Realty</div>
-<div class="sidebar-sub">Systeme de design</div>
+<div class="sidebar-sub">Système de design</div>
 <nav class="sidebar-nav">
-<a href="#identite" class="active">Identite</a>
+<a href="#identite" class="active">Identité</a>
 <a href="#fontes">Fontes</a>
-<a href="#echelle">Echelle typo</a>
+<a href="#echelle">Échelle typo</a>
 <a href="#couleurs">Couleurs</a>
+<a href="#radius">Radius</a>
 <a href="#boutons">Boutons</a>
-<a href="#surfaces">Surfaces</a>
+<a href="#champs">Champs</a>
+<a href="#cartes">Cartes</a>
+<a href="#badges">Badges &amp; pills</a>
+<a href="#menus">Menus</a>
+<a href="#surfaces">Surfaces &amp; ombres</a>
 <a href="#espacement">Espacement</a>
 <a href="#overlays">Overlays</a>
-<a href="#radius">Radius</a>
 <a href="#principes">Principes</a>
 </nav>
 </aside>
@@ -102,191 +212,276 @@ h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:500;letter-
 <main class="main">
 
 <div class="section" id="identite">
-<div class="section-num">01 — Identite</div>
+<div class="section-num">01 — Identité</div>
 <h1 class="section-title">Marrakech Realty.</h1>
-<div class="section-body">Immobilier de caractere a Marrakech et Essaouira. Le systeme tient en trois mots : <strong>Cuir · Creme · Caractere</strong>. La hierarchie se porte par la typographie et l'espace ; l'accent terracotta est rare (un moment par ecran) ; les surfaces sont mates et chaudes.</div>
+<div class="section-body">Immobilier de caractère à Marrakech et Essaouira. La direction : <strong>sobre, minimal, à la Aman</strong>. La hiérarchie se porte par la typographie et l'espace ; l'accent cuir est rare (un moment par écran) ; les surfaces sont mates et chaudes ; les angles sont <strong>doux et cohérents</strong>.</div>
 <div class="specimen">
 <div class="specimen-label">Signature</div>
-<div style="font-family:'Playfair Display',serif;font-size:2rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)">Marrakech Realty</div>
-<div style="font-size:11px;color:var(--muted);margin-top:10px">Playfair Display 500 · capitales · tracking .08em</div>
+<div style="font-family:var(--font-serif);font-size:2.2rem;letter-spacing:.06em;text-transform:uppercase;color:var(--color-ink)">Marrakech Realty</div>
+<div style="font-size:11px;color:var(--color-ink-muted);margin-top:10px">Cormorant Garamond 500 · capitales · tracking .06em</div>
 </div>
 </div>
 
 <div class="section" id="fontes">
 <div class="section-num">02 — Fontes</div>
 <h2 class="section-title">Deux familles. Pas plus.</h2>
-<div class="section-body"><strong>Playfair Display</strong> pour les titres et les moments d'emotion. Serif a fort contraste, elegante, jamais en dessous de 18px.<br><br><strong>Inter</strong> pour tout le reste : corps, labels, navigation, donnees. Sans-serif neutre, lisible, professionnelle.</div>
+<div class="section-body"><strong>Cormorant Garamond</strong> pour les titres et les prix — serif à fort contraste, élégante, jamais en dessous de 18px.<br><br><strong>Inter</strong> pour tout le reste : corps, labels, navigation, specs, données. Sans-serif neutre, lisible, professionnelle.</div>
 <div class="specimen">
-<div class="specimen-label">Playfair Display — Titres &amp; emotion</div>
-<div style="font-family:'Playfair Display',serif;font-size:2.6rem;line-height:1.1;color:var(--ink)">L'art de vivre <em>marrakchi.</em></div>
-<div style="font-size:10px;color:var(--hint);margin-top:12px;font-family:monospace">font-family: var(--font-serif) · weights: 400, 500, 400i</div>
+<div class="specimen-label">Cormorant Garamond — Titres &amp; prix</div>
+<div style="font-family:var(--font-serif);font-size:2.8rem;line-height:1.15;color:var(--color-ink)">L'art de vivre <em>marrakchi.</em></div>
+<div class="code-note">font-family: var(--font-serif) · weights 400, 500, 600, 400i</div>
 </div>
 <div class="specimen" style="margin-top:12px">
 <div class="specimen-label">Inter — Corps &amp; interface</div>
-<div style="font-size:15px;line-height:1.7;color:var(--soft)">Agence immobiliere de caractere a Marrakech et Essaouira depuis 2000. Riads restaures, villas contemporaines, appartements et programmes neufs.</div>
-<div style="font-size:10px;color:var(--hint);margin-top:12px;font-family:monospace">font-family: var(--font-sans) · weights: 300, 400, 500, 600 · variable</div>
+<div style="font-size:15px;line-height:1.7;color:var(--color-ink-soft)">Agence immobilière de caractère à Marrakech et Essaouira. Riads restaurés, villas contemporaines, appartements et programmes neufs.</div>
+<div class="code-note">font-family: var(--font-sans) · weights 300, 400, 500, 600</div>
 </div>
 <div class="do-dont">
-<div class="do"><div class="do-label">Faire</div>Playfair pour les titres (>= 18px)<br>Inter pour le corps et les labels<br>Frontiere nette entre les deux</div>
-<div class="dont"><div class="dont-label">Ne pas faire</div>Playfair en dessous de 18px<br>Inter en titre au-dessus de 16px<br>Melanger les deux dans un meme bloc</div>
+<div class="do"><div class="do-label">Faire</div>Serif pour titres et prix (≥ 18px)<br>Inter pour corps, labels, specs<br>Frontière nette entre les deux</div>
+<div class="dont"><div class="dont-label">Ne pas faire</div>Serif en dessous de 18px<br>Inter en titre au-dessus de 16px<br>Mélanger les deux dans un même bloc</div>
 </div>
 </div>
 
 <div class="section" id="echelle">
-<div class="section-num">03 — Echelle typographique</div>
+<div class="section-num">03 — Échelle typographique</div>
 <h2 class="section-title">Type scale.</h2>
-<div class="section-body">7 roles. Chaque role a une famille, un poids, une taille et un interlignage fixes. Source de verite : <strong>src/lib/design-system.ts → mr.text.*</strong></div>
+<div class="section-body">Chaque rôle a une famille, un poids, une taille et un interlignage fixes.</div>
 <div class="specimen">
-<div class="type-row"><div class="type-meta">Hero</div><div class="type-sample"><div style="font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,4rem);line-height:1.08">L'art de vivre</div><div class="type-spec">mr.text.hero · clamp(2.4rem, 5vw, 5rem) · weight 500</div></div></div>
-<div class="type-row"><div class="type-meta">H1</div><div class="type-sample"><div style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.15">Biens d'exception</div><div class="type-spec">mr.text.h1 · clamp(2rem, 4vw, 3.2rem) · weight 500</div></div></div>
-<div class="type-row"><div class="type-meta">H2</div><div class="type-sample"><div style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.5vw,2rem);line-height:1.2">Occupation et tarifs</div><div class="type-spec">mr.text.h2 · clamp(1.5rem, 3vw, 2.2rem) · weight 500</div></div></div>
-<div class="type-row"><div class="type-meta">H3</div><div class="type-sample"><div style="font-family:'Playfair Display',serif;font-size:1.25rem;line-height:1.3">Premier echange</div><div class="type-spec">mr.text.h3 · 1.25rem · weight 500</div></div></div>
-<div class="type-row"><div class="type-meta">Eyebrow</div><div class="type-sample"><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.32em;color:var(--accent)">Notre selection</div><div class="type-spec">mr.text.eyebrow · 11px · uppercase · tracking .32em</div></div></div>
-<div class="type-row"><div class="type-meta">Body</div><div class="type-sample"><div style="font-size:15px;line-height:1.7;color:var(--soft)">Depuis 2000, nous guidons investisseurs et amoureux du Maroc.</div><div class="type-spec">mr.text.body · 15px · weight 400 · line-height 1.7</div></div></div>
-<div class="type-row"><div class="type-meta">Label</div><div class="type-sample"><div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--muted)">Type de bien</div><div class="type-spec">mr.text.label · 10px · uppercase · tracking .22em</div></div></div>
+<div class="type-row"><div class="type-meta">Hero</div><div class="type-sample"><div style="font-family:var(--font-serif);font-size:clamp(2.4rem,5vw,4rem);line-height:1.05">L'art de vivre</div><div class="type-spec">serif · clamp(2.4rem, 5vw, 4.25rem) · weight 500</div></div></div>
+<div class="type-row"><div class="type-meta">H1</div><div class="type-sample"><div style="font-family:var(--font-serif);font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.1">Biens d'exception</div><div class="type-spec">serif · clamp(1.9rem, 3.5vw, 3rem) · weight 500</div></div></div>
+<div class="type-row"><div class="type-meta">H2</div><div class="type-sample"><div style="font-family:var(--font-serif);font-size:clamp(1.4rem,2.5vw,2rem);line-height:1.2">Occupation et tarifs</div><div class="type-spec">serif · clamp(1.5rem, 3vw, 2.2rem) · weight 500</div></div></div>
+<div class="type-row"><div class="type-meta">H3</div><div class="type-sample"><div style="font-family:var(--font-serif);font-size:1.5rem;line-height:1.25">Premier échange</div><div class="type-spec">serif · 1.5rem · weight 500</div></div></div>
+<div class="type-row"><div class="type-meta">Eyebrow</div><div class="type-sample"><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.34em;color:var(--color-accent)">Notre sélection</div><div class="type-spec">.eyebrow · 11px · uppercase · tracking .34em · accent</div></div></div>
+<div class="type-row"><div class="type-meta">Body</div><div class="type-sample"><div style="font-size:15px;line-height:1.7;color:var(--color-ink-soft)">Depuis 2000, nous guidons investisseurs et amoureux du Maroc.</div><div class="type-spec">sans · 15px · weight 400 · line-height 1.7</div></div></div>
+<div class="type-row"><div class="type-meta">Label</div><div class="type-sample"><div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.22em;color:var(--color-ink-muted)">Type de bien</div><div class="type-spec">sans · 10px · uppercase · tracking .22em</div></div></div>
 </div>
 </div>
 
 <div class="section" id="couleurs">
 <div class="section-num">04 — Couleurs</div>
-<h2 class="section-title">Palette.</h2>
-<div class="section-body">Douze tokens. Le <strong>blanc</strong> domine. Le <strong>creme</strong> rythme. Le <strong>terracotta</strong> accentue — un moment par ecran, pas plus. Source : <strong>mr.color.*</strong></div>
+<h2 class="section-title">Palette v7.</h2>
+<div class="section-body">Le <strong>blanc</strong> domine. Le <strong>crème</strong> rythme. L'<strong>accent cuir (clay muté)</strong> accentue — un moment par écran, pas plus. Tokens identiques à <span class="mono">globals.css → @theme</span>.</div>
 
-<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:32px">Canvas</div>
+<div class="group-label">Canvas</div>
 <div class="swatches">
-<div class="swatch"><div class="swatch-color" style="background:#ffffff;border-bottom:1px solid var(--border)"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-var">mr.color.bg</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#faf8f4"></div><div class="swatch-info"><div class="swatch-name">Cream</div><div class="swatch-hex">#faf8f4</div><div class="swatch-var">mr.color.bgAlt</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#f2ede4"></div><div class="swatch-info"><div class="swatch-name">Tint</div><div class="swatch-hex">#f2ede4</div><div class="swatch-var">mr.color.bgTint</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-bg);border-bottom:1px solid var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#ffffff</div><div class="swatch-var">--color-bg</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-bg-alt)"></div><div class="swatch-info"><div class="swatch-name">Crème</div><div class="swatch-hex">#f7f5f0</div><div class="swatch-var">--color-bg-alt</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-bg-tint)"></div><div class="swatch-info"><div class="swatch-name">Tint</div><div class="swatch-hex">#efeae1</div><div class="swatch-var">--color-bg-tint</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-noir)"></div><div class="swatch-info"><div class="swatch-name">Noir</div><div class="swatch-hex">#17140f</div><div class="swatch-var">--color-noir</div></div></div>
 </div>
 
-<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:24px">Encre</div>
+<div class="group-label">Encre</div>
 <div class="swatches">
-<div class="swatch"><div class="swatch-color" style="background:#1a1814"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#1a1814</div><div class="swatch-var">mr.color.ink</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#3d3731"></div><div class="swatch-info"><div class="swatch-name">Ink soft</div><div class="swatch-hex">#3d3731</div><div class="swatch-var">mr.color.inkSoft</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#78726b"></div><div class="swatch-info"><div class="swatch-name">Ink muted</div><div class="swatch-hex">#78726b</div><div class="swatch-var">mr.color.inkMuted</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#a9a39a"></div><div class="swatch-info"><div class="swatch-name">Ink hint</div><div class="swatch-hex">#a9a39a</div><div class="swatch-var">mr.color.inkHint</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-ink)"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#23201b</div><div class="swatch-var">--color-ink</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-ink-soft)"></div><div class="swatch-info"><div class="swatch-name">Ink soft</div><div class="swatch-hex">#4a443c</div><div class="swatch-var">--color-ink-soft</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-ink-muted)"></div><div class="swatch-info"><div class="swatch-name">Ink muted</div><div class="swatch-hex">#877f73</div><div class="swatch-var">--color-ink-muted</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-ink-hint)"></div><div class="swatch-info"><div class="swatch-name">Ink hint</div><div class="swatch-hex">#b3aa9c</div><div class="swatch-var">--color-ink-hint</div></div></div>
 </div>
 
-<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:24px">Accent cuir</div>
+<div class="group-label">Accent cuir</div>
 <div class="swatches">
-<div class="swatch"><div class="swatch-color" style="background:#6e4f3a"></div><div class="swatch-info"><div class="swatch-name">Accent</div><div class="swatch-hex">#6e4f3a</div><div class="swatch-var">mr.color.accent</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#4e3625"></div><div class="swatch-info"><div class="swatch-name">Accent deep</div><div class="swatch-hex">#4e3625</div><div class="swatch-var">mr.color.accentDeep</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#8e6b4b"></div><div class="swatch-info"><div class="swatch-name">Accent light</div><div class="swatch-hex">#8e6b4b</div><div class="swatch-var">mr.color.accentLight</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#f3ece1"></div><div class="swatch-info"><div class="swatch-name">Accent soft</div><div class="swatch-hex">#f3ece1</div><div class="swatch-var">mr.color.accentSoft</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-accent)"></div><div class="swatch-info"><div class="swatch-name">Accent</div><div class="swatch-hex">#9c7256</div><div class="swatch-var">--color-accent</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-accent-deep)"></div><div class="swatch-info"><div class="swatch-name">Accent deep</div><div class="swatch-hex">#7c5942</div><div class="swatch-var">--color-accent-deep</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-accent-light)"></div><div class="swatch-info"><div class="swatch-name">Accent light</div><div class="swatch-hex">#b3927a</div><div class="swatch-var">--color-accent-light</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-accent-soft)"></div><div class="swatch-info"><div class="swatch-name">Accent soft</div><div class="swatch-hex">#f1ebe3</div><div class="swatch-var">--color-accent-soft</div></div></div>
 </div>
 
-<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:24px">Bordures</div>
+<div class="group-label">Bordures &amp; statut</div>
 <div class="swatches">
-<div class="swatch"><div class="swatch-color" style="background:#e8e3d8"></div><div class="swatch-info"><div class="swatch-name">Hairline</div><div class="swatch-hex">#e8e3d8</div><div class="swatch-var">mr.color.hairline</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#c9bfae"></div><div class="swatch-info"><div class="swatch-name">Strong</div><div class="swatch-hex">#c9bfae</div><div class="swatch-var">mr.color.hairlineStrong</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-border)"></div><div class="swatch-info"><div class="swatch-name">Hairline</div><div class="swatch-hex">#e6e0d5</div><div class="swatch-var">--color-border</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-border-strong)"></div><div class="swatch-info"><div class="swatch-name">Strong</div><div class="swatch-hex">#cabfad</div><div class="swatch-var">--color-border-strong</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-success)"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#5e7266</div><div class="swatch-var">--color-success</div></div></div>
+<div class="swatch"><div class="swatch-color" style="background:var(--color-alert)"></div><div class="swatch-info"><div class="swatch-name">Alert</div><div class="swatch-hex">#9a4632</div><div class="swatch-var">--color-alert</div></div></div>
 </div>
 
-<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:24px">Statut</div>
-<div class="swatches">
-<div class="swatch"><div class="swatch-color" style="background:#5e7266"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#5e7266</div><div class="swatch-var">mr.color.success</div></div></div>
-<div class="swatch"><div class="swatch-color" style="background:#8a3d2a"></div><div class="swatch-info"><div class="swatch-name">Alert</div><div class="swatch-hex">#8a3d2a</div><div class="swatch-var">mr.color.alert</div></div></div>
-</div>
-
-<div class="do-dont" style="margin-top:24px">
-<div class="do"><div class="do-label">Faire</div>Un seul element terracotta par viewport<br>Utiliser mr.color.* dans les composants<br>Statut = semantique, jamais decoratif</div>
-<div class="dont"><div class="dont-label">Ne pas faire</div>Deux CTA terracotta dans le meme ecran<br>Hardcoder des hex (#6e4f3a) dans les composants<br>Utiliser les couleurs de statut pour la decoration</div>
-</div>
-</div>
-
-<div class="section" id="boutons">
-<div class="section-num">05 — Boutons</div>
-<h2 class="section-title">Actions.</h2>
-<div class="section-body">Quatre variantes. <strong>Zero border-radius</strong> — angles droits partout. Le bouton gold est reserve au CTA principal (un seul par ecran).</div>
-<div class="specimen">
-<div class="specimen-label">Variantes</div>
-<div class="btn-row">
-<button class="btn-demo" style="background:#1a1814;color:white">Primary</button>
-<button class="btn-demo" style="background:#6e4f3a;color:white">Gold / CTA</button>
-<button class="btn-demo" style="background:transparent;color:#1a1814;border:1px solid #1a1814">Outline</button>
-<button class="btn-demo" style="background:#1a1814;color:white;border:1px solid rgba(255,255,255,.5)">Outline light</button>
-</div>
-<div style="margin-top:20px;font-size:10px;color:var(--hint);font-family:monospace;line-height:2">
-primary → bg: mr.color.ink · hover: mr.color.accent<br>
-gold → bg: mr.color.accent · hover: mr.color.accentDeep<br>
-outline → border: mr.color.ink · hover: fill ink + text white<br>
-outline-light → border: white/70 · hover: fill white + text ink<br>
-tous → padding: 14px 28px · font: 12px · uppercase · tracking .18em · radius: 0
-</div>
-</div>
-<div class="do-dont">
-<div class="do"><div class="do-label">Faire</div>Un seul btn-gold par ecran<br>btn-primary pour les actions secondaires<br>btn-outline pour les liens de navigation</div>
-<div class="dont"><div class="dont-label">Ne pas faire</div>Deux btn-gold dans le meme viewport<br>Ajouter du border-radius aux boutons<br>Utiliser des couleurs custom sur les boutons</div>
-</div>
-</div>
-
-<div class="section" id="surfaces">
-<div class="section-num">06 — Surfaces</div>
-<h2 class="section-title">Fonds et cartes.</h2>
-<div class="section-body">Trois niveaux de fond. Les alternances cream/white rythment la page. Les cartes n'ont <strong>jamais</strong> de border-radius — angles vifs, ombres a peine visibles.</div>
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px">
-<div style="background:#ffffff;border:1px solid #e8e3d8;padding:24px;text-align:center"><div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.16em;color:var(--muted)">Niveau 1</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-top:8px">White</div><div style="font-size:10px;color:var(--hint);margin-top:4px;font-family:monospace">mr.color.bg</div></div>
-<div style="background:#faf8f4;border:1px solid #e8e3d8;padding:24px;text-align:center"><div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.16em;color:var(--muted)">Niveau 2</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-top:8px">Cream</div><div style="font-size:10px;color:var(--hint);margin-top:4px;font-family:monospace">mr.color.bgAlt</div></div>
-<div style="background:#1a1814;border:1px solid #2d2823;padding:24px;text-align:center;color:white"><div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.16em;color:rgba(255,255,255,.6)">Niveau 3</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-top:8px">Dark</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:4px;font-family:monospace">mr.color.dark</div></div>
-</div>
-<div style="margin-top:16px;font-size:10px;color:var(--hint);font-family:monospace;line-height:2">
-shadow-card: mr.shadow.card — cartes, property cards<br>
-shadow-luxe: mr.shadow.luxe — dropdowns, overlays, hero search bar
-</div>
-</div>
-
-<div class="section" id="espacement">
-<div class="section-num">07 — Espacement</div>
-<h2 class="section-title">Rythme vertical.</h2>
-<div class="section-body">L'espace est un materiau. Les sections respirent. Le rythme suit une echelle de 8px. Le luxe c'est l'espace, pas l'ornement.</div>
-<div class="specimen">
-<div class="space-row"><div class="space-label">4px</div><div class="space-bar" style="width:4px"></div><div class="space-px">mr.space.micro</div></div>
-<div class="space-row"><div class="space-label">8px</div><div class="space-bar" style="width:8px"></div><div class="space-px">mr.space.xs</div></div>
-<div class="space-row"><div class="space-label">16px</div><div class="space-bar" style="width:16px"></div><div class="space-px">mr.space.sm</div></div>
-<div class="space-row"><div class="space-label">24px</div><div class="space-bar" style="width:24px"></div><div class="space-px">mr.space.md</div></div>
-<div class="space-row"><div class="space-label">32px</div><div class="space-bar" style="width:32px"></div><div class="space-px">mr.space.lg</div></div>
-<div class="space-row"><div class="space-label">48px</div><div class="space-bar" style="width:48px"></div><div class="space-px">mr.space.xl</div></div>
-<div class="space-row"><div class="space-label">64px</div><div class="space-bar" style="width:64px"></div><div class="space-px">mr.space.section</div></div>
-<div class="space-row"><div class="space-label">112px</div><div class="space-bar" style="width:112px"></div><div class="space-px">mr.space.sectionLg</div></div>
-</div>
-</div>
-
-<div class="section" id="overlays">
-<div class="section-num">08 — Overlays hero</div>
-<h2 class="section-title">Lisibilite garantie.</h2>
-<div class="section-body">Quatre gradients pre-calcules. La ou le texte se pose, l'overlay est >= 75% charcoal. Source : <strong>mr.overlay.*</strong></div>
-<div class="overlay-row">
-<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(23,20,15,.92) 0%,rgba(23,20,15,.75) 28%,rgba(23,20,15,.35) 60%,rgba(23,20,15,.10) 100%)"></div><span>Bottom</span></div>
-<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(23,20,15,.88) 0%,rgba(23,20,15,.65) 40%,rgba(23,20,15,.55) 70%,rgba(23,20,15,.80) 100%)"></div><span>Top</span></div>
-<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(23,20,15,.45) 0%,rgba(23,20,15,.15) 50%,transparent 100%)"></div><span>Left</span></div>
-<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:rgba(23,20,15,.60)"></div><span>Full</span></div>
+<div class="do-dont" style="margin-top:28px">
+<div class="do"><div class="do-label">Faire</div>Un seul élément accent par viewport<br>Référencer var(--color-*) partout<br>Statut = sémantique, jamais décoratif</div>
+<div class="dont"><div class="dont-label">Ne pas faire</div>Deux CTA accent dans le même écran<br>Hardcoder un hex (#9c7256) dans un composant<br>Utiliser les couleurs de statut pour décorer</div>
 </div>
 </div>
 
 <div class="section" id="radius">
-<div class="section-num">09 — Radius</div>
-<h2 class="section-title">Zero.</h2>
-<div class="section-body">Les cartes, boutons, inputs et images ont des angles droits. C'est un choix de marque : l'architecture marocaine est geometrique. Le seul arrondi tolere : les avatars conseillers.</div>
-<div style="display:flex;gap:16px;margin-top:24px">
-<div style="width:80px;height:80px;background:var(--alt);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-family:monospace">0px</div>
-<div style="width:80px;height:80px;background:var(--alt);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-family:monospace">avatar</div>
+<div class="section-num">05 — Radius</div>
+<h2 class="section-title">Angles doux, cohérents.</h2>
+<div class="section-body">Une seule échelle de rayons, appliquée <strong>partout</strong> — public comme admin. Boutons et champs à 10px, cartes et menus à 14px, images à 16px, pills et avatars entièrement ronds. Aucun angle droit sur un élément interactif ou contenu.</div>
+<div class="radius-row">
+<div class="radius-chip"><div class="radius-box" style="border-radius:8px"></div><div class="radius-name">Chip / thumb</div><div class="radius-val">8px</div></div>
+<div class="radius-chip"><div class="radius-box" style="border-radius:var(--radius-btn)"></div><div class="radius-name">Bouton / champ</div><div class="radius-val">--radius-btn · 10px</div></div>
+<div class="radius-chip"><div class="radius-box" style="border-radius:var(--radius-card)"></div><div class="radius-name">Carte / menu</div><div class="radius-val">--radius-card · 14px</div></div>
+<div class="radius-chip"><div class="radius-box" style="border-radius:var(--radius-img)"></div><div class="radius-name">Image</div><div class="radius-val">--radius-img · 16px</div></div>
+<div class="radius-chip"><div class="radius-box" style="border-radius:18px"></div><div class="radius-name">Property card</div><div class="radius-val">18px</div></div>
+<div class="radius-chip"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-name">Pill / avatar</div><div class="radius-val">rounded-full</div></div>
 </div>
 <div class="do-dont">
-<div class="do"><div class="do-label">Faire</div>Angles droits sur tout : cartes, boutons, inputs, images, modals</div>
-<div class="dont"><div class="dont-label">Ne pas faire</div>rounded-md, rounded-lg, ou toute valeur > 0 sur un composant qui n'est pas un avatar</div>
+<div class="do"><div class="do-label">Faire</div>Réutiliser les valeurs de l'échelle : 8 / 10 / 14 / 16 / 18 / full<br>overflow-hidden sur un conteneur arrondi qui clippe des lignes</div>
+<div class="dont"><div class="dont-label">Ne pas faire</div>Angles droits sur un bouton, champ, carte, image ou modal<br>Inventer une valeur hors échelle (rounded-md, 6px sur une carte…)</div>
+</div>
+</div>
+
+<div class="section" id="boutons">
+<div class="section-num">06 — Boutons</div>
+<h2 class="section-title">Actions.</h2>
+<div class="section-body">Radius <strong>10px</strong> partout. Le bouton gold est réservé au CTA principal (un seul par écran). Le survol du retour est une <strong>inversion nette</strong> (bordure → remplissage), jamais un simple ton-sur-ton.</div>
+<div class="specimen">
+<div class="specimen-label">Variantes principales</div>
+<div class="btn-row">
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-gold">Gold · CTA</button>
+<button class="btn btn-outline">Outline</button>
+</div>
+<div class="on-dark">
+<button class="btn btn-outline-light">Outline light</button>
+</div>
+<div class="code-note">
+.btn-primary → bg ink · hover accent<br>
+.btn-gold → bg accent · hover accent-deep<br>
+.btn-outline → border ink · hover fill ink + texte blanc<br>
+.btn-outline-light → sur fond noir · hover fill blanc + texte ink<br>
+tous → padding 14px 28px · 12px · uppercase · tracking .2em · radius 10px
+</div>
+</div>
+<div class="specimen" style="margin-top:12px">
+<div class="specimen-label">Retour — inversion nette</div>
+<div class="btn-row"><button class="btn-back">← Retour</button></div>
+<div class="on-dark"><button class="btn-back-dark">← Retour</button></div>
+<div class="code-note">.btn-back (clair) / .btn-back-dark (sur image) · radius 10px · hover = remplissage plein</div>
+</div>
+</div>
+
+<div class="section" id="champs">
+<div class="section-num">07 — Champs de formulaire</div>
+<h2 class="section-title">Saisie unifiée.</h2>
+<div class="section-body">Une seule classe <span class="mono">.field</span> pour input, select et textarea. Radius 10px, focus = <strong>bordure encre nette</strong> (pas de ton-sur-ton), placeholder discret.</div>
+<div class="specimen">
+<div class="field-grid">
+<div><label class="field-label">Prénom</label><input class="field" placeholder="Votre prénom"></div>
+<div><label class="field-label">Nom</label><input class="field" placeholder="Votre nom"></div>
+</div>
+<div style="margin-top:18px"><label class="field-label">Votre projet</label>
+<select class="field"><option>Acheter une villa</option><option>Acheter un riad</option><option>Vendre — estimation</option></select></div>
+<div style="margin-top:18px"><label class="field-label">Message</label><textarea class="field" rows="3" style="resize:none" placeholder="Décrivez votre projet…"></textarea></div>
+<div class="code-note">.field · border --color-border · radius --radius-btn · focus border --color-ink</div>
+</div>
+</div>
+
+<div class="section" id="cartes">
+<div class="section-num">08 — Cartes</div>
+<h2 class="section-title">La property card.</h2>
+<div class="section-body">Conteneur blanc <strong>arrondi 18px</strong>, bordure fine, ombre douce qui s'approfondit au survol. Image 4/3, badges en pills, specs à icônes fines lisibles d'un coup d'œil, prix serif dominant au pied, aligné en bas de rangée.</div>
+<div class="specimen" style="display:flex;justify-content:center">
+<div class="card">
+<div class="card-media">
+<img src="/hero-home.jpg" alt="Villa">
+<div class="card-badges"><span class="pill pill-accent">Nouveau</span></div>
+<div class="card-actions"><div class="icon-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div><div class="icon-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a3 3 0 1 0-2.8-4M6 15a3 3 0 1 0 2.8 4M8.6 10.3l6.8-3.6M8.6 13.7l6.8 3.6"/></svg></div></div>
+</div>
+<div class="card-body">
+<div class="card-meta"><span>Palmeraie · Marrakech</span><span class="type">Villa</span></div>
+<div class="card-title">Villa contemporaine — vue Atlas</div>
+<div class="card-specs">
+<span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4v16M2 9h18a2 2 0 0 1 2 2v9M22 17H2M6 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>4</span>
+<span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h16M6 12V5a1.5 1.5 0 0 1 3 0M5 12v4a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-4"/></svg>4</span>
+<span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>340 m²</span>
+<span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22v-6M8.5 9a3.5 3.5 0 1 1 7 0 3 3 0 0 0 2.5 3 3 3 0 1 1-5 2 3 3 0 1 1-5-2 3 3 0 0 0 2.5-3z"/></svg>1200 m²</span>
+</div>
+<div class="card-foot">
+<div><div class="card-price">890 000 €</div></div>
+<span class="card-cta">Découvrir →</span>
+</div>
+</div>
+</div>
+</div>
+<div class="code-note">carte 18px · image ratio 4/3 (héritée via overflow-hidden) · badges rounded-full · icônes actions rounded-full · pied border-top + prix serif</div>
+</div>
+
+<div class="section" id="badges">
+<div class="section-num">09 — Badges &amp; pills</div>
+<h2 class="section-title">Étiquettes.</h2>
+<div class="section-body">Toutes les étiquettes sont <strong>entièrement rondes</strong> (rounded-full). Statut = sémantique. « Nouveau » en accent, « Exclusivité » en noir voilé, statut off-market/vendu en soft.</div>
+<div class="specimen">
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+<span class="pill pill-accent">Nouveau</span>
+<span class="pill pill-dark">Exclusivité</span>
+<span class="pill pill-soft">Sous compromis</span>
+<span class="pill pill-success">★ Exclusivité</span>
+</div>
+<div class="code-note">.pill · radius full · 9px · uppercase · tracking .22em</div>
+</div>
+</div>
+
+<div class="section" id="menus">
+<div class="section-num">10 — Menus déroulants</div>
+<h2 class="section-title">Navigation.</h2>
+<div class="section-body">Panneau <strong>blanc solide</strong> (jamais translucide — pas de gris boueux sur les héros sombres), arrondi 14–16px, ombre luxe. Chaque ligne devient une pill au survol, avec un chevron accent qui glisse. Pied qui s'inverse en noir.</div>
+<div class="specimen" style="display:flex;justify-content:center">
+<div class="menu">
+<ul>
+<li><a href="#menus">Vente villa <span class="chev">›</span></a></li>
+<li><a href="#menus">Vente riad <span class="chev">›</span></a></li>
+<li><a href="#menus">Vente terrain <span class="chev">›</span></a></li>
+<li><a href="#menus">Location villa <span class="chev">›</span></a></li>
+</ul>
+<a class="menu-foot" href="#menus">Bord de mer ›</a>
+</div>
+</div>
+<div class="code-note">menu 14–16px · overflow-hidden · item rounded-10 hover bg-alt · pied hover fill ink</div>
+</div>
+
+<div class="section" id="surfaces">
+<div class="section-num">11 — Surfaces &amp; ombres</div>
+<h2 class="section-title">Fonds et cartes.</h2>
+<div class="section-body">Trois niveaux de fond. Les alternances crème / blanc rythment la page. Les ombres sont <strong>plates, à peine visibles</strong> — le relief vient de la lumière, pas de l'ombre.</div>
+<div class="surface-grid">
+<div class="surface" style="background:var(--color-bg)"><div class="lvl">Niveau 1</div><div class="nm">White</div><div class="vr">--color-bg</div></div>
+<div class="surface" style="background:var(--color-bg-alt)"><div class="lvl">Niveau 2</div><div class="nm">Crème</div><div class="vr">--color-bg-alt</div></div>
+<div class="surface" style="background:var(--color-noir);border-color:var(--color-dark-soft);color:#fff"><div class="lvl" style="color:rgba(255,255,255,.6)">Niveau 3</div><div class="nm" style="color:#fff">Noir</div><div class="vr" style="color:rgba(255,255,255,.4)">--color-noir</div></div>
+</div>
+<div class="code-note">
+--shadow-card — cartes, property cards<br>
+--shadow-hover — survol des cartes<br>
+--shadow-luxe — dropdowns, overlays, barre de recherche
+</div>
+</div>
+
+<div class="section" id="espacement">
+<div class="section-num">12 — Espacement</div>
+<h2 class="section-title">Rythme vertical.</h2>
+<div class="section-body">L'espace est un matériau. Les sections respirent (112px de padding vertical minimum). Le rythme suit une échelle de 8px. Le luxe, c'est l'espace, pas l'ornement.</div>
+<div class="specimen">
+<div class="space-row"><div class="space-label">4px</div><div class="space-bar" style="width:4px"></div><div class="space-px">micro</div></div>
+<div class="space-row"><div class="space-label">8px</div><div class="space-bar" style="width:8px"></div><div class="space-px">xs</div></div>
+<div class="space-row"><div class="space-label">16px</div><div class="space-bar" style="width:16px"></div><div class="space-px">sm</div></div>
+<div class="space-row"><div class="space-label">24px</div><div class="space-bar" style="width:24px"></div><div class="space-px">md</div></div>
+<div class="space-row"><div class="space-label">32px</div><div class="space-bar" style="width:32px"></div><div class="space-px">lg</div></div>
+<div class="space-row"><div class="space-label">48px</div><div class="space-bar" style="width:48px"></div><div class="space-px">xl</div></div>
+<div class="space-row"><div class="space-label">64px</div><div class="space-bar" style="width:64px"></div><div class="space-px">section</div></div>
+<div class="space-row"><div class="space-label">112px</div><div class="space-bar" style="width:112px"></div><div class="space-px">section-lg</div></div>
+</div>
+</div>
+
+<div class="section" id="overlays">
+<div class="section-num">13 — Overlays hero</div>
+<h2 class="section-title">Lisibilité garantie.</h2>
+<div class="section-body">Gradients pré-calculés sur les images plein-cadre. Là où le texte se pose, l'overlay est ≥ 75% noir. Les images plein-cadre (héros) restent <strong>edge-to-edge</strong> ; seules les images en carte sont arrondies.</div>
+<div class="overlay-row">
+<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(23,20,15,.92) 0%,rgba(23,20,15,.72) 30%,rgba(23,20,15,.30) 62%,rgba(23,20,15,.08) 100%)"></div><span>Bottom</span></div>
+<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(23,20,15,.86) 0%,rgba(23,20,15,.6) 42%,rgba(23,20,15,.5) 70%,rgba(23,20,15,.78) 100%)"></div><span>Top</span></div>
+<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(23,20,15,.42) 0%,rgba(23,20,15,.12) 50%,transparent 100%)"></div><span>Left</span></div>
+<div class="overlay-box"><div class="overlay-bg"></div><div style="position:absolute;inset:0;background:rgba(23,20,15,.60)"></div><span>Full</span></div>
 </div>
 </div>
 
 <div class="section" id="principes">
-<div class="section-num">10 — Principes</div>
-<h2 class="section-title">Regles.</h2>
-
-<div class="principle"><div class="principle-n">01</div><div><div class="principle-title">Le contenu est roi.</div><div class="principle-text">Les photos des biens sont le premier materiau. Si la photo est mauvaise, aucun design ne la sauve. Investir dans la photographie avant le code.</div></div></div>
-<div class="principle"><div class="principle-n">02</div><div><div class="principle-title">Un accent par ecran.</div><div class="principle-text">Le terracotta est rare. Un eyebrow, un CTA, un badge — jamais deux elements terracotta dans le meme viewport.</div></div></div>
-<div class="principle"><div class="principle-n">03</div><div><div class="principle-title">L'espace parle.</div><div class="principle-text">Les marges genereuses sont un signal de luxe. Un site serre fait discount. Sections : 112px de padding vertical minimum.</div></div></div>
-<div class="principle"><div class="principle-n">04</div><div><div class="principle-title">Serif = emotion. Sans = information.</div><div class="principle-text">Playfair ne descend jamais en dessous de 18px. Inter ne monte jamais au-dessus de 16px. La frontiere est nette.</div></div></div>
-<div class="principle"><div class="principle-n">05</div><div><div class="principle-title">Pas de decoration.</div><div class="principle-text">Pas d'icones decoratives, pas de gradients colores, pas de bordures fantaisie. Separateurs = lignes beige 1px. Ombres a peine visibles.</div></div></div>
-<div class="principle"><div class="principle-n">06</div><div><div class="principle-title">Texte sur image = toujours lisible.</div><div class="principle-text">Overlay gradient obligatoire (mr.overlay.*). Drop-shadow sur le texte en dernier recours. Si le contraste n'est pas garanti, le texte sort de l'image.</div></div></div>
-<div class="principle"><div class="principle-n">07</div><div><div class="principle-title">Tokens, pas hex.</div><div class="principle-text">Importer mr.color.*, mr.text.*, mr.space.*. Jamais de hex en dur dans un composant. Changer un token = l'app suit.</div></div></div>
+<div class="section-num">14 — Principes</div>
+<h2 class="section-title">Règles.</h2>
+<div class="principle"><div class="principle-n">01</div><div><div class="principle-title">Le contenu est roi.</div><div class="principle-text">Les photos des biens sont le premier matériau. Si la photo est mauvaise, aucun design ne la sauve. Investir dans la photographie avant le code.</div></div></div>
+<div class="principle"><div class="principle-n">02</div><div><div class="principle-title">Un accent par écran.</div><div class="principle-text">L'accent cuir est rare. Un eyebrow, un CTA, un badge — jamais deux éléments accent dans le même viewport.</div></div></div>
+<div class="principle"><div class="principle-n">03</div><div><div class="principle-title">L'espace parle.</div><div class="principle-text">Les marges généreuses sont un signal de luxe. Un site serré fait discount. Sections : 112px de padding vertical minimum.</div></div></div>
+<div class="principle"><div class="principle-n">04</div><div><div class="principle-title">Serif = émotion. Sans = information.</div><div class="principle-text">Cormorant ne descend jamais sous 18px. Inter ne monte jamais au-dessus de 16px. La frontière est nette.</div></div></div>
+<div class="principle"><div class="principle-n">05</div><div><div class="principle-title">Angles doux, cohérents.</div><div class="principle-text">Une seule échelle de rayons (8 / 10 / 14 / 16 / 18 / full), appliquée partout — public et admin. Aucun angle droit sur un élément interactif ou contenu.</div></div></div>
+<div class="principle"><div class="principle-n">06</div><div><div class="principle-title">Pas de décoration.</div><div class="principle-text">Pas d'icônes décoratives, pas de gradients colorés, pas de bordures fantaisie. Séparateurs = lignes 1px. Ombres à peine visibles.</div></div></div>
+<div class="principle"><div class="principle-n">07</div><div><div class="principle-title">Survol calme, jamais ton-sur-ton.</div><div class="principle-text">Les états de survol sont des inversions nettes (bordure → remplissage) ou une pill douce — jamais un simple changement de teinte à peine perceptible.</div></div></div>
+<div class="principle"><div class="principle-n">08</div><div><div class="principle-title">Tokens, pas hex.</div><div class="principle-text">Référencer var(--color-*), var(--radius-*). Jamais de hex en dur dans un composant. Changer un token = l'app suit.</div></div></div>
 </div>
 
 </main>
