@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Catalogue from "@/components/Catalogue";
 import PropertyDetail from "@/components/PropertyDetail";
 import { type Property } from "@/data/properties";
-import { getPropertyBySlug } from "@/lib/db";
+import { getAllPropertySlugs, getPropertyBySlug } from "@/lib/db";
 
 const LOUER_BASE = (p: Property) =>
   p.listing === "location" || p.listing === "location-saisonniere";
@@ -27,6 +27,17 @@ async function resolve(path: string[]): Promise<Route> {
     return { kind: "notfound" };
   }
   return { kind: "notfound" };
+}
+
+// Pré-génère toutes les fiches location existantes au build → servies en
+// statique (instantané). Les catalogues restent rendus à la demande.
+export async function generateStaticParams() {
+  const all = await getAllPropertySlugs();
+  return all
+    .filter(
+      (p) => p.listing === "location" || p.listing === "location-saisonniere"
+    )
+    .map((p) => ({ path: [p.slug] }));
 }
 
 export async function generateMetadata({
