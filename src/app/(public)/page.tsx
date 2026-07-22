@@ -252,7 +252,7 @@ export default async function Home() {
             {TESTIMONIALS.map((t) => (
               <figure
                 key={t.name}
-                className="flex flex-col bg-white p-10 shadow-[var(--shadow-card)]"
+                className="flex flex-col rounded-[14px] bg-white p-10 shadow-[var(--shadow-card)]"
               >
                 <Quote size={28} className="text-[var(--color-terracotta)]" strokeWidth={1.2} />
                 <blockquote className="mt-6 flex-1 font-serif text-lg leading-relaxed text-[var(--color-charcoal)]">

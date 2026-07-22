@@ -13,8 +13,8 @@ export default function LoginForm({ next }: { next: string }) {
   if (state.status === "sent") {
     return (
       <div className="mt-8">
-        <div className="flex items-center gap-3 border border-[var(--color-terracotta)]/40 bg-[var(--color-cream)] p-6">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center bg-[var(--color-terracotta)] text-white">
+        <div className="flex items-center gap-3 rounded-[14px] border border-[var(--color-accent)]/40 bg-[var(--color-cream)] p-6">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white">
             <Check size={18} strokeWidth={2.5} />
           </div>
           <div>
@@ -45,12 +45,12 @@ export default function LoginForm({ next }: { next: string }) {
           required
           autoComplete="email"
           placeholder="vous@marrakechrealty.com"
-          className="mt-2 w-full border border-[var(--color-beige-warm)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)] focus:border-[var(--color-terracotta)] focus:outline-none"
+          className="field mt-2"
         />
       </label>
 
       {state.status === "error" && (
-        <div className="border-l-2 border-[var(--color-terracotta)] bg-[var(--color-cream)] px-4 py-2.5 text-sm text-[var(--color-charcoal)]">
+        <div className="rounded-[10px] border-l-2 border-[var(--color-accent)] bg-[var(--color-cream)] px-4 py-2.5 text-sm text-[var(--color-charcoal)]">
           {state.message}
         </div>
       )}

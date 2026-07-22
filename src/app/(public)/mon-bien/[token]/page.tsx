@@ -247,7 +247,7 @@ export default async function OwnerPortalPage({
           <div className="space-y-8 lg:col-span-2">
 
             {/* Pipeline */}
-            <section className="border border-[var(--color-beige-warm)] bg-white p-6">
+            <section className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-6">
               <h2 className="mb-6 font-serif text-xl text-[var(--color-charcoal)]">
                 {isRental ? "Progression de la mise en location" : "Progression de la vente"}
               </h2>
@@ -256,7 +256,7 @@ export default async function OwnerPortalPage({
 
             {/* Revenus locatifs (rental only) */}
             {isRental && (
-              <section className="border border-[var(--color-beige-warm)] bg-white p-6">
+              <section className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-6">
                 <h2 className="mb-4 font-serif text-xl text-[var(--color-charcoal)]">
                   Revenus locatifs
                 </h2>
@@ -301,7 +301,7 @@ export default async function OwnerPortalPage({
             )}
 
             {/* Timeline */}
-            <section className="border border-[var(--color-beige-warm)] bg-white p-6">
+            <section className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-6">
               <h2 className="mb-6 font-serif text-xl text-[var(--color-charcoal)]">
                 Activité récente
               </h2>
@@ -341,7 +341,7 @@ export default async function OwnerPortalPage({
 
             {/* Données marché */}
             {(pricePerSqm || neighborhoodStats) && !isRental && (
-              <section className="border border-[var(--color-beige-warm)] bg-white p-6">
+              <section className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-6">
                 <h2 className="mb-4 font-serif text-xl text-[var(--color-charcoal)]">
                   Données marché — {property.neighborhood}
                 </h2>
@@ -378,7 +378,7 @@ export default async function OwnerPortalPage({
           {/* ── Sidebar ───────────────────────────────────────────── */}
           <div className="space-y-6">
             {/* Mandat */}
-            <section className="border border-[var(--color-beige-warm)] bg-white p-6">
+            <section className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-6">
               <div className="mb-4 flex items-center gap-2">
                 {isRental ? <Key size={16} className="text-[var(--color-terracotta)]" /> : <ScrollText size={16} className="text-[var(--color-terracotta)]" />}
                 <h2 className="font-serif text-lg text-[var(--color-charcoal)]">Votre mandat</h2>
@@ -401,7 +401,7 @@ export default async function OwnerPortalPage({
 
             {/* Conseiller */}
             {advisor && (
-              <section className="border border-[var(--color-beige-warm)] bg-white p-6">
+              <section className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-6">
                 <div className="mb-4 flex items-center gap-2">
                   <User size={16} className="text-[var(--color-terracotta)]" />
                   <h2 className="font-serif text-lg text-[var(--color-charcoal)]">Votre conseiller</h2>

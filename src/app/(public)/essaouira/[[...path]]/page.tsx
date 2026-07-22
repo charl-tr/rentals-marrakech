@@ -164,7 +164,7 @@ export default async function EssaouiraPage({
  <Link
  key={key}
  href={`/essaouira/${key}`}
- className="group flex flex-col items-start bg-white p-8 transition-colors hover:bg-[var(--color-beige)]"
+ className="group flex flex-col items-start rounded-[14px] bg-white p-8 transition-colors hover:bg-[var(--color-beige)]"
  >
  <div className="text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
  {SUB_TYPES[key].eyebrow.split("·")[1]?.trim()}

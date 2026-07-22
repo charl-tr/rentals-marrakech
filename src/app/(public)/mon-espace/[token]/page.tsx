@@ -284,7 +284,7 @@ export default async function PortalPage({
           </div>
 
           {shortlist.length === 0 ? (
-            <div className="mt-8 border border-dashed border-[var(--color-beige-warm)] bg-white p-10 text-center">
+            <div className="mt-8 rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white p-10 text-center">
               <Heart size={24} className="mx-auto text-[var(--color-stone-soft)]" />
               <p className="mt-4 text-sm text-[var(--color-stone)]">
                 Votre conseiller ajoute ici les biens qui correspondent à votre

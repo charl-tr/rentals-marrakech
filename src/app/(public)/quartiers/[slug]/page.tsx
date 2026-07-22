@@ -102,7 +102,7 @@ export default async function QuartierPage({
  </div>
  </div>
 
- <aside className="self-start border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-8">
+ <aside className="self-start rounded-[14px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-8">
  <div className="eyebrow">À deux pas</div>
  <ul className="mt-6 space-y-5">
  {q.highlights.map((h) => (
@@ -200,7 +200,7 @@ export default async function QuartierPage({
  ))}
  </div>
  ) : (
- <div className="mt-12 border border-[var(--color-beige-warm)] bg-white p-12 text-center">
+ <div className="mt-12 rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-12 text-center">
  <p className="font-serif text-xl text-[var(--color-charcoal)]">
  Aucun bien actuellement disponible à {q.name}.
  </p>

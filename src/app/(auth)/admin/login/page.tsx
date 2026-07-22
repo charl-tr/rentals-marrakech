@@ -33,7 +33,7 @@ export default async function AdminLoginPage({
       </header>
 
       <main className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-md border border-[var(--color-beige-warm)] bg-white p-10 shadow-[var(--shadow-card)]">
+        <div className="w-full max-w-md rounded-[16px] border border-[var(--color-beige-warm)] bg-white p-10 shadow-[var(--shadow-card)]">
           <div className="eyebrow">Accès restreint</div>
           <h1 className="mt-4 font-serif text-3xl text-[var(--color-charcoal)]">
             Connexion.
@@ -44,7 +44,7 @@ export default async function AdminLoginPage({
           </p>
 
           {error === "invalid_link" && (
-            <div className="mt-6 border-l-2 border-[var(--color-terracotta)] bg-[var(--color-cream)] px-4 py-3 text-sm text-[var(--color-charcoal)]">
+            <div className="mt-6 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-[var(--color-cream)] px-4 py-3 text-sm text-[var(--color-charcoal)]">
               Ce lien a expiré ou a déjà été utilisé. Demandez-en un nouveau.
             </div>
           )}

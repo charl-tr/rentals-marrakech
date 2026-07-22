@@ -72,7 +72,7 @@ export default function DeposerPage() {
           </div>
           <div className="mt-16 grid gap-px bg-[var(--color-beige-warm)] md:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s) => (
-              <div key={s.n} className="bg-white p-8">
+              <div key={s.n} className="rounded-[14px] bg-white p-8">
                 <div className="flex items-center justify-between">
                   <s.icon size={20} className="text-[var(--color-terracotta)]" />
                   <span className="font-serif text-3xl text-[var(--color-stone-soft)]">

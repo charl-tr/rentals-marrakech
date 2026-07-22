@@ -97,7 +97,7 @@ export default function AProposPage() {
               </div>
             </div>
 
-            <aside className="self-start border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-8">
+            <aside className="self-start rounded-[14px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-8">
               <div className="eyebrow">En chiffres</div>
               <div className="mt-6 space-y-6">
                 {STATS.map((s) => (
@@ -132,7 +132,7 @@ export default function AProposPage() {
 
           <div className="mt-16 grid gap-px bg-[var(--color-beige-warm)] md:grid-cols-3">
             {VALEURS.map(({ icon: Icon, title, description }) => (
-              <div key={title} className="bg-[var(--color-cream)] p-10">
+              <div key={title} className="rounded-[14px] bg-[var(--color-cream)] p-10">
                 <div className="flex h-12 w-12 items-center justify-center border border-[var(--color-terracotta)] text-[var(--color-terracotta)]">
                   <Icon size={20} />
                 </div>

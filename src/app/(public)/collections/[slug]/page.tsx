@@ -71,7 +71,7 @@ export default async function CollectionPage({
       <section className="bg-[var(--color-cream)] pb-20">
         <div className="container-luxe">
           {matches.length === 0 ? (
-            <div className="border border-dashed border-[var(--color-beige-warm)] bg-white p-12 text-center">
+            <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white p-12 text-center">
               <div className="font-serif text-xl text-[var(--color-charcoal)]">
                 Aucun bien ne correspond actuellement.
               </div>
