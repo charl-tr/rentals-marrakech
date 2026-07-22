@@ -18,6 +18,13 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  experimental: {
+    // Cache routeur client : réutilise le rendu des routes déjà visitées.
+    // dynamic=30s → re-switcher vers un onglet admin vu récemment est
+    // instantané (zéro aller-retour serveur, zéro skeleton). static≥30 requis.
+    staleTimes: { dynamic: 30, static: 180 },
+  },
+
   // Préservation du SEO marrakechrealty.com → 308 Permanent Redirect
   // (Next.js utilise 308 au lieu de 301 — équivalent SEO + préserve la méthode HTTP)
   async redirects() {
