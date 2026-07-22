@@ -8,10 +8,6 @@ import { Menu, X } from "lucide-react";
 import FavoriteCounter from "@/components/FavoriteCounter";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 
-// ══════════════════════════════════════════════════════════════════════
-// Mega-menus — structure simplifiée (max 3 colonnes, pas de surcharge)
-// ══════════════════════════════════════════════════════════════════════
-
 type MegaColumn = {
   heading: string;
   links: { href: string; label: string }[];
@@ -42,7 +38,6 @@ const ACHETER_MEGA: MegaColumn[] = [
       { href: "/acheter/appartement", label: "Appartements" },
       { href: "/acheter/programmes-neufs", label: "Programmes neufs" },
       { href: "/acheter/terrain", label: "Terrains" },
-      { href: "/deposer-un-bien", label: "Déposer un bien" },
     ],
   },
   {
@@ -69,14 +64,16 @@ const ESSAOUIRA_LINKS = [
   { href: "/essaouira/location-villa", label: "Location villa" },
 ];
 
-// ══════════════════════════════════════════════════════════════════════
-// Navbar — DA unique : thin, typographique, zéro bouton coloré
-// ══════════════════════════════════════════════════════════════════════
+const VENDRE_LINKS = [
+  { href: "/deposer-un-bien", label: "Déposer un bien" },
+  { href: "/estimer", label: "Estimation en ligne" },
+  { href: "/marche", label: "Rapport marché" },
+];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState<"acheter" | "louer" | "essaouira" | null>(
+  const [openMenu, setOpenMenu] = useState<"acheter" | "louer" | "essaouira" | "vendre" | null>(
     null
   );
   const pathname = usePathname();
@@ -96,7 +93,6 @@ export default function Navbar() {
     setOpenMenu(null);
   }, [pathname]);
 
-  // Couleur texte selon contexte — ultra-minimal
   const linkText = solid ? "text-[var(--color-charcoal)]" : "text-white";
   const linkHover = solid
     ? "hover:text-[var(--color-terracotta)]"
@@ -111,7 +107,6 @@ export default function Navbar() {
       }`}
     >
       <div className="container-luxe flex h-14 items-center justify-between lg:h-16">
-        {/* Logo */}
         <Link href="/" aria-label="Marrakech Realty — Accueil" className="block">
           <Image
             src="/logo-complete.png"
@@ -127,7 +122,6 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Nav principale — desktop */}
         <nav className="hidden items-center lg:flex">
           <NavDropdown
             label="Acheter"
@@ -160,10 +154,19 @@ export default function Navbar() {
             <SimplePanel links={ESSAOUIRA_LINKS} footerHref="/essaouira" footerLabel="Bord de mer" />
           </NavDropdown>
 
+          <NavDropdown
+            label="Vendre"
+            open={openMenu === "vendre"}
+            onEnter={() => setOpenMenu("vendre")}
+            onLeave={() => setOpenMenu(null)}
+            linkClass={`${linkText} ${linkHover}`}
+          >
+            <SimplePanel links={VENDRE_LINKS} footerHref="/deposer-un-bien" footerLabel="Déposer un bien →" />
+          </NavDropdown>
+
           <NavLink href="/journal" label="Journal" className={`${linkText} ${linkHover}`} />
           <NavLink href="/contact" label="Contact" className={`${linkText} ${linkHover}`} />
 
-          {/* Séparateur micro + favoris icône seule */}
           <span
             aria-hidden
             className={`mx-4 h-3 w-px ${solid ? "bg-[var(--color-beige-warm)]" : "bg-white/30"}`}
@@ -176,7 +179,6 @@ export default function Navbar() {
           <CurrencySwitcher />
         </nav>
 
-        {/* Mobile toggle */}
         <button
           onClick={() => setMobileOpen((s) => !s)}
           className={`lg:hidden ${solid ? "text-[var(--color-charcoal)]" : "text-white"}`}
@@ -186,13 +188,13 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile drawer */}
       {mobileOpen && (
         <div className="max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-[var(--color-beige-warm)] bg-[var(--color-cream)] lg:hidden">
           <div className="container-luxe py-6">
             <MobileSection heading="Acheter" links={ACHETER_MEGA.flatMap((c) => c.links)} />
             <MobileSection heading="Louer" links={LOUER_LINKS} />
             <MobileSection heading="Essaouira" links={ESSAOUIRA_LINKS} />
+            <MobileSection heading="Vendre" links={VENDRE_LINKS} />
 
             <div className="mt-6 flex flex-col gap-3 border-t border-[var(--color-beige-warm)] pt-6">
               <Link
@@ -238,10 +240,6 @@ export default function Navbar() {
     </header>
   );
 }
-
-// ══════════════════════════════════════════════════════════════════════
-// Sous-composants
-// ══════════════════════════════════════════════════════════════════════
 
 function NavLink({
   href,
@@ -369,7 +367,7 @@ function SimplePanel({
         href={footerHref}
         className="block border-t border-[var(--color-beige-warm)] bg-white px-4 py-3 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
       >
-        {footerLabel} →
+        {footerLabel}
       </Link>
     </div>
   );
