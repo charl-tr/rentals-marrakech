@@ -88,8 +88,8 @@ export default async function Home() {
 
   return (
     <>
-      {/* HERO — image statique Marrakech, texte aligné gauche */}
-      <section className="relative flex h-[100dvh] min-h-[600px] items-end overflow-hidden pb-32 md:min-h-[720px] md:pb-40">
+      {/* HERO — image fixe, texte minimal, l'image domine */}
+      <section className="relative flex h-[100dvh] min-h-[600px] items-end overflow-hidden pb-12 md:min-h-[720px] md:pb-16">
         <Image
           src="/hero-home.jpg"
           alt="Villa avec piscine à Marrakech — murs ocre et palmiers"
@@ -98,40 +98,38 @@ export default async function Home() {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="hero-overlay-bottom absolute inset-0" />
-        <div className="hero-overlay-left absolute inset-0" />
+        {/* Overlay léger — juste assez pour lire, pas plus */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(23,20,15,0.75)] via-[rgba(23,20,15,0.20)] to-[rgba(23,20,15,0.15)]" />
 
-        <div className="container-luxe relative z-10 text-white">
-          <div className="max-w-2xl animate-fade-up">
-            <div className="mb-5 text-[12px] font-medium uppercase tracking-[0.28em] text-white/80">
-              Agence immobilière · Marrakech & Essaouira
+        <div className="container-luxe relative z-10">
+          {/* Texte — compact, retenu, luxe */}
+          <div className="mb-10 max-w-xl animate-fade-up md:mb-14">
+            <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.32em] text-white/60">
+              Marrakech & Essaouira
             </div>
-            <h1 className="hero-text font-serif text-[2.6rem] leading-[1.06] text-white sm:text-5xl md:text-7xl lg:text-[80px]">
+            <h1 className="hero-text font-serif text-[2.4rem] leading-[1.06] text-white sm:text-[3.2rem] md:text-[3.6rem]">
               L&apos;art de vivre<br />
               <span className="italic text-[var(--color-terracotta-light)]">
                 marrakchi.
               </span>
             </h1>
-            <p className="hero-text-soft mt-6 max-w-lg text-base leading-relaxed text-white/85 sm:mt-8 md:text-lg">
-              Riads restaurés, villas d&apos;architecte, appartements de caractère.
-              Une sélection confidentielle, des histoires à habiter.
-            </p>
           </div>
 
+          {/* Recherche — semi-transparent, intégrée dans l'image */}
           <form
             action="/acheter"
             method="get"
-            className="mt-10 max-w-4xl animate-fade-up bg-white/95 p-2 shadow-[var(--shadow-luxe)] backdrop-blur-sm sm:mt-14"
+            className="max-w-4xl animate-fade-up border border-white/15 bg-[rgba(23,20,15,0.45)] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl"
           >
             <div className="grid grid-cols-1 gap-0 md:grid-cols-[1fr_1fr_1fr_auto]">
-              <label className="border-b border-[var(--color-beige-warm)] p-5 text-left md:border-b-0 md:border-r">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
+              <label className="border-b border-white/10 p-4 text-left md:border-b-0 md:border-r md:p-5">
+                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50">
                   Type de bien
                 </span>
                 <select
                   name="type"
                   defaultValue=""
-                  className="mt-1.5 w-full bg-transparent text-sm font-medium text-[var(--color-charcoal)] focus:outline-none"
+                  className="mt-1 w-full bg-transparent text-sm font-medium text-white focus:outline-none [&>option]:text-[var(--color-charcoal)]"
                 >
                   <option value="">Tous les biens</option>
                   <option value="riad-renove">Riad rénové</option>
@@ -142,14 +140,14 @@ export default async function Home() {
                   <option value="terrain">Terrain</option>
                 </select>
               </label>
-              <label className="border-b border-[var(--color-beige-warm)] p-5 text-left md:border-b-0 md:border-r">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
+              <label className="border-b border-white/10 p-4 text-left md:border-b-0 md:border-r md:p-5">
+                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50">
                   Quartier
                 </span>
                 <select
                   name="quartier"
                   defaultValue=""
-                  className="mt-1.5 w-full bg-transparent text-sm font-medium text-[var(--color-charcoal)] focus:outline-none"
+                  className="mt-1 w-full bg-transparent text-sm font-medium text-white focus:outline-none [&>option]:text-[var(--color-charcoal)]"
                 >
                   <option value="">Toutes les zones</option>
                   <option value="medina">Médina</option>
@@ -162,14 +160,14 @@ export default async function Home() {
                   <option value="diabat">Diabat (Essaouira)</option>
                 </select>
               </label>
-              <label className="border-b border-[var(--color-beige-warm)] p-5 text-left md:border-b-0 md:border-r">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
+              <label className="border-b border-white/10 p-4 text-left md:border-b-0 md:border-r md:p-5">
+                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50">
                   Budget
                 </span>
                 <select
                   name="budget"
                   defaultValue=""
-                  className="mt-1.5 w-full bg-transparent text-sm font-medium text-[var(--color-charcoal)] focus:outline-none"
+                  className="mt-1 w-full bg-transparent text-sm font-medium text-white focus:outline-none [&>option]:text-[var(--color-charcoal)]"
                 >
                   <option value="">Tous budgets</option>
                   <option value="300">Jusqu&apos;à 300 000 €</option>
@@ -181,9 +179,9 @@ export default async function Home() {
               </label>
               <button
                 type="submit"
-                className="flex items-center justify-center gap-2 bg-[var(--color-charcoal)] px-8 py-5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
+                className="flex items-center justify-center gap-2 bg-white/10 px-8 py-5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all hover:bg-white hover:text-[var(--color-charcoal)]"
               >
-                <Search size={16} />
+                <Search size={15} />
                 Rechercher
               </button>
             </div>
@@ -192,7 +190,7 @@ export default async function Home() {
       </section>
 
       {/* STATS BAR */}
-      <section className="bg-[var(--color-charcoal)] text-white">
+      <FadeInOnScroll as="section" className="bg-[var(--color-charcoal)] text-white">
         <div className="container-luxe grid grid-cols-2 gap-4 py-10 sm:gap-6 md:grid-cols-4 md:gap-8 md:py-14">
           {STATS.map((stat) => (
             <div key={stat.label} className="text-center">
@@ -205,7 +203,7 @@ export default async function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </FadeInOnScroll>
 
       {/* FEATURED PROPERTIES */}
       <section className="bg-[var(--color-cream)] py-28">
@@ -355,30 +353,26 @@ export default async function Home() {
               alt={essaouiraHighlight?.title ?? "Essaouira — cité des Alizés"}
               fill
               sizes="100vw"
-              className="object-cover animate-ken-burns"
+              className="object-cover"
             />
           )}
-          <div className="hero-overlay-bottom absolute inset-0" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(23,20,15,0.80)] via-[rgba(23,20,15,0.30)] to-[rgba(23,20,15,0.15)]" />
           <div className="hero-overlay-left absolute inset-0" />
 
-          <div className="container-luxe relative z-10 flex min-h-[640px] items-center py-20">
+          <div className="container-luxe relative z-10 flex min-h-[640px] items-end py-16 md:py-20">
             <FadeInOnScroll as="div" className="max-w-xl text-white">
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
+              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/50">
                 Cap sur l&apos;océan
               </div>
-              <h2 className="mt-5 hero-text font-serif text-5xl leading-tight md:text-6xl">
+              <h2 className="mt-5 hero-text font-serif text-4xl leading-tight md:text-5xl lg:text-6xl">
                 Essaouira,<br />
                 <span className="italic text-[var(--color-terracotta-light)]">l&apos;autre Maroc.</span>
               </h2>
-              <p className="hero-text-soft mt-8 text-white/85 md:text-lg">
-                À trois heures de Marrakech, la cité des Alizés conjugue médina UNESCO, plages
-                infinies et douceur de vivre. Nos biens à Essaouira : riads à restaurer, maisons
-                d&apos;hôtes en activité, villas contemporaines pieds dans l&apos;eau.
+              <p className="hero-text-soft mt-6 max-w-md text-white/80 md:text-lg">
+                Médina UNESCO, plages infinies et douceur de vivre. Riads, maisons
+                d&apos;hôtes, villas pieds dans l&apos;eau.
               </p>
-              <Link
-                href="/essaouira"
-                className="btn-outline-light mt-10"
-              >
+              <Link href="/essaouira" className="btn-outline-light mt-8">
                 Explorer Essaouira
                 <ArrowRight size={16} />
               </Link>
@@ -441,17 +435,13 @@ export default async function Home() {
             className="object-cover transition-transform duration-[900ms] hover:scale-105"
           />
           <div className="absolute inset-0 bg-[var(--color-charcoal)]/65" />
-          <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-center p-12 text-white md:p-16">
-            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
+          <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-end p-12 pb-16 text-white md:p-16">
+            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/50">
               Vous vendez ?
             </div>
-            <h3 className="mt-5 hero-text font-serif text-4xl leading-tight md:text-5xl">
+            <h3 className="mt-4 hero-text font-serif text-3xl leading-tight md:text-4xl">
               Estimation gratuite<br />sous 24 heures.
             </h3>
-            <p className="hero-text-soft mt-5 max-w-md text-white/85">
-              Un conseiller senior évalue votre bien et vous remet une estimation argumentée,
-              appuyée sur les transactions comparables des 18 derniers mois.
-            </p>
             <Link href="/deposer-un-bien" className="btn-gold mt-8">
               Déposer mon bien
               <ArrowRight size={14} />
@@ -468,17 +458,13 @@ export default async function Home() {
             className="object-cover transition-transform duration-[900ms] hover:scale-105"
           />
           <div className="absolute inset-0 bg-[var(--color-charcoal)]/65" />
-          <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-center p-12 text-white md:p-16">
-            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
+          <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-end p-12 pb-16 text-white md:p-16">
+            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/50">
               Vous recherchez ?
             </div>
-            <h3 className="mt-5 hero-text font-serif text-4xl leading-tight md:text-5xl">
+            <h3 className="mt-4 hero-text font-serif text-3xl leading-tight md:text-4xl">
               Recherche<br />personnalisée.
             </h3>
-            <p className="hero-text-soft mt-5 max-w-md text-white/85">
-              Décrivez-nous votre projet : nous activons notre réseau et notre portefeuille
-              confidentiel pour vous trouver le bien qui vous ressemble.
-            </p>
             <Link href="/acheter" className="btn-outline-light mt-8">
               Explorer les biens
               <ArrowRight size={14} />
