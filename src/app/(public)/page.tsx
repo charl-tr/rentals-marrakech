@@ -4,7 +4,6 @@ import {
   Award,
   ArrowRight,
   Building2,
-  ChevronDown,
   Compass,
   Key,
   Quote,
@@ -79,46 +78,42 @@ export default async function Home() {
   const featuredProperties = await getFeaturedProperties(12);
   const essaouiraFallback = await getFirstEssaouiraProperty();
 
-  const hero = featuredProperties[0];
-  const heroImage = hero?.images[1] ?? hero?.images[0];
   const essaouiraHighlight =
     featuredProperties.find((p) => p.city === "Essaouira") ?? essaouiraFallback;
-  const essaouiraImage = essaouiraHighlight?.images[0] ?? hero?.images[0];
+  const essaouiraImage = essaouiraHighlight?.images[0] ?? "/hero-home.jpg";
   const ctaVendreImage =
-    featuredProperties[3]?.images[0] ?? hero?.images[2] ?? heroImage;
+    featuredProperties[3]?.images[0] ?? "/hero-home.jpg";
   const ctaAcheterImage =
-    featuredProperties[4]?.images[0] ?? hero?.images[3] ?? heroImage;
+    featuredProperties[4]?.images[0] ?? "/hero-home.jpg";
 
   return (
     <>
-      {/* HERO */}
-      <section className="relative flex h-[100dvh] min-h-[600px] items-center justify-center overflow-hidden md:min-h-[720px]">
-        {heroImage && (
-          <Image
-            src={heroImage}
-            alt={hero?.title ?? "Bien d'exception à Marrakech"}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover animate-ken-burns"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-charcoal)]/60 via-[var(--color-charcoal)]/35 to-[var(--color-charcoal)]/85" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.55)_0%,_rgba(0,0,0,0.15)_55%,_rgba(0,0,0,0)_85%)]" />
+      {/* HERO — image statique Marrakech, texte aligné gauche */}
+      <section className="relative flex h-[100dvh] min-h-[600px] items-end overflow-hidden pb-32 md:min-h-[720px] md:pb-40">
+        <Image
+          src="/hero-home.jpg"
+          alt="Villa avec piscine à Marrakech — murs ocre et palmiers"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="hero-overlay-bottom absolute inset-0" />
+        <div className="hero-overlay-left absolute inset-0" />
 
-        <div className="container-luxe relative z-10 text-center text-white">
-          <div className="animate-fade-up">
-            <div className="mb-6 text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+        <div className="container-luxe relative z-10 text-white">
+          <div className="max-w-2xl animate-fade-up">
+            <div className="mb-5 text-[12px] font-medium uppercase tracking-[0.28em] text-white/80">
               Agence immobilière · Marrakech & Essaouira
             </div>
-            <h1 className="hero-text font-serif text-[2.4rem] leading-[1.08] text-white drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)] sm:text-5xl md:text-7xl lg:text-[80px]">
-              L&apos;art de vivre <br />
-              <span className="italic text-[var(--color-terracotta-light)] drop-shadow-[0_2px_14px_rgba(0,0,0,0.7)]">
+            <h1 className="hero-text font-serif text-[2.6rem] leading-[1.06] text-white sm:text-5xl md:text-7xl lg:text-[80px]">
+              L&apos;art de vivre<br />
+              <span className="italic text-[var(--color-terracotta-light)]">
                 marrakchi.
               </span>
             </h1>
-            <p className="hero-text-soft mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/90 drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)] sm:mt-8 sm:text-base md:text-lg">
-              Riads restaurés, villas d&apos;architecte, appartements de caractère et programmes neufs.
+            <p className="hero-text-soft mt-6 max-w-lg text-base leading-relaxed text-white/85 sm:mt-8 md:text-lg">
+              Riads restaurés, villas d&apos;architecte, appartements de caractère.
               Une sélection confidentielle, des histoires à habiter.
             </p>
           </div>
@@ -126,7 +121,7 @@ export default async function Home() {
           <form
             action="/acheter"
             method="get"
-            className="mx-auto mt-8 max-w-4xl animate-fade-up bg-white/95 p-2 shadow-[var(--shadow-luxe)] backdrop-blur-sm sm:mt-12"
+            className="mt-10 max-w-4xl animate-fade-up bg-white/95 p-2 shadow-[var(--shadow-luxe)] backdrop-blur-sm sm:mt-14"
           >
             <div className="grid grid-cols-1 gap-0 md:grid-cols-[1fr_1fr_1fr_auto]">
               <label className="border-b border-[var(--color-beige-warm)] p-5 text-left md:border-b-0 md:border-r">
@@ -193,15 +188,6 @@ export default async function Home() {
               </button>
             </div>
           </form>
-
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-slow-pulse text-white/70">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-[9px] font-medium uppercase tracking-[0.32em]">
-                Découvrir
-              </span>
-              <ChevronDown size={18} strokeWidth={1.5} />
-            </div>
-          </div>
         </div>
       </section>
 
@@ -372,25 +358,26 @@ export default async function Home() {
               className="object-cover animate-ken-burns"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-charcoal)]/75 via-[var(--color-charcoal)]/45 to-[var(--color-charcoal)]/15" />
+          <div className="hero-overlay-bottom absolute inset-0" />
+          <div className="hero-overlay-left absolute inset-0" />
 
           <div className="container-luxe relative z-10 flex min-h-[640px] items-center py-20">
             <FadeInOnScroll as="div" className="max-w-xl text-white">
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
                 Cap sur l&apos;océan
               </div>
-              <h2 className="mt-5 font-serif text-5xl leading-tight drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)] md:text-6xl">
+              <h2 className="mt-5 hero-text font-serif text-5xl leading-tight md:text-6xl">
                 Essaouira,<br />
                 <span className="italic text-[var(--color-terracotta-light)]">l&apos;autre Maroc.</span>
               </h2>
-              <p className="mt-8 text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] md:text-lg">
+              <p className="hero-text-soft mt-8 text-white/85 md:text-lg">
                 À trois heures de Marrakech, la cité des Alizés conjugue médina UNESCO, plages
                 infinies et douceur de vivre. Nos biens à Essaouira : riads à restaurer, maisons
                 d&apos;hôtes en activité, villas contemporaines pieds dans l&apos;eau.
               </p>
               <Link
                 href="/essaouira"
-                className="mt-10 inline-flex items-center gap-3 border border-white/60 bg-transparent px-8 py-4 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-white hover:text-[var(--color-charcoal)]"
+                className="btn-outline-light mt-10"
               >
                 Explorer Essaouira
                 <ArrowRight size={16} />
@@ -401,7 +388,7 @@ export default async function Home() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="bg-[var(--color-beige)] py-28">
+      <section className="bg-[var(--color-cream)] py-28">
         <div className="container-luxe">
           <FadeInOnScroll as="div" className="mx-auto max-w-2xl text-center">
             <div className="eyebrow">Ils nous font confiance</div>
@@ -446,24 +433,22 @@ export default async function Home() {
       {/* DOUBLE CTA — Vendre / Acheter */}
       <section className="grid md:grid-cols-2">
         <div className="relative min-h-[420px] overflow-hidden">
-          {ctaVendreImage && (
-            <Image
-              src={ctaVendreImage}
-              alt="Vendre avec Marrakech Realty"
-              fill
-              sizes="50vw"
-              className="object-cover transition-transform duration-[900ms] hover:scale-105"
-            />
-          )}
-          <div className="absolute inset-0 bg-[var(--color-charcoal)]/60" />
+          <Image
+            src={ctaVendreImage}
+            alt="Vendre avec Marrakech Realty"
+            fill
+            sizes="50vw"
+            className="object-cover transition-transform duration-[900ms] hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-[var(--color-charcoal)]/65" />
           <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-center p-12 text-white md:p-16">
-            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
               Vous vendez ?
             </div>
-            <h3 className="mt-5 font-serif text-4xl leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)] md:text-5xl">
+            <h3 className="mt-5 hero-text font-serif text-4xl leading-tight md:text-5xl">
               Estimation gratuite<br />sous 24 heures.
             </h3>
-            <p className="mt-5 max-w-md text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.3)]">
+            <p className="hero-text-soft mt-5 max-w-md text-white/85">
               Un conseiller senior évalue votre bien et vous remet une estimation argumentée,
               appuyée sur les transactions comparables des 18 derniers mois.
             </p>
@@ -475,24 +460,22 @@ export default async function Home() {
         </div>
 
         <div className="relative min-h-[420px] overflow-hidden">
-          {ctaAcheterImage && (
-            <Image
-              src={ctaAcheterImage}
-              alt="Acheter avec Marrakech Realty"
-              fill
-              sizes="50vw"
-              className="object-cover transition-transform duration-[900ms] hover:scale-105"
-            />
-          )}
-          <div className="absolute inset-0 bg-[var(--color-charcoal)]/60" />
+          <Image
+            src={ctaAcheterImage}
+            alt="Acheter avec Marrakech Realty"
+            fill
+            sizes="50vw"
+            className="object-cover transition-transform duration-[900ms] hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-[var(--color-charcoal)]/65" />
           <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-center p-12 text-white md:p-16">
-            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
               Vous recherchez ?
             </div>
-            <h3 className="mt-5 font-serif text-4xl leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)] md:text-5xl">
+            <h3 className="mt-5 hero-text font-serif text-4xl leading-tight md:text-5xl">
               Recherche<br />personnalisée.
             </h3>
-            <p className="mt-5 max-w-md text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.3)]">
+            <p className="hero-text-soft mt-5 max-w-md text-white/85">
               Décrivez-nous votre projet : nous activons notre réseau et notre portefeuille
               confidentiel pour vous trouver le bien qui vous ressemble.
             </p>
