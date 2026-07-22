@@ -47,7 +47,7 @@ export default function AProposPage() {
         title={
           <>
             Depuis 2000, un seul{" "}
-            <span className="italic text-[var(--color-terracotta-light)]">
+            <span className="italic text-[var(--color-accent-light)]">
               cap
             </span>
             .
@@ -151,7 +151,7 @@ export default function AProposPage() {
       {/* CTA */}
       <section className="bg-[var(--color-charcoal)] py-20 text-white">
         <div className="container-luxe text-center">
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+          <div className="eyebrow-light">
             Commencer une conversation
           </div>
           <h2 className="mt-4 font-serif text-4xl md:text-5xl">

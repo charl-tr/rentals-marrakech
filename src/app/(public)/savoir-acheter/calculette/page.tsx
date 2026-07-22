@@ -17,7 +17,7 @@ export default function CalculettePage() {
         title={
           <>
             Combien vraiment ?<br />
-            <span className="italic text-[var(--color-terracotta-light)]">
+            <span className="italic text-[var(--color-accent-light)]">
               Le vrai coût d&apos;un achat au Maroc.
             </span>
           </>

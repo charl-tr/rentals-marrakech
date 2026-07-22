@@ -101,7 +101,7 @@ export default function FavorisPage() {
         title={
           <>
             Mes biens{" "}
-            <span className="italic text-[var(--color-terracotta-light)]">favoris</span>.
+            <span className="italic text-[var(--color-accent-light)]">favoris</span>.
           </>
         }
         subtitle={

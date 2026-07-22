@@ -20,7 +20,7 @@ export default function PublicError({
         }}
       />
       <div className="container-luxe relative z-10 flex flex-col items-center text-center text-white">
-        <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-accent-light)]">
+        <div className="eyebrow-light">
           Une contrariété technique
         </div>
         <h1 className="mt-8 font-serif text-5xl leading-[1.05] md:text-6xl">

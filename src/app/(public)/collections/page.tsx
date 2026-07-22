@@ -23,7 +23,7 @@ export default async function CollectionsIndexPage() {
         title={
           <>
             Parcourir<br />
-            <span className="italic text-[var(--color-terracotta-light)]">
+            <span className="italic text-[var(--color-accent-light)]">
               par ambiance.
             </span>
           </>

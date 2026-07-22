@@ -341,7 +341,7 @@ export default function FilterToolbar({
                 className="mt-3 font-serif text-2xl leading-tight text-[var(--color-charcoal)] sm:text-3xl md:text-4xl"
               >
                 Affiner votre{" "}
-                <span className="italic text-[var(--color-terracotta)]">sélection</span>.
+                <span className="italic text-[var(--color-accent)]">sélection</span>.
               </h2>
             </div>
 

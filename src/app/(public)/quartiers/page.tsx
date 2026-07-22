@@ -22,7 +22,7 @@ export default async function QuartiersIndex() {
         title={
           <>
             Choisir son quartier,<br />
-            <span className="italic text-[var(--color-terracotta-light)]">avant</span> de choisir son bien.
+            <span className="italic text-[var(--color-accent-light)]">avant</span> de choisir son bien.
           </>
         }
         subtitle="La Palmeraie n'est pas la médina, l'Hivernage n'est pas Targa. Voici nos guides éditoriaux des quartiers que nous traitons en exclusivité."

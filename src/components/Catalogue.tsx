@@ -97,7 +97,7 @@ export default async function Catalogue({
               )}
             </div>
           )}
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+          <div className="eyebrow-light">
             {eyebrow}
           </div>
           <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-[1.06] text-white md:text-5xl lg:text-6xl">

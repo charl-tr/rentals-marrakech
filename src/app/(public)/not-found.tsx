@@ -22,13 +22,13 @@ export default function NotFound() {
       />
 
       <div className="container-luxe relative z-10 flex min-h-[85vh] flex-col items-center justify-center py-32 text-center text-white">
-        <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+        <div className="eyebrow-light">
           Erreur 404
         </div>
 
         <h1 className="mt-8 font-serif text-7xl leading-[0.95] md:text-8xl lg:text-[140px]">
           Vous vous êtes<br />
-          <span className="italic text-[var(--color-terracotta-light)]">perdu·e</span>.
+          <span className="italic text-[var(--color-accent-light)]">perdu·e</span>.
         </h1>
 
         <p className="mx-auto mt-10 max-w-xl text-lg leading-relaxed text-white/75">

@@ -43,7 +43,7 @@ export default function SectionHero({
  <div className="container-luxe relative z-10 flex h-full flex-col justify-between pb-16 pt-[112px]">
  {backButton}
  <div className={align === "center" ? "mx-auto text-center" : ""}>
- <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-accent-light)]">
+ <div className="hero-text-soft eyebrow-light">
  {eyebrow}
  </div>
  <h1 className="hero-text mt-5 max-w-3xl font-serif text-5xl leading-[1.05] text-white md:text-6xl lg:text-[68px]">
@@ -65,7 +65,7 @@ export default function SectionHero({
  <div className="container-luxe">
  {backButton}
  <div className={align === "center" ? "mx-auto max-w-3xl text-center" : ""}>
- <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-accent-light)]">
+ <div className="hero-text-soft eyebrow-light">
  {eyebrow}
  </div>
  <h1 className="mt-5 max-w-3xl font-serif text-5xl leading-[1.05] md:text-6xl lg:text-[68px]">

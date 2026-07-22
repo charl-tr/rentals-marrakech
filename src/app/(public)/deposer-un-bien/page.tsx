@@ -55,7 +55,7 @@ export default function DeposerPage() {
         title={
           <>
             Confiez-nous votre bien.<br />
-            <span className="italic text-[var(--color-terracotta-light)]">Estimation</span> sous 24h.
+            <span className="italic text-[var(--color-accent-light)]">Estimation</span> sous 24h.
           </>
         }
         subtitle="Vingt-cinq ans d'expérience à Marrakech et Essaouira. Acquéreurs qualifiés européens, américains et marocains résidents. Discrétion absolue."

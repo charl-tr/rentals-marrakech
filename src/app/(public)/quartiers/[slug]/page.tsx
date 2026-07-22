@@ -71,7 +71,7 @@ export default async function QuartierPage({
  ]}
  />
  <div>
- <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+ <div className="hero-text-soft eyebrow-light">
  {q.city} — Quartier
  </div>
  <h1 className="hero-text mt-5 font-serif text-6xl leading-[1.05] text-white md:text-7xl lg:text-[88px]">
@@ -125,7 +125,7 @@ export default async function QuartierPage({
  {day && (
  <section className="bg-[var(--color-charcoal)] py-28 text-white">
  <div className="container-luxe max-w-4xl">
- <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+ <div className="eyebrow-light">
  Immersion
  </div>
  <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">
@@ -141,7 +141,7 @@ export default async function QuartierPage({
  key={i}
  className="grid gap-6 border-b border-white/10 pb-10 last:border-b-0 md:grid-cols-[140px_1fr]"
  >
- <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+ <div className="eyebrow-light">
  {s.moment}
  </div>
  <div>
@@ -164,7 +164,7 @@ export default async function QuartierPage({
 
  {/* Local tips */}
  <div className="mt-20 border-t border-white/10 pt-12">
- <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+ <div className="eyebrow-light">
  À savoir
  </div>
  <div className="mt-6 grid gap-8 md:grid-cols-3">

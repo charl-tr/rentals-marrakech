@@ -30,7 +30,7 @@ export default async function JournalPage() {
         title={
           <>
             Histoires, regards,<br />
-            <span className="italic text-[var(--color-terracotta-light)]">analyses</span>.
+            <span className="italic text-[var(--color-accent-light)]">analyses</span>.
           </>
         }
         subtitle="Marché immobilier marocain, restauration des riads, art de vivre marrakchi, portraits de quartiers et de propriétaires. Les coulisses de notre métier."
@@ -130,7 +130,7 @@ export default async function JournalPage() {
 
       <section className="bg-[var(--color-charcoal)] py-16 text-white">
         <div className="container-luxe text-center">
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+          <div className="eyebrow-light">
             Recevoir le journal
           </div>
           <h2 className="mt-4 font-serif text-3xl md:text-4xl">

@@ -152,6 +152,10 @@
   .eyebrow {
     @apply text-[11px] font-medium uppercase tracking-[0.34em] text-[var(--color-accent)];
   }
+  /* Variante fond sombre — même graphie, teinte éclaircie. */
+  .eyebrow-light {
+    @apply text-[11px] font-medium uppercase tracking-[0.34em] text-[var(--color-accent-light)];
+  }
 
   .gold-rule,
   .terracotta-rule {

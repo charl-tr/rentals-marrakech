@@ -82,11 +82,9 @@ export default async function Home() {
         <div className="absolute inset-0 hero-overlay-bottom" />
 
         <div className="container-luxe relative z-10">
-          <div className="mb-10 max-w-xl animate-fade-up md:mb-14">
-            <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-accent-light)]">
-              Marrakech &amp; Essaouira
-            </div>
-            <h1 className="hero-text font-serif text-[2.4rem] leading-[1.06] text-white sm:text-[3.2rem] md:text-[3.6rem]">
+          <div className="mb-10 max-w-2xl animate-fade-up md:mb-14">
+            <div className="mb-4 eyebrow-light">Marrakech &amp; Essaouira</div>
+            <h1 className="hero-text font-serif text-5xl leading-[1.05] text-white sm:text-6xl lg:text-[68px]">
               L&apos;art de vivre<br />
               <span className="italic text-[var(--color-accent-light)]">
                 marrakchi.
@@ -163,7 +161,7 @@ export default async function Home() {
       <section className="bg-[var(--color-charcoal-deep)] py-28 text-white md:py-32">
         <div className="container-luxe">
           <FadeInOnScroll as="div" className="max-w-2xl">
-            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+            <div className="eyebrow-light">
               Nos métiers
             </div>
             <h2 className="mt-5 font-serif text-4xl leading-tight text-white md:text-5xl">
@@ -214,12 +212,12 @@ export default async function Home() {
         <div className="container-luxe">
           <div className="grid gap-12 md:grid-cols-[1fr_1fr] md:items-center md:gap-20">
             <FadeInOnScroll as="div">
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+              <div className="eyebrow-light">
                 Cap sur l&apos;océan
               </div>
               <h2 className="mt-5 font-serif text-4xl leading-tight text-white md:text-6xl">
                 Essaouira,<br />
-                <span className="italic text-[var(--color-terracotta-glow)]">
+                <span className="italic text-[var(--color-accent-light)]">
                   l&apos;autre Maroc.
                 </span>
               </h2>
@@ -279,7 +277,7 @@ export default async function Home() {
       <section className="grid bg-[var(--color-charcoal-deep)] md:grid-cols-2">
         {/* Vendre */}
         <div className="flex flex-col items-start justify-center gap-6 p-12 py-20 text-white md:p-20">
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+          <div className="eyebrow-light">
             Vous vendez ?
           </div>
           <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
@@ -297,7 +295,7 @@ export default async function Home() {
 
         {/* Acheter — même fond noir, séparé par un filet */}
         <div className="flex flex-col items-start justify-center gap-6 border-t border-white/10 p-12 py-20 text-white md:border-l md:border-t-0 md:p-20">
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/50">
+          <div className="eyebrow-light">
             Vous recherchez ?
           </div>
           <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">

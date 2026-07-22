@@ -97,7 +97,7 @@ export default function FAQPage() {
         title={
           <>
             Les réponses{" "}
-            <span className="italic text-[var(--color-terracotta-light)]">
+            <span className="italic text-[var(--color-accent-light)]">
               honnêtes
             </span>
             .
@@ -144,7 +144,7 @@ export default function FAQPage() {
 
       <section className="bg-[var(--color-charcoal)] py-16 text-white">
         <div className="container-luxe text-center">
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+          <div className="eyebrow-light">
             Une question non couverte ?
           </div>
           <h2 className="mt-4 font-serif text-3xl md:text-4xl">

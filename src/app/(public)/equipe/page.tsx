@@ -21,7 +21,7 @@ export default async function EquipePage() {
         title={
           <>
             Quatre conseillers,<br />
-            <span className="italic text-[var(--color-terracotta-light)]">un seul</span> standard.
+            <span className="italic text-[var(--color-accent-light)]">un seul</span> standard.
           </>
         }
         subtitle="Chacun son territoire, ses langues, ses spécialités. Tous issus du marché marocain ou expatriés de longue date — et tous formés au même exigeant cahier des charges Marrakech Realty."
@@ -97,7 +97,7 @@ export default async function EquipePage() {
           <div className="eyebrow">Notre engagement</div>
           <h2 className="mt-4 font-serif text-4xl md:text-5xl">
             Vingt-cinq ans d&apos;agence,<br />
-            <span className="italic text-[var(--color-terracotta)]">une seule manière</span> de travailler.
+            <span className="italic text-[var(--color-accent)]">une seule manière</span> de travailler.
           </h2>
           <div className="gold-rule" />
           <p className="mx-auto max-w-2xl text-[var(--color-stone)]">

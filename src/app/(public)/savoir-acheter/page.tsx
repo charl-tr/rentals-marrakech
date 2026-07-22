@@ -126,7 +126,7 @@ export default function SavoirAcheterPage() {
         title={
           <>
             Acheter au Maroc,<br />
-            <span className="italic text-[var(--color-terracotta-light)]">en connaissance</span> de cause.
+            <span className="italic text-[var(--color-accent-light)]">en connaissance</span> de cause.
           </>
         }
         subtitle="Huit chapitres pour comprendre ce qui se cache derrière une transaction marocaine. Rédigés en collaboration avec notre cabinet partenaire (Étude Maître El Amine, Marrakech)."
@@ -188,7 +188,7 @@ export default function SavoirAcheterPage() {
 
       <section className="bg-[var(--color-charcoal)] py-20 text-white">
         <div className="container-luxe text-center">
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+          <div className="eyebrow-light">
             Une question juridique ?
           </div>
           <h2 className="mt-4 font-serif text-4xl md:text-5xl">

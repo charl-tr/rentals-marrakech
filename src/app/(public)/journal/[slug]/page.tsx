@@ -82,7 +82,7 @@ export default async function JournalArticlePage({
  ]}
  />
  <div className="max-w-3xl">
- <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+ <div className="hero-text-soft eyebrow-light">
  {a.category}
  </div>
  <h1 className="hero-text mt-4 font-serif text-4xl leading-[1.1] text-white md:text-5xl lg:text-6xl">

@@ -30,7 +30,7 @@ export default function Footer() {
       <div className="border-b border-white/10">
         <div className="container-luxe flex flex-col gap-8 py-16 md:flex-row md:items-end md:justify-between md:py-20">
           <div className="max-w-xl">
-            <div className="text-[11px] font-medium uppercase tracking-[0.34em] text-[var(--color-accent-light)]">
+            <div className="eyebrow-light">
               Parlons de votre projet
             </div>
             <h3 className="mt-4 font-serif text-3xl leading-tight text-white md:text-[2.75rem]">

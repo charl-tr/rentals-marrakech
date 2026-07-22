@@ -43,7 +43,7 @@ export default async function AdminMatchingPage() {
         </div>
         <h1 className="mt-5 font-serif text-4xl leading-tight text-[var(--color-charcoal)] md:text-5xl">
           Chaque bien trouve ses{" "}
-          <span className="italic text-[var(--color-terracotta)]">acheteurs</span>,
+          <span className="italic text-[var(--color-accent)]">acheteurs</span>,
           en 2 minutes.
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-[var(--color-stone)]">
