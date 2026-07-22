@@ -29,9 +29,6 @@ const PROJECT_OPTIONS = [
   "Autre",
 ];
 
-const inputCls =
-  "w-full border border-[var(--color-beige-warm)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)] focus:border-[var(--color-terracotta)] focus:outline-none";
-
 const initialState: LeadActionState = { status: "idle" };
 
 export default function ContactForm({
@@ -54,13 +51,13 @@ export default function ContactForm({
   const errors = state.status === "error" ? state.fieldErrors ?? {} : {};
 
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-10">
+    <div className="rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-10">
       <div className="eyebrow">Formulaire</div>
       <h2 className="mt-4 font-serif text-3xl">{title}</h2>
       <p className="mt-3 text-sm text-[var(--color-stone)]">{subtitle}</p>
 
       {state.status === "error" && !state.fieldErrors && (
-        <div className="mt-6 border-l-2 border-[var(--color-terracotta)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)]">
+        <div className="mt-6 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)]">
           {state.message}
         </div>
       )}
@@ -76,22 +73,22 @@ export default function ContactForm({
 
         <div className="grid gap-6 md:grid-cols-2">
           <Field label="Prénom" required error={errors.firstName?.[0]}>
-            <input type="text" name="firstName" className={inputCls} required />
+            <input type="text" name="firstName" className="field" required />
           </Field>
           <Field label="Nom" required error={errors.lastName?.[0]}>
-            <input type="text" name="lastName" className={inputCls} required />
+            <input type="text" name="lastName" className="field" required />
           </Field>
         </div>
 
         <Field label="E-mail" required error={errors.email?.[0]}>
-          <input type="email" name="email" className={inputCls} required />
+          <input type="email" name="email" className="field" required />
         </Field>
 
         <Field label="Téléphone" error={errors.phone?.[0]}>
           <input
             type="tel"
             name="phone"
-            className={inputCls}
+            className="field"
             placeholder="+33 ou +212"
           />
         </Field>
@@ -99,7 +96,7 @@ export default function ContactForm({
         <Field label="Votre projet" required error={errors.project?.[0]}>
           <select
             name="project"
-            className={inputCls}
+            className="field"
             required
             defaultValue={defaultProject ?? ""}
           >
@@ -115,11 +112,7 @@ export default function ContactForm({
         </Field>
 
         <Field label="Votre message" error={errors.message?.[0]}>
-          <textarea
-            name="message"
-            rows={5}
-            className={`${inputCls} resize-none`}
-          />
+          <textarea name="message" rows={5} className="field resize-none" />
         </Field>
 
         <SubmitButton />
@@ -164,11 +157,11 @@ function Field({
     <label className="block">
       <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
         {label}
-        {required && <span className="text-[var(--color-terracotta)]"> *</span>}
+        {required && <span className="text-[var(--color-accent)]"> *</span>}
       </span>
       <div className="mt-2">{children}</div>
       {error && (
-        <div className="mt-1.5 text-[11px] text-[var(--color-terracotta)]">
+        <div className="mt-1.5 text-[11px] text-[var(--color-accent-deep)]">
           {error}
         </div>
       )}
@@ -183,7 +176,7 @@ function Field({
 function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
   if (!advisor) {
     return (
-      <div className="border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-10">
+      <div className="rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-10">
         <div className="eyebrow">Message reçu</div>
         <h2 className="mt-4 font-serif text-3xl">Merci.</h2>
         <p className="mt-3 text-sm text-[var(--color-stone)]">
@@ -201,9 +194,9 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
     .join("");
 
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-10">
+    <div className="rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-10">
       <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center bg-[var(--color-terracotta)] text-white">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-white">
           <Check size={16} strokeWidth={2.5} />
         </div>
         <div className="eyebrow">Message reçu</div>
@@ -218,8 +211,8 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
         interlocuteur. Elle·il vous rappelle sous 24 heures ouvrées.
       </p>
 
-      <div className="mt-10 flex items-start gap-5 border-t border-[var(--color-beige-warm)] pt-8">
-        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden bg-[var(--color-beige)]">
+      <div className="mt-10 flex items-start gap-5 border-t border-[var(--color-border)] pt-8">
+        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[12px] bg-[var(--color-beige)]">
           {advisor.photo ? (
             <Image
               src={advisor.photo}
@@ -246,9 +239,9 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
             {advisor.phone && (
               <a
                 href={`tel:${advisor.phone.replace(/\s/g, "")}`}
-                className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
+                className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
               >
-                <Phone size={14} className="text-[var(--color-terracotta)]" />
+                <Phone size={14} className="text-[var(--color-accent)]" />
                 {advisor.phone}
               </a>
             )}
@@ -257,11 +250,11 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
                 href={`https://wa.me/${advisor.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
+                className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
               >
                 <MessageCircle
                   size={14}
-                  className="text-[var(--color-terracotta)]"
+                  className="text-[var(--color-accent)]"
                 />
                 WhatsApp direct
               </a>
@@ -269,9 +262,9 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
             {advisor.email && (
               <a
                 href={`mailto:${advisor.email}`}
-                className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
+                className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
               >
-                <Mail size={14} className="text-[var(--color-terracotta)]" />
+                <Mail size={14} className="text-[var(--color-accent)]" />
                 {advisor.email}
               </a>
             )}
