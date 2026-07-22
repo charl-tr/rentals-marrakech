@@ -3,12 +3,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   images: {
-    // AVIF en priorité (≈20-30% plus léger que le WebP), fallback WebP.
-    // Allège toutes les images optimisées (fiches, galerie, hero) sans
-    // retoucher les sources.
-    formats: ["image/avif", "image/webp"],
-    // Cache long des variantes optimisées → évite de ré-optimiser à chaque
-    // fois (moins de latence sur les hits froids). 31 jours.
+    // NB : AVIF retiré — l'encodage AVIF des grandes photos Supabase pouvait
+    // dépasser le timeout de l'optimiseur et renvoyer des 500 sur /_next/image.
+    // On garde le WebP par défaut (fiable). Cache long conservé.
     minimumCacheTTL: 2678400,
     remotePatterns: [
       // Photos MR (Wayback-scraped, hébergées sur WP)
