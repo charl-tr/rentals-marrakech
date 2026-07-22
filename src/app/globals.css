@@ -1,41 +1,40 @@
 @import "tailwindcss";
 
 @theme {
-  /* ═══ PALETTE v4 — Contraste éditorial ════════════════════════════
-     Blanc pur + charcoal profond en alternance franche.
-     UN accent terracotta affirmé (un moment par écran).
-     Fini le ton-sur-ton : le noir donne le tempo, le blanc respire. */
+  /* ═══ PALETTE v5 — Soft premium (Aman moderne, 2026) ══════════════
+     Contraste éditorial noir/blanc CONSERVÉ.
+     Nouveau : angles doux, ombres en profondeur, mouvement spring. */
 
   /* ── Backgrounds ────────────────────────────────────────────────*/
-  --color-bg: #ffffff;                /* défaut — crisp */
-  --color-bg-alt: #faf8f4;            /* crème — moments chauds, rare */
-  --color-bg-tint: #f2ede4;           /* tint léger */
-  --color-noir: #16130f;              /* sections dark — drame, tempo */
+  --color-bg: #ffffff;
+  --color-bg-alt: #faf8f4;
+  --color-bg-tint: #f2ede4;
+  --color-noir: #16130f;
 
   /* ── Encre / texte ──────────────────────────────────────────────*/
-  --color-ink: #1a1814;               /* titres, body primary */
-  --color-ink-soft: #3d3731;          /* mid-emphasis */
-  --color-ink-muted: #78726b;         /* meta, labels */
-  --color-ink-hint: #a9a39a;          /* placeholder, hint */
+  --color-ink: #1a1814;
+  --color-ink-soft: #3d3731;
+  --color-ink-muted: #78726b;
+  --color-ink-hint: #a9a39a;
 
-  /* ── Accent terracotta — vif, affirmé, UNIQUE accent ───────────*/
-  --color-accent: #b4552f;            /* CTA, liens actifs, eyebrows */
-  --color-accent-deep: #8f3f22;       /* hover / pressed */
-  --color-accent-light: #c9714f;      /* sur fond sombre */
-  --color-accent-glow: #e0a684;       /* lumineux — texte/liens sur imagerie */
-  --color-accent-soft: #f6e9e2;       /* tint bg */
+  /* ── Accent terracotta — vif, affirmé, unique ──────────────────*/
+  --color-accent: #b4552f;
+  --color-accent-deep: #8f3f22;
+  --color-accent-light: #c9714f;
+  --color-accent-glow: #e0a684;
+  --color-accent-soft: #f6e9e2;
   --color-accent-veil: rgba(180, 85, 47, 0.06);
 
   /* ── Bordures / hairlines ──────────────────────────────────────*/
   --color-border: #e8e3d8;
   --color-border-strong: #c9bfae;
-  --color-border-dark: rgba(255, 255, 255, 0.12); /* sur sections noires */
+  --color-border-dark: rgba(255, 255, 255, 0.12);
 
   /* ── Zones sombres ─────────────────────────────────────────────*/
   --color-dark: var(--color-noir);
   --color-dark-soft: #241f19;
 
-  /* ── Status tokens — teintes sourdes uniquement ───────────────*/
+  /* ── Status ────────────────────────────────────────────────────*/
   --color-success: #5e7266;
   --color-success-soft: #e5ebe6;
   --color-warning: var(--color-accent-light);
@@ -43,7 +42,7 @@
   --color-alert: #a83a25;
   --color-alert-soft: #f6e2dc;
 
-  /* ── LEGACY ALIASES — maintient compat code existant ─────────*/
+  /* ── LEGACY ALIASES ────────────────────────────────────────────*/
   --color-charcoal: var(--color-ink);
   --color-charcoal-soft: var(--color-dark-soft);
   --color-charcoal-deep: var(--color-noir);
@@ -66,10 +65,22 @@
   --font-serif: var(--font-playfair), Georgia, serif;
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 
-  /* ── Ombres minimales ──────────────────────────────────────────*/
-  --shadow-luxe: 0 24px 60px -24px rgba(22, 19, 15, 0.28), 0 6px 16px -8px rgba(22, 19, 15, 0.10);
-  --shadow-card: 0 1px 3px rgba(22, 19, 15, 0.05), 0 2px 12px -6px rgba(22, 19, 15, 0.07);
+  /* ── RADIUS — angles doux (2026) ───────────────────────────────
+     Échelle : 10 (contrôles) · 14 (cartes/panneaux) · 16 (images/hero). */
+  --radius-btn: 10px;
+  --radius-card: 14px;
+  --radius-img: 16px;
+
+  /* ── Ombres — douces, en profondeur (pas plates) ──────────────*/
+  --shadow-soft: 0 1px 2px rgba(22, 19, 15, 0.04), 0 4px 12px -4px rgba(22, 19, 15, 0.06);
+  --shadow-card: 0 2px 6px -2px rgba(22, 19, 15, 0.06), 0 12px 28px -12px rgba(22, 19, 15, 0.12);
+  --shadow-hover: 0 8px 20px -6px rgba(22, 19, 15, 0.14), 0 24px 48px -16px rgba(22, 19, 15, 0.20);
+  --shadow-luxe: 0 16px 40px -16px rgba(22, 19, 15, 0.22), 0 40px 80px -32px rgba(22, 19, 15, 0.26);
   --shadow-inner-soft: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  /* ── Easing — mouvement spring, fluide ────────────────────────*/
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
 }
 
 @layer base {
@@ -92,7 +103,7 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
-    border-radius: 1px;
+    border-radius: 6px;
   }
 
   :where(h1, h2, h3, h4, h5) {
@@ -117,26 +128,22 @@
     @apply mx-auto w-full max-w-[1280px] px-6 lg:px-10;
   }
 
-  /* ── Boutons — hiérarchie claire (fini le gold muddy) ──────────
-     Primaire : noir plein → hover terracotta.
-     Terracotta : le CTA d'accent, plein terracotta.
-     Outline : secondaire, filet fin.
-     Outline-light : sur sections noires. */
+  /* ── Boutons — angles doux, mouvement tactile ─────────────────*/
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-none bg-[var(--color-charcoal)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-[var(--color-accent)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--color-accent)] hover:shadow-[var(--shadow-hover)];
   }
 
   .btn-terracotta,
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-none bg-[var(--color-accent)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-[var(--color-accent-deep)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--color-accent-deep)] hover:shadow-[var(--shadow-hover)];
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-none border border-[var(--color-charcoal)] bg-transparent px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-all duration-300 hover:bg-[var(--color-charcoal)] hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] border border-[var(--color-charcoal)] bg-transparent px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--color-charcoal)] hover:text-white;
   }
 
   .btn-outline-light {
-    @apply inline-flex items-center justify-center gap-2 rounded-none border border-white/50 bg-transparent px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all duration-300 hover:border-white hover:bg-white hover:text-[var(--color-charcoal)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] border border-white/50 bg-transparent px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-[var(--color-charcoal)];
   }
 
   .eyebrow {
@@ -148,51 +155,38 @@
     @apply mx-auto my-6 h-px w-16 bg-[var(--color-accent)];
   }
 
+  /* ── Carte média — image arrondie qui lève au survol ──────────*/
+  .card-media {
+    @apply overflow-hidden rounded-[var(--radius-img)] shadow-[var(--shadow-card)] transition-all duration-[450ms];
+    transition-timing-function: var(--ease-out);
+  }
+  .group:hover .card-media {
+    box-shadow: var(--shadow-hover);
+  }
+
   .hairline-top {
     box-shadow: inset 0 1px 0 rgba(180, 85, 47, 0.18);
   }
 
-  /* ── Hero overlays standardisés ────────────────────────────────*/
+  /* ── Hero overlays ─────────────────────────────────────────────*/
   .hero-overlay-bottom {
-    background: linear-gradient(
-      to top,
-      rgba(22, 19, 15, 0.92) 0%,
-      rgba(22, 19, 15, 0.75) 28%,
-      rgba(22, 19, 15, 0.35) 60%,
-      rgba(22, 19, 15, 0.10) 100%
-    );
+    background: linear-gradient(to top, rgba(22,19,15,0.92) 0%, rgba(22,19,15,0.75) 28%, rgba(22,19,15,0.35) 60%, rgba(22,19,15,0.10) 100%);
   }
   .hero-overlay-top {
-    background: linear-gradient(
-      to bottom,
-      rgba(22, 19, 15, 0.88) 0%,
-      rgba(22, 19, 15, 0.65) 40%,
-      rgba(22, 19, 15, 0.55) 70%,
-      rgba(22, 19, 15, 0.80) 100%
-    );
+    background: linear-gradient(to bottom, rgba(22,19,15,0.88) 0%, rgba(22,19,15,0.65) 40%, rgba(22,19,15,0.55) 70%, rgba(22,19,15,0.80) 100%);
   }
   .hero-overlay-left {
-    background: linear-gradient(
-      to right,
-      rgba(22, 19, 15, 0.45) 0%,
-      rgba(22, 19, 15, 0.15) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(to right, rgba(22,19,15,0.45) 0%, rgba(22,19,15,0.15) 50%, transparent 100%);
   }
 
   .hero-text {
-    text-shadow:
-      0 2px 16px rgba(0, 0, 0, 0.6),
-      0 1px 4px rgba(0, 0, 0, 0.45),
-      0 0 1px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 16px rgba(0,0,0,0.6), 0 1px 4px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);
   }
   .hero-text-soft {
-    text-shadow:
-      0 2px 12px rgba(0, 0, 0, 0.55),
-      0 1px 3px rgba(0, 0, 0, 0.35);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.35);
   }
 
-  /* ── Nav underline — filet qui croît depuis le centre ──────────*/
+  /* ── Nav underline ─────────────────────────────────────────────*/
   .nav-underline {
     position: relative;
   }
@@ -206,7 +200,7 @@
     background: currentColor;
     transform: scaleX(0);
     transform-origin: center;
-    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.32s var(--ease-out);
   }
   .nav-underline:hover::after,
   .nav-underline[data-active="true"]::after {
@@ -218,7 +212,7 @@
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up { animation: fade-up 0.8s ease-out both; }
+.animate-fade-up { animation: fade-up 0.9s var(--ease-out) both; }
 
 @keyframes fade-in {
   from { opacity: 0; }
@@ -230,13 +224,13 @@
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
 }
-.animate-slide-in { animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-in { animation: slide-in 0.4s var(--ease-out) both; }
 
 @keyframes scale-in {
   from { opacity: 0; transform: scale(0.96) translateY(12px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
-.animate-scale-in { animation: scale-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-scale-in { animation: scale-in 0.4s var(--ease-out) both; }
 
 @keyframes ken-burns {
   0%   { transform: scale(1.00) translate3d(0, 0, 0); }
@@ -245,12 +239,8 @@
 .animate-ken-burns { animation: ken-burns 16s ease-out both; will-change: transform; }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-ken-burns,
-  .animate-fade-up,
-  .animate-fade-in,
-  .animate-slide-in,
-  .animate-scale-in,
-  [data-fade-in] {
+  .animate-ken-burns, .animate-fade-up, .animate-fade-in, .animate-slide-in,
+  .animate-scale-in, [data-fade-in] {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;
@@ -259,9 +249,8 @@
 
 [data-fade-in] {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(24px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
   will-change: opacity, transform;
 }
 [data-fade-in][data-visible="true"] {
@@ -280,7 +269,7 @@
 .animate-slow-pulse { animation: slow-pulse 2.5s ease-in-out infinite; }
 
 @keyframes mega-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-.animate-mega-in { animation: mega-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-mega-in { animation: mega-in 0.26s var(--ease-spring) both; }
