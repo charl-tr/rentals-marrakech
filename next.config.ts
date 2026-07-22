@@ -3,6 +3,13 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   images: {
+    // AVIF en priorité (≈20-30% plus léger que le WebP), fallback WebP.
+    // Allège toutes les images optimisées (fiches, galerie, hero) sans
+    // retoucher les sources.
+    formats: ["image/avif", "image/webp"],
+    // Cache long des variantes optimisées → évite de ré-optimiser à chaque
+    // fois (moins de latence sur les hits froids). 31 jours.
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       // Photos MR (Wayback-scraped, hébergées sur WP)
       { protocol: "https", hostname: "www.marrakechrealty.com" },
