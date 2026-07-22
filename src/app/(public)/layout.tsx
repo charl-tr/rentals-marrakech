@@ -4,6 +4,16 @@ import CookieBanner from "@/components/CookieBanner";
 import CompareFloatingDock from "@/components/CompareFloatingDock";
 import ScrollToTop from "@/components/ScrollToTop";
 
+// ── Cache ISR par défaut sur tout le groupe public ────────────────────
+// Les pages de contenu (accueil, catalogue, marché, quartiers, fiches…)
+// sont mises en cache et revalidées toutes les 5 min → navigation quasi
+// instantanée, plus d'aller-retour Supabase à chaque visite.
+//
+// Les pages dynamiques (filtres via searchParams) restent dynamiques
+// automatiquement. Les portails token-gated (mon-espace, mon-bien) sont
+// forcés en dynamique via leur propre layout (temps réel garanti).
+export const revalidate = 300;
+
 const SITE_URL = "https://marrakechrealty.com";
 
 const organizationLd = {
