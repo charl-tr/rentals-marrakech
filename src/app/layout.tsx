@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -9,8 +9,11 @@ const inter = Inter({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+// Cormorant Garamond — serif d'hospitalité de luxe (Aman, boutique-hôtels).
+// Plus délicat et raffiné que Playfair. Utilisé pour tous les titres.
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   variable: "--font-playfair",
   display: "swap",
 });
@@ -51,7 +54,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="fr" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="antialiased">
         {children}
         <Toaster
