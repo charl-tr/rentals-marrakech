@@ -109,7 +109,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
 
         {/* Specs — icônes fines, lisibles d'un coup d'œil */}
         {specs.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[var(--color-ink-soft)]">
+          <div className="mt-5 mb-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[var(--color-ink-soft)]">
             {specs.map((s, i) => {
               const Icon = s.icon;
               return (
@@ -131,7 +131,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
         )}
 
         {/* Pied — prix + CTA */}
-        <div className="mt-auto flex items-end justify-between gap-4 border-t border-[var(--color-border)] pt-5">
+        <div className="mt-auto flex items-end justify-between gap-4 border-t border-[var(--color-border)] pt-6">
           <div>
             <div className="font-serif text-[1.7rem] leading-none text-[var(--color-charcoal)]">
               <PriceDisplay
