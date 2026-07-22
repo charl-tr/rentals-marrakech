@@ -67,11 +67,13 @@ export default async function LouerPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { path = [] } = await params;
-  const sp = await searchParams;
   const route = await resolve(path);
 
   if (route.kind === "notfound") notFound();
   if (route.kind === "fiche") return <PropertyDetail property={route.property} />;
+
+  // searchParams n'est lu que pour les catalogues → les fiches restent statiques (ISR).
+  const sp = await searchParams;
 
   const selected: Record<string, string | undefined> = {};
   ["type", "quartier", "ville", "budget", "chambres", "piscine", "duree", "tri", "vue"].forEach(

@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { supabase } from "./supabase";
 import { supabaseAdmin } from "./supabase-admin";
 import type { AdminSession } from "./auth";
@@ -127,7 +128,7 @@ type PropertyWithNeigh = PropertyRow & {
   neighborhood: { name: string } | null;
 };
 
-export async function getAllProperties(): Promise<Property[]> {
+export const getAllProperties = cache(async (): Promise<Property[]> => {
   const { data, error } = await supabase
     .from("properties")
     .select(PROPERTY_SELECT)
@@ -138,9 +139,9 @@ export async function getAllProperties(): Promise<Property[]> {
   return (data as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
-}
+});
 
-export async function getFeaturedProperties(limit = 3): Promise<Property[]> {
+export const getFeaturedProperties = cache(async (limit = 3): Promise<Property[]> => {
   const { data, error } = await supabase
     .from("properties")
     .select(PROPERTY_SELECT)
@@ -152,9 +153,9 @@ export async function getFeaturedProperties(limit = 3): Promise<Property[]> {
   return (data as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
-}
+});
 
-export async function getPropertyBySlug(slug: string): Promise<Property | null> {
+export const getPropertyBySlug = cache(async (slug: string): Promise<Property | null> => {
   const { data, error } = await supabase
     .from("properties")
     .select(PROPERTY_SELECT)
@@ -165,7 +166,7 @@ export async function getPropertyBySlug(slug: string): Promise<Property | null> 
   if (!data) return null;
   const row = data as PropertyWithNeigh;
   return rowToProperty(row, row.neighborhood?.name ?? null);
-}
+});
 
 /** Batch fetch — évite le N+1 quand on a plusieurs slugs (shortlist, viewed, etc.) */
 export async function getPropertiesBySlugs(slugs: string[]): Promise<Map<string, Property>> {
@@ -186,7 +187,7 @@ export async function getPropertiesBySlugs(slugs: string[]): Promise<Map<string,
  * Admin read — retourne TOUS les biens (publiés ou non) via service-role.
  * À utiliser dans /admin/biens/* uniquement.
  */
-export async function getAllPropertiesAdmin(): Promise<Property[]> {
+export const getAllPropertiesAdmin = cache(async (): Promise<Property[]> => {
   const { data, error } = await supabaseAdmin
     .from("properties")
     .select(PROPERTY_SELECT)
@@ -195,7 +196,7 @@ export async function getAllPropertiesAdmin(): Promise<Property[]> {
   return (data as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
-}
+});
 
 /** Compte des leads par property_slug — pour health check dans l'admin biens. */
 export async function getLeadsCountByProperty(): Promise<Record<string, number>> {
@@ -249,10 +250,10 @@ export async function getFirstEssaouiraProperty(): Promise<Property | null> {
   return rowToProperty(row, row.neighborhood?.name ?? null);
 }
 
-export async function getSimilarProperties(
+export const getSimilarProperties = cache(async (
   current: Property,
   limit = 3
-): Promise<Property[]> {
+): Promise<Property[]> => {
   // Stratégie : même type OU même quartier, exclure le bien actuel
   const { data, error } = await supabase
     .from("properties")
@@ -265,7 +266,7 @@ export async function getSimilarProperties(
   return (data as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
-}
+});
 
 // ════════════════════════════════════════════════════════════════════
 // Advisors
@@ -308,11 +309,11 @@ function rowToAdvisor(r: AdvisorRow): Advisor {
   };
 }
 
-export async function getAllAdvisors(): Promise<Advisor[]> {
+export const getAllAdvisors = cache(async (): Promise<Advisor[]> => {
   const { data, error } = await supabase.from("advisors").select("*");
   if (error) throw error;
   return (data as AdvisorRow[]).map(rowToAdvisor);
-}
+});
 
 export async function getAdvisor(slug: string): Promise<Advisor | null> {
   const { data, error } = await supabase

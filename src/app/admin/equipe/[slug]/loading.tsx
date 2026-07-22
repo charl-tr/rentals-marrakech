@@ -1,0 +1,17 @@
+import { Skeleton, SkeletonPageHeader } from "@/components/admin/_primitives/Skeleton";
+
+export default function AdvisorDetailLoading() {
+  return (
+    <div>
+      <SkeletonPageHeader />
+      <div className="space-y-6 px-5 py-6 md:px-8">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-24 rounded-[14px]" />
+          ))}
+        </div>
+        <Skeleton className="h-64 rounded-[14px]" />
+      </div>
+    </div>
+  );
+}

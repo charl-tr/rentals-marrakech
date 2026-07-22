@@ -112,7 +112,6 @@ export default async function AcheterPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { path = [] } = await params;
-  const sp = await searchParams;
   const route = await resolve(path);
 
   if (route.kind === "notfound") notFound();
@@ -120,6 +119,9 @@ export default async function AcheterPage({
   if (route.kind === "fiche") {
     return <PropertyDetail property={route.property} />;
   }
+
+  // searchParams n'est lu que pour les catalogues → les fiches restent statiques (ISR).
+  const sp = await searchParams;
 
   // Convert searchParams to flat record
   const selected: Record<string, string | undefined> = {};

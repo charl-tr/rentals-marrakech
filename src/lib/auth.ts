@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createSupabaseServerClient } from "./supabase-server";
 import { supabaseAdmin } from "./supabase-admin";
 
@@ -21,7 +22,7 @@ export interface AdminSession {
  * Récupère la session admin courante — null si pas loggé OU si l'email
  * n'est pas dans la whitelist advisors.
  */
-export async function getAdminSession(): Promise<AdminSession | null> {
+export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.email) return null;
@@ -47,7 +48,7 @@ export async function getAdminSession(): Promise<AdminSession | null> {
     advisorRole: (advisor.role as string) ?? "",
     role,
   };
-}
+});
 
 // ── Permission helpers ──────────────────────────────────────────────
 

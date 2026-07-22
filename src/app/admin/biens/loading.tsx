@@ -1,6 +1,6 @@
 import {
   SkeletonPageHeader,
-  SkeletonCard,
+  SkeletonTableRow,
   Skeleton,
 } from "@/components/admin/_primitives/Skeleton";
 
@@ -22,11 +22,14 @@ export default function BiensLoading() {
         </div>
       </div>
 
-      {/* Cards grid skeleton */}
+      {/* Table skeleton — la vue par défaut est un tableau, pas une grille */}
       <div className="px-5 py-6 md:px-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
+          <div className="border-b border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-4 py-3">
+            <Skeleton className="h-3 w-32 rounded-[6px]" />
+          </div>
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <SkeletonCard key={i} />
+            <SkeletonTableRow key={i} />
           ))}
         </div>
       </div>
