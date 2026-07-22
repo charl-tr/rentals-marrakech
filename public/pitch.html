@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marrakech Realty — Transformez votre agence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--alt:#faf8f4;--tint:#f2ede4;--ink:#1a1814;--soft:#3d3731;--muted:#78726b;--hint:#a9a39a;--accent:#6e4f3a;--deep:#4e3625;--asoft:#f3ece1;--border:#e8e3d8;--success:#5e7266}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:500;letter-spacing:-.02em}
+
+/* SLIDES */
+.slide{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--border)}
+.slide-inner{max-width:900px;width:100%;padding:80px 40px}
+.slide:nth-child(even){background:var(--alt)}
+
+/* NAV DOTS */
+.dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:50}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--hint);background:transparent;cursor:pointer;transition:.2s}
+.dot:hover,.dot.active{background:var(--accent);border-color:var(--accent)}
+
+/* TYPOGRAPHY */
+.ey{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.32em;color:var(--accent)}
+.big{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.1;margin-top:16px}
+.mid{font-size:clamp(1.6rem,3.5vw,2.6rem);line-height:1.15;margin-top:12px}
+.body{font-size:16px;line-height:1.75;color:var(--muted);margin-top:24px;max-width:640px}
+.body strong{color:var(--ink);font-weight:500}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin:48px 0 0}
+.stat{background:var(--bg);padding:32px 24px;text-align:center}
+.slide:nth-child(even) .stat{background:var(--alt)}
+.stat-v{font-family:'Playfair Display',serif;font-size:2.4rem;color:var(--ink)}
+.stat-l{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-top:6px}
+
+/* PAIN POINTS */
+.pain{display:grid;grid-template-columns:64px 1fr;gap:20px;margin-top:48px}
+.pain+.pain{margin-top:32px}
+.pain-n{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--accent);opacity:.25;text-align:right;padding-top:4px}
+.pain-title{font-weight:600;font-size:15px;color:var(--ink)}
+.pain-text{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+
+/* BEFORE/AFTER */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:48px;border:1px solid var(--border)}
+.ba-col{padding:32px}
+.ba-col:first-child{border-right:1px solid var(--border)}
+.ba-head{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.22em;margin-bottom:20px}
+.ba-head.before{color:var(--hint)}
+.ba-head.after{color:var(--accent)}
+.ba-item{font-size:13.5px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:start;gap:8px;line-height:1.5}
+.ba-item:last-child{border-bottom:none}
+.ba-icon{flex-shrink:0;margin-top:2px;font-size:14px}
+
+/* FEATURES GRID */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:48px}
+.feat{padding:28px 24px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.feat:nth-child(2n){border-right:none}
+.feat-title{font-weight:600;font-size:14px;color:var(--ink)}
+.feat-text{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+/* PRICING */
+.price-card{border:2px solid var(--accent);padding:48px;margin-top:48px;text-align:center}
+.price-v{font-family:'Playfair Display',serif;font-size:3rem}
+.price-per{font-size:14px;color:var(--muted);margin-top:4px}
+.price-vs{margin-top:20px;font-size:13px;color:var(--hint);font-style:italic}
+.price-includes{margin-top:32px;text-align:left;columns:2;gap:32px;font-size:13px;color:var(--soft);line-height:2}
+
+/* CTA */
+.cta-btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:white;padding:16px 40px;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;text-decoration:none;margin-top:32px;transition:.2s}
+.cta-btn:hover{background:var(--accent)}
+
+/* QUOTE */
+.quote{border-left:3px solid var(--accent);padding:24px 0 24px 32px;margin-top:48px}
+.quote p{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:var(--soft);line-height:1.6}
+.quote cite{display:block;margin-top:12px;font-size:12px;color:var(--hint);font-style:normal;text-transform:uppercase;letter-spacing:.12em}
+
+/* FOOTER */
+.foot{text-align:center;padding:48px;font-size:12px;color:var(--hint)}
+
+@media(max-width:768px){
+  .slide-inner{padding:60px 24px}
+  .stats{grid-template-columns:1fr}
+  .ba{grid-template-columns:1fr}
+  .ba-col:first-child{border-right:none;border-bottom:1px solid var(--border)}
+  .fg{grid-template-columns:1fr}
+  .feat{border-right:none}
+  .dots{display:none}
+  .price-includes{columns:1}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="dots" id="dots"></nav>
+
+<!-- SLIDE 1 — HOOK -->
+<section class="slide" id="s1">
+<div class="slide-inner" style="text-align:center;max-width:800px">
+<div class="ey">Pour les agences immobilieres d'exception</div>
+<h1 class="big">Vous vendez du reve.<br>Votre outil de travail devrait etre a la hauteur.</h1>
+<p class="body" style="margin-left:auto;margin-right:auto">La plupart des agences de luxe a Marrakech travaillent avec WhatsApp, Excel et un site WordPress vieillissant. Pendant ce temps, elles perdent des leads, des mandats et de l'argent &mdash; sans meme le savoir.</p>
+<a href="#s2" class="cta-btn" style="margin-top:48px">Decouvrir comment &darr;</a>
+</div>
+</section>
+
+<!-- SLIDE 2 — LE PROBLEME -->
+<section class="slide" id="s2">
+<div class="slide-inner">
+<div class="ey">Le probleme</div>
+<h2 class="mid">Chaque lead oublie est une commission perdue.</h2>
+<div class="pain">
+<div class="pain-n">1</div>
+<div><div class="pain-title">Les leads tombent entre les mailles.</div><div class="pain-text">Un acheteur envoie un message le vendredi soir. Lundi matin, il a deja signe ailleurs. Sans systeme de suivi, personne ne le rappelle a temps.</div></div>
+</div>
+<div class="pain">
+<div class="pain-n">2</div>
+<div><div class="pain-title">Le proprietaire ne sait pas ou en est son bien.</div><div class="pain-text">Il appelle toutes les semaines : "Combien de visites ? Des offres ?" Votre conseiller improvise une reponse. Le proprio perd confiance. Il change d'agence.</div></div>
+</div>
+<div class="pain">
+<div class="pain-n">3</div>
+<div><div class="pain-title">Aucune visibilite sur la performance.</div><div class="pain-text">Combien de leads ce mois-ci ? Quel conseiller convertit le mieux ? Quel bien attire le plus de demandes ? Vous ne savez pas. Vous gerez a l'instinct.</div></div>
+</div>
+<div class="pain">
+<div class="pain-n">4</div>
+<div><div class="pain-title">Le site web ne genere pas de leads.</div><div class="pain-text">Il existe. Il est "joli". Mais il ne convertit pas. Pas d'estimation en ligne, pas de capture email, pas de parcours acheteur. C'est une vitrine, pas un outil.</div></div>
+</div>
+</div>
+</section>
+
+<!-- SLIDE 3 — AVANT / APRES -->
+<section class="slide" id="s3">
+<div class="slide-inner">
+<div class="ey">La transformation</div>
+<h2 class="mid">Avant et apres.</h2>
+<p class="body">Pas de revolution. Des micro-ameliorations a chaque etape du process, qui s'additionnent pour changer le resultat final.</p>
+<div class="ba">
+<div class="ba-col">
+<div class="ba-head before">Aujourd'hui</div>
+<div class="ba-item"><span class="ba-icon">&#x2717;</span> Leads dans WhatsApp, Excel ou la tete du conseiller</div>
+<div class="ba-item"><span class="ba-icon">&#x2717;</span> Premiere reponse en 24-72h</div>
+<div class="ba-item"><span class="ba-icon">&#x2717;</span> Proprio appelle pour savoir ou ca en est</div>
+<div class="ba-item"><span class="ba-icon">&#x2717;</span> Matching acheteur/bien : "je crois que Mehdi cherchait ca"</div>
+<div class="ba-item"><span class="ba-icon">&#x2717;</span> Site vitrine sans capture de leads</div>
+<div class="ba-item"><span class="ba-icon">&#x2717;</span> Aucune donnee sur ce qui marche</div>
+</div>
+<div class="ba-col">
+<div class="ba-head after">Avec la plateforme</div>
+<div class="ba-item"><span class="ba-icon">&#x2713;</span> Pipeline CRM avec SLA : chaque lead est suivi, aucun oubli</div>
+<div class="ba-item"><span class="ba-icon">&#x2713;</span> Premiere reponse en &lt; 4h (x7 le taux de conversion)</div>
+<div class="ba-item"><span class="ba-icon">&#x2713;</span> Portail proprietaire : il voit tout en temps reel, zero appel</div>
+<div class="ba-item"><span class="ba-icon">&#x2713;</span> Matching automatique : score 0-100, shortlist instantanee</div>
+<div class="ba-item"><span class="ba-icon">&#x2713;</span> Site haut de gamme avec estimation, carte, comparaison</div>
+<div class="ba-item"><span class="ba-icon">&#x2713;</span> Dashboard directeur : leads, visites, offres, conversions</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SLIDE 4 — CE QUI EST INCLUS -->
+<section class="slide" id="s4">
+<div class="slide-inner">
+<div class="ey">La plateforme</div>
+<h2 class="mid">Tout ce dont votre agence a besoin. Rien de superflu.</h2>
+<p class="body">Site public + CRM + portails clients, dans un seul outil integre. Pas de plugins, pas d'abonnements multiples, pas de bricolage.</p>
+<div class="fg">
+<div class="feat"><div class="feat-title">Site immobilier premium</div><div class="feat-text">Design niveau Barnes/Christie's. Catalogue, fiches bien, galerie, carte interactive, SEO complet. Vos biens meritent mieux qu'un template.</div></div>
+<div class="feat"><div class="feat-title">Estimation en ligne</div><div class="feat-text">L'acheteur ou le vendeur entre son bien, obtient une fourchette. Vous capturez son email. Funnel d'acquisition #1.</div></div>
+<div class="feat"><div class="feat-title">CRM immobilier</div><div class="feat-text">Pipeline leads, kanban, SLA, export CSV. Chaque lead a un statut, un responsable, une deadline. Rien ne tombe.</div></div>
+<div class="feat"><div class="feat-title">Next-Best-Action</div><div class="feat-text">Chaque matin, le conseiller sait exactement quoi faire en premier. "Relancer ce client, visite il y a 48h." Pas de reflexion, pas d'oubli.</div></div>
+<div class="feat"><div class="feat-title">Portail proprietaire</div><div class="feat-text">Le vendeur voit en temps reel : visites, offres, progression. Il se sent pris en charge. Il ne change pas d'agence.</div></div>
+<div class="feat"><div class="feat-title">Portail acheteur</div><div class="feat-text">Shortlist curee par le conseiller, timeline d'achat, contact direct. L'acheteur international se sent accompagne.</div></div>
+<div class="feat"><div class="feat-title">Matching automatique</div><div class="feat-text">Un bien rentre, les acheteurs compatibles sont identifies en 0 secondes. Score sur budget, type, quartier, chambres.</div></div>
+<div class="feat"><div class="feat-title">Calculette frais Maroc</div><div class="feat-text">Droits d'enregistrement, conservation fonciere, notaire, plus-value. Baremes 2026. L'acheteur etranger est rassure.</div></div>
+</div>
+</div>
+</section>
+
+<!-- SLIDE 5 — CHIFFRES -->
+<section class="slide" id="s5">
+<div class="slide-inner" style="text-align:center">
+<div class="ey">En chiffres</div>
+<h2 class="mid">Ce que represente cette plateforme.</h2>
+<div class="stats">
+<div class="stat"><div class="stat-v">55</div><div class="stat-l">Features en production</div></div>
+<div class="stat"><div class="stat-v">88 %</div><div class="stat-l">Taux de completion</div></div>
+<div class="stat"><div class="stat-v">2-3 sem.</div><div class="stat-l">Deploiement</div></div>
+</div>
+<div class="quote">
+<p>Une agence parisienne facturerait 50 000 a 80 000 &euro; pour une plateforme equivalente &mdash; et mettrait 6 a 9 mois a la livrer.</p>
+<cite>Benchmark agences digitales immobilieres, 2025-2026</cite>
+</div>
+</div>
+</section>
+
+<!-- SLIDE 6 — COMPARAISON CONCURRENCE -->
+<section class="slide" id="s6">
+<div class="slide-inner">
+<div class="ey">Pourquoi pas un CRM existant ?</div>
+<h2 class="mid">Ce qu'Apimo, Hektor ou HubSpot ne font pas.</h2>
+<p class="body">Les CRM generiques gerent des contacts. Les CRM immo gerent des annonces. <strong>Aucun ne fait les deux, avec un site integre et des portails clients.</strong></p>
+<div class="fg" style="margin-top:32px">
+<div class="feat"><div class="feat-title">Portail proprietaire</div><div class="feat-text">Ni Apimo, ni Hektor, ni HubSpot ne proposent un espace ou le vendeur suit l'avancement de son mandat en temps reel.</div></div>
+<div class="feat"><div class="feat-title">Portail acheteur</div><div class="feat-text">Aucun concurrent ne propose un espace personnalise token-gate avec shortlist curee et timeline d'achat.</div></div>
+<div class="feat"><div class="feat-title">Next-Best-Action</div><div class="feat-text">Les CRM generiques proposent des "workflows" a configurer soi-meme. Ici, c'est pre-configure pour l'immobilier : 10 regles metier, zero setup.</div></div>
+<div class="feat"><div class="feat-title">Estimation + lead capture</div><div class="feat-text">Aucun CRM immo n'inclut un outil d'estimation en ligne qui capture automatiquement les vendeurs potentiels.</div></div>
+</div>
+</div>
+</section>
+
+<!-- SLIDE 7 — PRICING -->
+<section class="slide" id="s7">
+<div class="slide-inner" style="text-align:center">
+<div class="ey">Investissement</div>
+<h2 class="mid">Un cout. Un resultat.</h2>
+<div class="price-card">
+<div class="ey">Plateforme complete</div>
+<div class="price-v" style="margin-top:16px">Sur devis</div>
+<div class="price-per">Setup + accompagnement mensuel</div>
+<div class="price-vs">Equivalent marche : 50 000 &ndash; 80 000 &euro; via agence parisienne</div>
+<div class="price-includes">
+&#x2713; Site immobilier premium sur-mesure<br>
+&#x2713; CRM pipeline complet<br>
+&#x2713; Portail proprietaire<br>
+&#x2713; Portail acheteur<br>
+&#x2713; Matching automatique<br>
+&#x2713; Next-Best-Action<br>
+&#x2713; Estimation en ligne + lead capture<br>
+&#x2713; Carte interactive<br>
+&#x2713; Calculette frais Maroc<br>
+&#x2713; Rapport marche<br>
+&#x2713; Formation equipe<br>
+&#x2713; Support et evolution continue
+</div>
+</div>
+<p class="body" style="margin-left:auto;margin-right:auto;margin-top:32px;text-align:center">Le cout de ne rien faire ? Chaque lead oublie est une commission perdue.<br>Sur 12 mois, ca represente bien plus que l'investissement dans la plateforme.</p>
+</div>
+</section>
+
+<!-- SLIDE 8 — CTA -->
+<section class="slide" id="s8" style="background:var(--ink);border:none">
+<div class="slide-inner" style="text-align:center">
+<div class="ey" style="color:var(--hint)">Prochaine etape</div>
+<h2 class="big" style="color:white">30 minutes pour vous montrer ce que ca change.</h2>
+<p style="color:var(--hint);font-size:16px;margin-top:24px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7">Une demonstration live, sur vos biens, avec vos chiffres. Pas de PowerPoint. Pas d'engagement. Juste une conversation.</p>
+<a href="mailto:charles.terrier.7@gmail.com?subject=Demo%20plateforme%20immobiliere" class="cta-btn" style="background:var(--accent);margin-top:40px">Planifier une demo</a>
+<p style="color:var(--hint);font-size:12px;margin-top:24px">charles.terrier.7@gmail.com</p>
+</div>
+</section>
+
+<div class="foot">Marrakech Realty &middot; Document confidentiel &middot; 2026</div>
+
+<script>
+var slides=document.querySelectorAll('.slide');
+var dotsEl=document.getElementById('dots');
+slides.forEach(function(s,i){
+  var d=document.createElement('button');
+  d.className='dot';
+  d.setAttribute('aria-label','Slide '+(i+1));
+  d.onclick=function(){s.scrollIntoView({behavior:'smooth'})};
+  dotsEl.appendChild(d);
+});
+var dots=document.querySelectorAll('.dot');
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var idx=Array.from(slides).indexOf(e.target);
+      dots.forEach(function(d,i){d.classList.toggle('active',i===idx)});
+    }
+  });
+},{threshold:0.5});
+slides.forEach(function(s){obs.observe(s)});
+</script>
+</body>
+</html>

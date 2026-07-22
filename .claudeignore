@@ -1,0 +1,12 @@
+package-lock.json
+node_modules/
+.next/
+.vercel/
+public/market-intel.html
+public/prospectus.html
+public/pitch.html
+*.ico
+*.png
+*.svg
+*.woff
+*.woff2
