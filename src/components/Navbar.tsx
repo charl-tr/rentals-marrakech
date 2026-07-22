@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 import FavoriteCounter from "@/components/FavoriteCounter";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 
@@ -181,7 +181,7 @@ export default function Navbar() {
             textColor={textColor}
             underline={underline}
           >
-            <SimplePanel links={VENDRE_LINKS} footerHref="/deposer-un-bien" footerLabel="Déposer un bien →" />
+            <SimplePanel links={VENDRE_LINKS} footerHref="/deposer-un-bien" footerLabel="Déposer un bien" />
           </NavDropdown>
 
           <NavLink href="/journal" label="Journal" textColor={textColor} underline={underline} />
@@ -317,21 +317,25 @@ function MegaPanel({
   footerLabel: string;
 }) {
   return (
-    <div className="overflow-hidden rounded-[14px] border border-white/40 bg-[rgba(247,245,240,0.82)] shadow-[var(--shadow-luxe)] backdrop-blur-2xl">
-      <div className="grid grid-cols-4 gap-x-8 gap-y-2 p-8">
+    <div className="overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-white shadow-[var(--shadow-luxe)] ring-1 ring-black/[0.03]">
+      <div className="grid grid-cols-4 gap-x-6 gap-y-2 p-7">
         {columns.map((col) => (
           <div key={col.heading}>
-            <div className="text-[9px] font-medium uppercase tracking-[0.28em] text-[var(--color-accent)]">
+            <div className="px-3 text-[9px] font-medium uppercase tracking-[0.28em] text-[var(--color-accent)]">
               {col.heading}
             </div>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-3 space-y-0.5">
               {col.links.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
+                    className="group/item flex items-center justify-between rounded-[10px] px-3 py-2 text-[13px] text-[var(--color-ink-soft)] transition-colors duration-200 hover:bg-[var(--color-bg-alt)] hover:text-[var(--color-charcoal)]"
                   >
-                    {l.label}
+                    <span>{l.label}</span>
+                    <ChevronRight
+                      size={13}
+                      className="-translate-x-1 text-[var(--color-accent)] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100"
+                    />
                   </Link>
                 </li>
               ))}
@@ -341,9 +345,10 @@ function MegaPanel({
       </div>
       <Link
         href={footerHref}
-        className="block border-t border-white/40 bg-[rgba(239,234,225,0.6)] px-8 py-3.5 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+        className="flex items-center justify-center gap-1.5 border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] px-8 py-3.5 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-accent)] transition-colors duration-200 hover:bg-[var(--color-charcoal)] hover:text-white"
       >
-        {footerLabel} →
+        {footerLabel}
+        <ChevronRight size={12} />
       </Link>
     </div>
   );
@@ -359,24 +364,29 @@ function SimplePanel({
   footerLabel: string;
 }) {
   return (
-    <div className="overflow-hidden rounded-[14px] border border-white/40 bg-[rgba(247,245,240,0.82)] shadow-[var(--shadow-luxe)] backdrop-blur-2xl">
+    <div className="overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-white shadow-[var(--shadow-luxe)] ring-1 ring-black/[0.03]">
       <ul className="p-2">
         {links.map((l) => (
           <li key={l.href}>
             <Link
               href={l.href}
-              className="block px-4 py-2.5 text-[13px] text-[var(--color-charcoal)] transition-colors hover:bg-white/60 hover:text-[var(--color-accent)]"
+              className="group/item flex items-center justify-between rounded-[10px] px-3.5 py-2.5 text-[13px] text-[var(--color-ink-soft)] transition-colors duration-200 hover:bg-[var(--color-bg-alt)] hover:text-[var(--color-charcoal)]"
             >
-              {l.label}
+              <span>{l.label}</span>
+              <ChevronRight
+                size={13}
+                className="-translate-x-1 text-[var(--color-accent)] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100"
+              />
             </Link>
           </li>
         ))}
       </ul>
       <Link
         href={footerHref}
-        className="block border-t border-white/40 bg-[rgba(239,234,225,0.6)] px-4 py-3 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+        className="flex items-center justify-center gap-1.5 border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] px-4 py-3 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-accent)] transition-colors duration-200 hover:bg-[var(--color-charcoal)] hover:text-white"
       >
         {footerLabel}
+        <ChevronRight size={12} />
       </Link>
     </div>
   );
