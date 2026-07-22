@@ -9,7 +9,7 @@ import {
   type Property,
   type PropertyType,
 } from "@/data/properties";
-import { getAllPropertySlugs, getPropertyBySlug } from "@/lib/db";
+import { getPropertyBySlug } from "@/lib/db";
 
 const VENTE_BASE = (p: Property) =>
   p.listing === "vente" || p.type === "programme-neuf";
@@ -54,16 +54,6 @@ async function resolve(path: string[]): Promise<ResolvedRoute> {
   }
 
   return { kind: "notfound" };
-}
-
-// Pré-génère toutes les fiches vente existantes au build → servies en statique
-// (instantané, zéro rendu à froid). Les catalogues/taxonomies (qui lisent
-// searchParams) restent rendus à la demande.
-export async function generateStaticParams() {
-  const all = await getAllPropertySlugs();
-  return all
-    .filter((p) => p.listing === "vente" || p.type === "programme-neuf")
-    .map((p) => ({ path: [p.slug] }));
 }
 
 export async function generateMetadata({
