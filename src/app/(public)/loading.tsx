@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-// Écran de chargement — affiché instantanément à chaque navigation.
-// Logo Marrakech Realty au centre, arc terracotta qui balaie lentement,
-// respiration douce. Couvre toute latence avec élégance.
+// Écran de chargement — affiché uniquement si le serveur est réellement
+// lent (pages en cache ISR = quasi jamais). Apparaît instantanément, sans
+// fondu, pour ne pas ajouter de délai perçu.
 
 export default function Loading() {
   return (
-    <div className="animate-fade-in flex min-h-[70vh] flex-col items-center justify-center gap-6 bg-[var(--color-cream)]">
+    <div className="flex min-h-[70vh] flex-col items-center justify-center gap-6 bg-[var(--color-cream)]">
       <div className="relative flex h-28 w-28 items-center justify-center">
         {/* Anneau fin + arc terracotta qui tourne */}
         <svg
