@@ -16,6 +16,10 @@ import PressMentions from "@/components/PressMentions";
 import HeroSearch from "@/components/HeroSearch";
 import { getFeaturedProperties, getFirstEssaouiraProperty } from "@/lib/db";
 
+// ISR — la home est mise en cache et revalidée toutes les 5 min.
+// Navigation quasi instantanée (pas d'aller-retour Supabase à chaque visite).
+export const revalidate = 300;
+
 const STATS = [
   { value: "2000", label: "Fondée en" },
   { value: "380+", label: "Biens accompagnés" },
