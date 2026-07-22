@@ -10,8 +10,8 @@ import ScrollToTop from "@/components/ScrollToTop";
 // instantanée, plus d'aller-retour Supabase à chaque visite.
 //
 // Les pages dynamiques (filtres via searchParams) restent dynamiques
-// automatiquement. Les portails token-gated (mon-espace, mon-bien) sont
-// forcés en dynamique via leur propre layout (temps réel garanti).
+// automatiquement. Les portails token-gated (mon-espace, mon-bien) ont
+// quitté ce groupe pour (portal) — chrome privé dédié + temps réel.
 export const revalidate = 300;
 
 const SITE_URL = "https://marrakechrealty.com";
