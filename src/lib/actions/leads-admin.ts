@@ -6,7 +6,7 @@
 // logique multi-étapes complexe.
 // ════════════════════════════════════════════════════════════════════
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 import { isDirector, requireAdminSession, type AdminSession } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase-admin";
@@ -321,5 +321,5 @@ function revalidateLeadPaths(leadId: string) {
   revalidatePath("/admin");
   revalidatePath("/admin/leads");
   revalidatePath(`/admin/leads/${leadId}`);
-  revalidateTag("admin");
+  updateTag("admin");
 }

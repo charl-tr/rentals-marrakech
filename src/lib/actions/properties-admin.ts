@@ -5,7 +5,7 @@
 // Toutes guardées par `requiredRole: "director"` via defineMutation.
 // ════════════════════════════════════════════════════════════════════
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 import { isDirector, requireAdminSession } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase-admin";
@@ -114,7 +114,7 @@ export async function updatePropertyStatus(
   revalidatePath(`/admin/biens/${slug}`);
   revalidatePath(`/acheter/${slug}`);
   revalidatePath(`/louer/${slug}`);
-  revalidateTag("admin");
+  updateTag("admin");
 
   return { status: "success", message: `Statut mis à jour.` };
 }
@@ -155,7 +155,7 @@ export async function updatePropertyPrice(
   revalidatePath(`/admin/biens/${slug}`);
   revalidatePath(`/acheter/${slug}`);
   revalidatePath(`/louer/${slug}`);
-  revalidateTag("admin");
+  updateTag("admin");
 
   return {
     status: "success",
