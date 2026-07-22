@@ -147,7 +147,7 @@ export default function SavoirAcheterPage() {
                   className="mt-0.5 flex-shrink-0 text-[var(--color-terracotta)]"
                 />
                 <div>
-                  <div className="font-serif text-[15px] text-[var(--color-charcoal)] group-hover:text-[var(--color-terracotta)]">
+                  <div className="text-[14px] font-medium text-[var(--color-charcoal)] group-hover:text-[var(--color-terracotta)]">
                     {c.title}
                   </div>
                   <div className="mt-1 text-[11px] text-[var(--color-stone)]">

@@ -137,7 +137,7 @@ function PropertyCard({
         )}
         <div
           className={`absolute left-0 top-0 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-white ${
-            isVente(pin) ? "bg-[var(--color-terracotta)]" : "bg-[#5a7a6e]"
+            isVente(pin) ? "bg-[var(--color-accent)]" : "bg-[var(--color-success)]"
           }`}
         >
           {isVente(pin) ? "Achat" : "Location"}
@@ -382,10 +382,10 @@ function DesktopPanel({
         <div className="flex items-center gap-3">
           <div className="hidden flex-col gap-1 text-[10px] text-[var(--color-stone)] xl:flex">
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 bg-[#c0735a]" />Achat
+              <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-accent)]" />Achat
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 bg-[#5a7a6e]" />Location
+              <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success)]" />Location
             </span>
           </div>
           <button

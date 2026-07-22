@@ -111,7 +111,7 @@ function makeClusterBadge(count: number) {
           position:relative;
           width:${inner}px;height:${inner}px;
           border-radius:50%;
-          background:#1c1815;
+          background:#17140f;
           color:#fff;
           display:flex;align-items:center;justify-content:center;
           font-size:${fontSize}px;font-weight:600;
@@ -142,9 +142,10 @@ function makeBadge(pin: PropertyPin, state: "default" | "hover" | "active") {
       ? `${Math.round(pin.price / 1_000)}k`
       : String(pin.price);
 
-  const base  = isVente ? "#b8694f" : "#4e6e62";
-  const dark  = isVente ? "#9a5438" : "#3a5a4e";
-  const black = "#1c1815";
+  // Tokens v7 : vente = accent (#9c7256), location = success (#5e7266).
+  const base  = isVente ? "#9c7256" : "#5e7266";
+  const dark  = isVente ? "#7c5942" : "#4a5a50";
+  const black = "#17140f";
 
   const bg     = state === "active" ? black : state === "hover" ? dark : base;
   const scale  = state === "active" ? 1.22 : state === "hover" ? 1.1 : 1;

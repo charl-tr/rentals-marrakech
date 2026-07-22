@@ -7,11 +7,13 @@ import type { Advisor, Property } from "@/data/properties";
 // avec le site. Responsive via max-width + table layout.
 // ════════════════════════════════════════════════════════════════════
 
-const BRAND_CHARCOAL = "#1c1815";
-const BRAND_TERRACOTTA = "#945B2C";
-const BRAND_CREAM = "#faf6f0";
-const BRAND_STONE = "#8a7f70";
-const BRAND_BEIGE = "#e8ddcb";
+// Aligné sur la palette v7 (globals.css @theme). Les emails ne peuvent pas
+// référencer les vars CSS → on reproduit les hex des tokens à l'identique.
+const BRAND_CHARCOAL = "#23201b"; // --color-ink
+const BRAND_TERRACOTTA = "#9c7256"; // --color-accent
+const BRAND_CREAM = "#f7f5f0"; // --color-bg-alt
+const BRAND_STONE = "#877f73"; // --color-ink-muted
+const BRAND_BEIGE = "#e6e0d5"; // --color-border
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://marrakechrealty.com";
 

@@ -423,7 +423,7 @@ export default async function PropertyDetail({ property }: { property: Property 
                       <dd className="mt-2">
                         <a
                           href={`tel:${advisor.phone.replace(/\s/g, "")}`}
-                          className="font-serif text-[16px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
+                          className="text-[15px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
                         >
                           {advisor.phone}
                         </a>
@@ -440,7 +440,7 @@ export default async function PropertyDetail({ property }: { property: Property 
                           )}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-serif text-[16px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
+                          className="text-[15px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
                         >
                           WhatsApp
                         </a>
@@ -453,7 +453,7 @@ export default async function PropertyDetail({ property }: { property: Property 
                       <dd className="mt-2">
                         <a
                           href={`mailto:${advisor.email}?subject=${encodeURIComponent(`Réf. ${property.reference} — ${property.title}`)}`}
-                          className="font-serif text-[16px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
+                          className="text-[15px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
                         >
                           {advisor.email.split("@")[0]}@…
                         </a>

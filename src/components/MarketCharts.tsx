@@ -15,10 +15,13 @@ import {
 } from "recharts";
 import type { NeighborhoodStat, MarketStats } from "@/lib/db";
 
-const TERRACOTTA = "#c0735a";
-const STONE = "#7a7468";
-const CREAM = "#f5f0e8";
-const CHARCOAL = "#2a2a28";
+// Palette ancrée aux tokens v7 (globals.css @theme) — recharts ne lit pas les
+// vars CSS, donc on reproduit les hex des tokens.
+const TERRACOTTA = "#9c7256"; // --color-accent
+const STONE = "#877f73"; // --color-ink-muted
+const CREAM = "#f7f5f0"; // --color-bg-alt
+const CHARCOAL = "#23201b"; // --color-ink
+const BORDER = "#e6e0d5"; // --color-border
 
 // ── Formatter prix ────────────────────────────────────────────────────────────
 const fmtEur = (v: number) =>
@@ -37,12 +40,12 @@ export function PricePerSqmChart({ data }: { data: NeighborhoodStat[] }) {
         margin={{ top: 8, right: 8, bottom: 64, left: 16 }}
         barCategoryGap="32%"
       >
-        <CartesianGrid vertical={false} stroke="#e8e2d8" strokeDasharray="0" />
+        <CartesianGrid vertical={false} stroke={BORDER} strokeDasharray="0" />
         <XAxis
           dataKey="label"
           tick={{ fontSize: 10, fill: STONE, fontFamily: "inherit" }}
           tickLine={false}
-          axisLine={{ stroke: "#e8e2d8" }}
+          axisLine={{ stroke: BORDER }}
           angle={-40}
           textAnchor="end"
           interval={0}
@@ -58,18 +61,18 @@ export function PricePerSqmChart({ data }: { data: NeighborhoodStat[] }) {
           formatter={(value) => [fmtEur(Number(value)), "Prix moyen / m²"]}
           contentStyle={{
             background: "white",
-            border: "1px solid #e8e2d8",
-            borderRadius: 0,
+            border: "1px solid #e6e0d5",
+            borderRadius: 12,
             fontSize: 12,
             fontFamily: "inherit",
           }}
           cursor={{ fill: CREAM }}
         />
-        <Bar dataKey="avgPricePerSqm" radius={0}>
+        <Bar dataKey="avgPricePerSqm" radius={[6, 6, 0, 0]}>
           {data.map((entry, i) => (
             <Cell
               key={entry.slug}
-              fill={i === 0 ? TERRACOTTA : i < 3 ? "#b86a52" : "#d4a090"}
+              fill={i === 0 ? TERRACOTTA : i < 3 ? "#7c5942" : "#b3927a"}
             />
           ))}
         </Bar>
@@ -79,9 +82,10 @@ export function PricePerSqmChart({ data }: { data: NeighborhoodStat[] }) {
 }
 
 // ── Pie chart — répartition par type ─────────────────────────────────────────
+// Rampe analogue tokenisée (accent → neutres chauds), sobre et cohérente.
 const PIE_COLORS = [
-  "#c0735a", "#8a6e5f", "#5a7a6e", "#7a9e94", "#b8a898",
-  "#d4b8a8", "#a89080",
+  "#9c7256", "#7c5942", "#b3927a", "#5e7266", "#877f73",
+  "#cabfad", "#d8c3ab",
 ];
 
 export function TypeDistributionChart({
@@ -119,8 +123,8 @@ export function TypeDistributionChart({
           formatter={(value, name) => [value, name]}
           contentStyle={{
             background: "white",
-            border: "1px solid #e8e2d8",
-            borderRadius: 0,
+            border: "1px solid #e6e0d5",
+            borderRadius: 12,
             fontSize: 12,
             fontFamily: "inherit",
           }}

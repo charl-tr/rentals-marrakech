@@ -47,7 +47,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
   return (
     <Link
       href={href}
-      className={`group flex flex-col overflow-hidden rounded-[18px] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)] transition-shadow duration-500 hover:shadow-[var(--shadow-hover)] ${
+      className={`group flex flex-col overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)] transition-shadow duration-500 hover:shadow-[var(--shadow-hover)] ${
         isUnavailable ? "opacity-80" : ""
       }`}
     >
