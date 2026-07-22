@@ -135,7 +135,7 @@ export default async function JournalArticlePage({
  <div className="mt-12 grid gap-12 md:grid-cols-2">
  {others.map((o) => (
  <Link key={o.slug} href={`/journal/${o.slug}`} className="group block">
- <div className="relative aspect-[3/2] overflow-hidden bg-[var(--color-charcoal)]">
+ <div className="relative aspect-[3/2] overflow-hidden rounded-[14px] bg-[var(--color-charcoal)]">
  <Image
  src={o.imageHero}
  alt={o.title}

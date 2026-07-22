@@ -43,7 +43,7 @@ export default async function JournalPage() {
               href={`/journal/${hero.slug}`}
               className="group grid gap-12 lg:grid-cols-[1.3fr_1fr] lg:items-center"
             >
-              <div className="relative aspect-[5/4] overflow-hidden bg-[var(--color-charcoal)]">
+              <div className="relative aspect-[5/4] overflow-hidden rounded-[16px] bg-[var(--color-charcoal)]">
                 <Image
                   src={hero.imageHero}
                   alt={hero.title}
@@ -96,7 +96,7 @@ export default async function JournalPage() {
                   href={`/journal/${a.slug}`}
                   className="group block"
                 >
-                  <div className="relative aspect-[3/2] overflow-hidden bg-[var(--color-charcoal)]">
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-[14px] bg-[var(--color-charcoal)]">
                     <Image
                       src={a.imageHero}
                       alt={a.title}

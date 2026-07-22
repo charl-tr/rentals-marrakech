@@ -147,7 +147,7 @@ export default function FavorisPage() {
 
 function EmptyState() {
   return (
-    <div className="mx-auto max-w-xl border border-[var(--color-beige-warm)] bg-white p-12 text-center">
+    <div className="mx-auto max-w-xl rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-12 text-center">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-terracotta)]/10">
         <Heart
           size={24}

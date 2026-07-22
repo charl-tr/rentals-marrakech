@@ -87,7 +87,7 @@ export default function CompareView({
                 }
                 className="group block"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-charcoal)]">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[12px] bg-[var(--color-charcoal)]">
                   {p.images[0] && (
                     <Image
                       src={p.images[0]}
@@ -103,7 +103,7 @@ export default function CompareView({
                 type="button"
                 onClick={() => remove(p.slug)}
                 aria-label="Retirer du comparateur"
-                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center bg-white/90 text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-terracotta)] hover:text-white"
+                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-terracotta)] hover:text-white"
               >
                 <X size={14} />
               </button>
@@ -234,7 +234,7 @@ export default function CompareView({
           {displayed.map((p) => (
             <Cell key={`excl-${p.slug}`}>
               {p.exclusivity ? (
-                <span className="inline-flex items-center bg-[var(--color-terracotta)] px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
+                <span className="inline-flex items-center rounded-full bg-[var(--color-terracotta)] px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
                   ★ Exclusivité
                 </span>
               ) : (

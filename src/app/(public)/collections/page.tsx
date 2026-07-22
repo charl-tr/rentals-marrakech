@@ -41,7 +41,7 @@ export default async function CollectionsIndexPage() {
                 <Link
                   key={col.slug}
                   href={`/collections/${col.slug}`}
-                  className="group relative block aspect-[4/3] overflow-hidden bg-[var(--color-charcoal)]"
+                  className="group relative block aspect-[4/3] overflow-hidden rounded-[16px] bg-[var(--color-charcoal)]"
                 >
                   {hero && (
                     <Image

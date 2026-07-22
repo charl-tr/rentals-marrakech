@@ -32,12 +32,12 @@ export default function CookieBanner() {
       className="fixed inset-x-0 bottom-0 z-[90] animate-fade-up"
     >
       <div className="container-luxe pb-6">
-        <div className="relative border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]">
+        <div className="relative rounded-[14px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]">
           <button
             type="button"
             onClick={() => accept("essential-only")}
             aria-label="Fermer (cookies essentiels uniquement)"
-            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center text-[var(--color-stone)] transition-colors hover:text-[var(--color-charcoal)]"
+            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-[var(--color-stone)] transition-colors hover:bg-[var(--color-cream)] hover:text-[var(--color-charcoal)]"
           >
             <X size={16} />
           </button>
@@ -69,14 +69,14 @@ export default function CookieBanner() {
               <button
                 type="button"
                 onClick={() => accept("essential-only")}
-                className="border border-[var(--color-charcoal)] bg-transparent px-5 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+                className="rounded-[10px] border border-[var(--color-charcoal)] bg-transparent px-5 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
               >
                 Essentiels uniquement
               </button>
               <button
                 type="button"
                 onClick={() => accept("accepted")}
-                className="bg-[var(--color-charcoal)] px-6 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
+                className="rounded-[10px] bg-[var(--color-charcoal)] px-6 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
               >
                 Accepter
               </button>

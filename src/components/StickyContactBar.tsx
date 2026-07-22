@@ -72,7 +72,7 @@ export default function StickyContactBar({
             {advisor?.phone && (
               <a
                 href={`tel:${advisor.phone.replace(/\s/g, "")}`}
-                className="inline-flex h-9 items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+                className="inline-flex h-9 items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
                 aria-label="Appeler"
               >
                 <Phone size={12} />
@@ -84,7 +84,7 @@ export default function StickyContactBar({
                 href={`https://wa.me/${advisor.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+                className="inline-flex h-9 items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
                 aria-label="WhatsApp"
               >
                 <MessageCircle size={12} />
@@ -93,7 +93,7 @@ export default function StickyContactBar({
             )}
             <Link
               href={demanderHref}
-              className="inline-flex h-9 items-center gap-2 bg-[var(--color-charcoal)] px-4 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
+              className="inline-flex h-9 items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-4 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
             >
               Demander ce bien
             </Link>
@@ -120,7 +120,7 @@ export default function StickyContactBar({
           {advisor?.phone && (
             <a
               href={`tel:${advisor.phone.replace(/\s/g, "")}`}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center border border-[var(--color-beige-warm)] bg-white text-[var(--color-charcoal)]"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[10px] border border-[var(--color-beige-warm)] bg-white text-[var(--color-charcoal)]"
               aria-label="Appeler"
             >
               <Phone size={14} />
@@ -128,7 +128,7 @@ export default function StickyContactBar({
           )}
           <Link
             href={demanderHref}
-            className="flex h-10 items-center bg-[var(--color-charcoal)] px-4 text-[11px] font-medium uppercase tracking-[0.18em] text-white"
+            className="flex h-10 items-center rounded-[10px] bg-[var(--color-charcoal)] px-4 text-[11px] font-medium uppercase tracking-[0.18em] text-white"
           >
             Demander
           </Link>

@@ -64,7 +64,7 @@ export default function RootLayout({
           toastOptions={{
             classNames: {
               toast:
-                "!bg-white !border !border-[var(--color-beige-warm)] !shadow-[var(--shadow-luxe)] !rounded-none !font-sans",
+                "!bg-white !border !border-[var(--color-beige-warm)] !shadow-[var(--shadow-luxe)] !rounded-[12px] !font-sans",
               title: "!text-[var(--color-charcoal)] !font-medium",
               description: "!text-[var(--color-stone)] !text-xs",
               success: "!border-l-4 !border-l-[var(--color-success)]",

@@ -66,8 +66,8 @@ export default function ShareButton({
 
   const buttonClasses =
     variant === "hero"
-      ? "inline-flex items-center gap-2 border border-white/40 bg-transparent px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm transition-colors hover:border-white"
-      : "inline-flex items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]";
+      ? "inline-flex items-center gap-2 rounded-[10px] border border-white/40 bg-transparent px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm transition-colors hover:border-white"
+      : "inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]";
 
   return (
     <div className="relative">
@@ -88,7 +88,7 @@ export default function ShareButton({
             onClick={() => setOpen(false)}
             aria-hidden
           />
-          <div className="absolute right-0 top-[calc(100%+8px)] z-40 min-w-[260px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]">
+          <div className="absolute right-0 top-[calc(100%+8px)] z-40 min-w-[260px] overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]">
             <a
               href={`https://wa.me/?text=${waText}`}
               target="_blank"

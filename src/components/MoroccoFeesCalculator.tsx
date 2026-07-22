@@ -30,7 +30,7 @@ export default function MoroccoFeesCalculator({
 
   return (
     <div
-      className={`border border-[var(--color-beige-warm)] bg-white ${
+      className={`rounded-[14px] border border-[var(--color-beige-warm)] bg-white ${
         compact ? "p-5" : "p-8"
       }`}
     >
@@ -62,7 +62,7 @@ export default function MoroccoFeesCalculator({
             step={10_000}
             value={price}
             onChange={(e) => setPrice(Number(e.target.value) || 0)}
-            className="mt-1.5 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+            className="field mt-1.5"
           />
         </label>
 
@@ -73,7 +73,7 @@ export default function MoroccoFeesCalculator({
           <select
             value={listing}
             onChange={(e) => setListing(e.target.value as "ancien" | "neuf")}
-            className="mt-1.5 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+            className="field mt-1.5"
           >
             <option value="ancien">Ancien (bien d&apos;occasion)</option>
             <option value="neuf">Neuf (promoteur)</option>
@@ -112,7 +112,7 @@ export default function MoroccoFeesCalculator({
       </div>
 
       {/* Total */}
-      <div className="mt-4 border-t-2 border-[var(--color-charcoal)] bg-[var(--color-cream)] p-4">
+      <div className="mt-4 rounded-[10px] border-t-2 border-[var(--color-charcoal)] bg-[var(--color-cream)] p-4">
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
             Frais totaux
@@ -137,7 +137,7 @@ export default function MoroccoFeesCalculator({
       </div>
 
       {!compact && (
-        <div className="mt-5 flex items-start gap-2 rounded-none bg-[var(--color-cream)] p-3 text-[11px] text-[var(--color-stone)]">
+        <div className="mt-5 flex items-start gap-2 rounded-[10px] bg-[var(--color-cream)] p-3 text-[11px] text-[var(--color-stone)]">
           <Info size={12} className="mt-0.5 flex-shrink-0 text-[var(--color-terracotta)]" />
           <span>
             Estimation indicative. Les taux peuvent varier selon le notaire, la

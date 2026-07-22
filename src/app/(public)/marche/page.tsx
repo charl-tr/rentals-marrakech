@@ -155,7 +155,7 @@ export default async function MarchePage() {
                       <td className="py-4 pr-6 font-medium text-[var(--color-charcoal)]">
                         {n.label}
                         {i === 0 && (
-                          <span className="ml-2 rounded-none bg-[var(--color-terracotta)] px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-[0.18em] text-white">
+                          <span className="ml-2 rounded-full bg-[var(--color-terracotta)] px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.18em] text-white">
                             Premium
                           </span>
                         )}

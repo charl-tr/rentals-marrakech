@@ -35,7 +35,7 @@ export default async function QuartiersIndex() {
               <Link
                 key={q.slug}
                 href={`/quartiers/${q.slug}`}
-                className="group relative aspect-[4/5] overflow-hidden bg-[var(--color-charcoal)]"
+                className="group relative aspect-[4/5] overflow-hidden rounded-[16px] bg-[var(--color-charcoal)]"
               >
                 <Image
                   src={q.imageHero}

@@ -32,7 +32,7 @@ export default async function EquipePage() {
           <div className="grid gap-16 md:grid-cols-2">
             {advisors.map((a) => (
               <article key={a.slug} className="group">
-                <div className="relative aspect-[4/5] overflow-hidden bg-[var(--color-beige)]">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[16px] bg-[var(--color-beige)]">
                   {a.photo ? (
                     <Image
                       src={a.photo}

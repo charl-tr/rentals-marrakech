@@ -327,7 +327,7 @@ export default async function PropertyDetail({ property }: { property: Property 
                 href={`https://www.google.com/maps?q=${property.coordinates.lat},${property.coordinates.lng}&z=15`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative block aspect-[4/3] overflow-hidden"
+                className="group relative block aspect-[4/3] overflow-hidden rounded-[16px]"
                 aria-label={`Voir ${property.neighborhood} sur Google Maps`}
               >
                 <div className="absolute inset-0 bg-[var(--color-bg-tint)]" />

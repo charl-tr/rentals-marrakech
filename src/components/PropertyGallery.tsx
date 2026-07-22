@@ -50,7 +50,7 @@ export default function PropertyGallery({
             type="button"
             onClick={() => setOpenIndex(i)}
             aria-label={`Ouvrir l'image ${i + 1} en plein écran`}
-            className="group relative aspect-[4/3] h-[420px] flex-shrink-0 snap-start overflow-hidden bg-[var(--color-charcoal)] md:h-[520px]"
+            className="group relative aspect-[4/3] h-[420px] flex-shrink-0 snap-start overflow-hidden rounded-[16px] bg-[var(--color-charcoal)] md:h-[520px]"
           >
             <Image
               src={img}
@@ -61,12 +61,12 @@ export default function PropertyGallery({
             />
             {/* Hover overlay — fullscreen hint */}
             <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-charcoal)]/0 opacity-0 transition-all duration-300 group-hover:bg-[var(--color-charcoal)]/20 group-hover:opacity-100">
-              <span className="flex items-center gap-2 border border-white/60 bg-[var(--color-charcoal)]/60 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
+              <span className="flex items-center gap-2 rounded-[10px] border border-white/60 bg-[var(--color-charcoal)]/60 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
                 <Maximize2 size={12} />
                 Agrandir
               </span>
             </div>
-            <div className="absolute bottom-3 left-3 bg-[var(--color-charcoal)]/75 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white">
+            <div className="absolute bottom-3 left-3 rounded-full bg-[var(--color-charcoal)]/75 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white">
               {i + 1} / {images.length}
             </div>
           </button>
@@ -108,7 +108,7 @@ export default function PropertyGallery({
               type="button"
               onClick={close}
               aria-label="Fermer"
-              className="flex h-11 w-11 items-center justify-center text-white transition-colors hover:text-[var(--color-terracotta-light)]"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 hover:text-[var(--color-terracotta-light)]"
             >
               <X size={22} />
             </button>
@@ -133,7 +133,7 @@ export default function PropertyGallery({
                   type="button"
                   onClick={prev}
                   aria-label="Image précédente"
-                  className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white hover:text-[var(--color-charcoal)] md:left-8 md:h-14 md:w-14"
+                  className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white hover:text-[var(--color-charcoal)] md:left-8 md:h-14 md:w-14"
                 >
                   <ChevronLeft size={22} />
                 </button>
@@ -141,7 +141,7 @@ export default function PropertyGallery({
                   type="button"
                   onClick={next}
                   aria-label="Image suivante"
-                  className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white hover:text-[var(--color-charcoal)] md:right-8 md:h-14 md:w-14"
+                  className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white hover:text-[var(--color-charcoal)] md:right-8 md:h-14 md:w-14"
                 >
                   <ChevronRight size={22} />
                 </button>
@@ -159,7 +159,7 @@ export default function PropertyGallery({
                     type="button"
                     onClick={() => setOpenIndex(i)}
                     aria-label={`Voir image ${i + 1}`}
-                    className={`relative h-14 w-20 flex-shrink-0 overflow-hidden transition-opacity ${
+                    className={`relative h-14 w-20 flex-shrink-0 overflow-hidden rounded-[8px] transition-opacity ${
                       i === openIndex
                         ? "opacity-100 ring-2 ring-[var(--color-terracotta)]"
                         : "opacity-50 hover:opacity-80"

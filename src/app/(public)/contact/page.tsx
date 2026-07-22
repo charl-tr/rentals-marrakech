@@ -111,7 +111,7 @@ export default async function ContactPage({
                     href="/equipe"
                     className="group flex items-center gap-3"
                   >
-                    <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden bg-[var(--color-beige)]">
+                    <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full bg-[var(--color-beige)]">
                       {a.photo ? (
                         <Image src={a.photo} alt={a.name} fill sizes="56px" className="object-cover" />
                       ) : (
@@ -154,7 +154,7 @@ export default async function ContactPage({
             href="https://www.google.com/maps?q=42+rue+de+la+Liberté,+Guéliz,+Marrakech"
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative block aspect-[16/6] overflow-hidden border border-[var(--color-beige-warm)] bg-white"
+            className="group relative block aspect-[16/6] overflow-hidden rounded-[16px] border border-[var(--color-beige-warm)] bg-white"
           >
             <div className="absolute inset-0 bg-[var(--color-cream)]" />
             <div

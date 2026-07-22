@@ -304,7 +304,7 @@ export default async function PortalPage({
                     key={item.id}
                     className="grid gap-6 border border-[var(--color-beige-warm)] bg-white p-4 md:grid-cols-[280px_1fr] md:p-6"
                   >
-                    <Link href={href} className="group relative block aspect-[4/3] overflow-hidden bg-[var(--color-charcoal)]">
+                    <Link href={href} className="group relative block aspect-[4/3] overflow-hidden rounded-[16px] bg-[var(--color-charcoal)]">
                       {property.images[0] && (
                         <Image
                           src={property.images[0]}

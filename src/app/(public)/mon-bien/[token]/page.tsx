@@ -190,7 +190,7 @@ export default async function OwnerPortalPage({
   return (
     <main className="min-h-screen bg-[var(--color-cream)]">
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <div className="relative h-64 w-full overflow-hidden bg-[var(--color-charcoal)] md:h-80">
+      <div className="relative h-64 w-full overflow-hidden rounded-[16px] bg-[var(--color-charcoal)] md:h-80">
         {property.images[0] && (
           <Image
             src={property.images[0]}

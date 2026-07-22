@@ -31,7 +31,7 @@ export default function CurrencySwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-label="Changer de devise"
         aria-expanded={open}
-        className="inline-flex items-center gap-1.5 border border-[var(--color-beige-warm)] bg-white px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+        className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--color-beige-warm)] bg-white px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
       >
         {hydrated ? CURRENCY_SYMBOLS[currency] : "€"}
         <span className="font-mono">{hydrated ? currency : "EUR"}</span>
@@ -39,7 +39,7 @@ export default function CurrencySwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-40 mt-1 min-w-[160px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-card)]">
+        <div className="absolute right-0 top-full z-40 mt-1 min-w-[160px] overflow-hidden rounded-[12px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-card)]">
           {OPTIONS.map((c) => (
             <button
               key={c}
