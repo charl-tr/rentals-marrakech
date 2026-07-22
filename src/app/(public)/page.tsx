@@ -79,16 +79,16 @@ export default async function Home() {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(22,19,15,0.80)] via-[rgba(22,19,15,0.20)] to-[rgba(22,19,15,0.12)]" />
+        <div className="absolute inset-0 hero-overlay-bottom" />
 
         <div className="container-luxe relative z-10">
           <div className="mb-10 max-w-xl animate-fade-up md:mb-14">
-            <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.32em] text-white/60">
+            <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-accent-light)]">
               Marrakech &amp; Essaouira
             </div>
             <h1 className="hero-text font-serif text-[2.4rem] leading-[1.06] text-white sm:text-[3.2rem] md:text-[3.6rem]">
               L&apos;art de vivre<br />
-              <span className="italic text-[var(--color-terracotta-glow)]">
+              <span className="italic text-[var(--color-accent-light)]">
                 marrakchi.
               </span>
             </h1>

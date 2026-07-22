@@ -1,10 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import Catalogue from "@/components/Catalogue";
 import PropertyCard from "@/components/PropertyCard";
+import SectionHero from "@/components/SectionHero";
 import { type Property } from "@/data/properties";
 import { getAllProperties, getFirstEssaouiraProperty } from "@/lib/db";
 
@@ -117,36 +117,23 @@ export default async function EssaouiraPage({
 
  return (
  <>
- {/* HERO immersif */}
- <section className="relative h-[78vh] min-h-[560px] w-full overflow-hidden bg-[var(--color-charcoal)]">
- {heroImage && (
- <Image
- src={heroImage}
- alt={heroSource?.title ?? "Essaouira — cité des Alizés"}
- fill
- priority
- sizes="100vw"
- className="object-cover"
- />
- )}
- <div className="absolute inset-0 hero-overlay-bottom" />
- <div className="container-luxe relative z-10 flex h-full items-end pb-20 pt-32">
- <div className="max-w-3xl">
- <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
- Bord de mer · Cité des Alizés
- </div>
- <h1 className="hero-text mt-5 font-serif text-5xl leading-[1.05] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.5)] md:text-6xl lg:text-[72px]">
+ {/* HERO — via SectionHero (langage hero unifié) */}
+ <SectionHero
+ eyebrow="Bord de mer · Cité des Alizés"
+ title={
+ <>
  Essaouira,<br />
- <span className="italic text-[var(--color-terracotta-light)]">l&apos;autre Maroc</span>.
- </h1>
- <p className="hero-text-soft mt-8 max-w-2xl text-lg leading-relaxed text-white/90">
- À trois heures de Marrakech, la cité des Alizés conjugue médina UNESCO,
- plages infinies et douceur de vivre. Notre département dédié, conduit par
- Hamza Bennouna, vous accompagne sur chaque transaction.
- </p>
- </div>
- </div>
- </section>
+ <span className="italic text-[var(--color-accent-light)]">
+ l&apos;autre Maroc
+ </span>
+ .
+ </>
+ }
+ subtitle="À trois heures de Marrakech, la cité des Alizés conjugue médina UNESCO, plages infinies et douceur de vivre. Notre département dédié, conduit par Hamza Bennouna, vous accompagne sur chaque transaction."
+ imageSrc={heroImage}
+ imageAlt={heroSource?.title ?? "Essaouira — cité des Alizés"}
+ showBack={false}
+ />
 
  {/* SOUS-CATÉGORIES */}
  <section className="bg-[var(--color-cream)] py-24">
