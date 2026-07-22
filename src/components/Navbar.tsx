@@ -73,9 +73,9 @@ const VENDRE_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState<"acheter" | "louer" | "essaouira" | "vendre" | null>(
-    null
-  );
+  const [openMenu, setOpenMenu] = useState<
+    "acheter" | "louer" | "essaouira" | "vendre" | null
+  >(null);
   const pathname = usePathname();
 
   const isHome = pathname === "/";
@@ -93,10 +93,11 @@ export default function Navbar() {
     setOpenMenu(null);
   }, [pathname]);
 
-  const linkText = solid ? "text-[var(--color-charcoal)]" : "text-white";
-  const linkHover = solid
-    ? "hover:text-[var(--color-terracotta)]"
-    : "hover:text-[var(--color-terracotta-light)]";
+  const textColor = solid ? "text-[var(--color-charcoal)]" : "text-white";
+  // Underline: terracotta sur fond clair, glow lumineux sur image
+  const underline = solid
+    ? "bg-[var(--color-terracotta)]"
+    : "bg-[var(--color-terracotta-glow)]";
 
   return (
     <header
@@ -128,8 +129,10 @@ export default function Navbar() {
             open={openMenu === "acheter"}
             onEnter={() => setOpenMenu("acheter")}
             onLeave={() => setOpenMenu(null)}
-            linkClass={`${linkText} ${linkHover}`}
-            wide
+            textColor={textColor}
+            underline={underline}
+            align="left"
+            width="w-[840px]"
           >
             <MegaPanel columns={ACHETER_MEGA} footerHref="/acheter" footerLabel="Tous les biens à vendre" />
           </NavDropdown>
@@ -139,7 +142,8 @@ export default function Navbar() {
             open={openMenu === "louer"}
             onEnter={() => setOpenMenu("louer")}
             onLeave={() => setOpenMenu(null)}
-            linkClass={`${linkText} ${linkHover}`}
+            textColor={textColor}
+            underline={underline}
           >
             <SimplePanel links={LOUER_LINKS} footerHref="/louer" footerLabel="Toutes les locations" />
           </NavDropdown>
@@ -149,7 +153,8 @@ export default function Navbar() {
             open={openMenu === "essaouira"}
             onEnter={() => setOpenMenu("essaouira")}
             onLeave={() => setOpenMenu(null)}
-            linkClass={`${linkText} ${linkHover}`}
+            textColor={textColor}
+            underline={underline}
           >
             <SimplePanel links={ESSAOUIRA_LINKS} footerHref="/essaouira" footerLabel="Bord de mer" />
           </NavDropdown>
@@ -159,13 +164,14 @@ export default function Navbar() {
             open={openMenu === "vendre"}
             onEnter={() => setOpenMenu("vendre")}
             onLeave={() => setOpenMenu(null)}
-            linkClass={`${linkText} ${linkHover}`}
+            textColor={textColor}
+            underline={underline}
           >
             <SimplePanel links={VENDRE_LINKS} footerHref="/deposer-un-bien" footerLabel="Déposer un bien →" />
           </NavDropdown>
 
-          <NavLink href="/journal" label="Journal" className={`${linkText} ${linkHover}`} />
-          <NavLink href="/contact" label="Contact" className={`${linkText} ${linkHover}`} />
+          <NavLink href="/journal" label="Journal" textColor={textColor} underline={underline} />
+          <NavLink href="/contact" label="Contact" textColor={textColor} underline={underline} />
 
           <span
             aria-hidden
@@ -197,42 +203,12 @@ export default function Navbar() {
             <MobileSection heading="Vendre" links={VENDRE_LINKS} />
 
             <div className="mt-6 flex flex-col gap-3 border-t border-[var(--color-beige-warm)] pt-6">
-              <Link
-                href="/journal"
-                className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
-              >
-                Journal
-              </Link>
-              <Link
-                href="/contact"
-                className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
-              >
-                Contact
-              </Link>
-              <Link
-                href="/carte"
-                className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
-              >
-                Vue carte
-              </Link>
-              <Link
-                href="/marche"
-                className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
-              >
-                Rapport marché
-              </Link>
-              <Link
-                href="/favoris"
-                className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
-              >
-                Mes favoris
-              </Link>
-              <Link
-                href="/a-propos"
-                className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
-              >
-                À propos
-              </Link>
+              <Link href="/journal" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]">Journal</Link>
+              <Link href="/contact" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]">Contact</Link>
+              <Link href="/carte" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]">Vue carte</Link>
+              <Link href="/marche" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]">Rapport marché</Link>
+              <Link href="/favoris" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]">Mes favoris</Link>
+              <Link href="/a-propos" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]">À propos</Link>
             </div>
           </div>
         </div>
@@ -241,21 +217,36 @@ export default function Navbar() {
   );
 }
 
+// ── Underline signature (Barnes/Aman) : texte crisp, filet qui croît ──
+function Underline({ color, active }: { color: string; active: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute inset-x-4 bottom-[0.35rem] h-px origin-center transition-transform duration-300 ease-out ${color} ${
+        active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+      }`}
+    />
+  );
+}
+
 function NavLink({
   href,
   label,
-  className,
+  textColor,
+  underline,
 }: {
   href: string;
   label: string;
-  className: string;
+  textColor: string;
+  underline: string;
 }) {
   return (
     <Link
       href={href}
-      className={`px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${className}`}
+      className={`group relative px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] ${textColor}`}
     >
       {label}
+      <Underline color={underline} active={false} />
     </Link>
   );
 }
@@ -265,33 +256,38 @@ function NavDropdown({
   open,
   onEnter,
   onLeave,
-  linkClass,
-  wide = false,
+  textColor,
+  underline,
+  align = "center",
+  width = "w-[280px]",
   children,
 }: {
   label: string;
   open: boolean;
   onEnter: () => void;
   onLeave: () => void;
-  linkClass: string;
-  wide?: boolean;
+  textColor: string;
+  underline: string;
+  align?: "center" | "left";
+  width?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
       <button
         type="button"
-        className={`px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${linkClass}`}
+        className={`group relative px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] ${textColor}`}
       >
         {label}
+        <Underline color={underline} active={open} />
       </button>
       {open && (
         <div
-          className={`absolute left-1/2 top-full -translate-x-1/2 pt-3 ${
-            wide ? "w-[720px]" : "w-[280px]"
+          className={`absolute top-full pt-3 ${width} ${
+            align === "left" ? "left-0" : "left-1/2 -translate-x-1/2"
           }`}
         >
-          {children}
+          <div className="animate-mega-in">{children}</div>
         </div>
       )}
     </div>
@@ -308,10 +304,10 @@ function MegaPanel({
   footerLabel: string;
 }) {
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-[var(--color-cream)] shadow-[var(--shadow-luxe)]">
-      <div className="grid grid-cols-3 divide-x divide-[var(--color-beige-warm)]">
+    <div className="border border-[var(--color-border)] bg-white shadow-[var(--shadow-luxe)]">
+      <div className="grid grid-cols-4 gap-x-8 gap-y-2 p-8">
         {columns.map((col) => (
-          <div key={col.heading} className="p-6">
+          <div key={col.heading}>
             <div className="text-[9px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
               {col.heading}
             </div>
@@ -320,7 +316,7 @@ function MegaPanel({
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-[13px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
+                    className="group inline-flex items-center gap-1.5 text-[13px] text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-terracotta)]"
                   >
                     {l.label}
                   </Link>
@@ -332,7 +328,7 @@ function MegaPanel({
       </div>
       <Link
         href={footerHref}
-        className="block border-t border-[var(--color-beige-warm)] bg-white px-6 py-3.5 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+        className="block border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] px-8 py-3.5 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
       >
         {footerLabel} →
       </Link>
@@ -350,13 +346,13 @@ function SimplePanel({
   footerLabel: string;
 }) {
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-[var(--color-cream)] shadow-[var(--shadow-luxe)]">
+    <div className="border border-[var(--color-border)] bg-white shadow-[var(--shadow-luxe)]">
       <ul className="p-2">
         {links.map((l) => (
           <li key={l.href}>
             <Link
               href={l.href}
-              className="block px-4 py-2.5 text-[13px] text-[var(--color-charcoal)] transition-colors hover:bg-white hover:text-[var(--color-terracotta)]"
+              className="block px-4 py-2.5 text-[13px] text-[var(--color-ink-soft)] transition-colors hover:bg-[var(--color-bg-alt)] hover:text-[var(--color-terracotta)]"
             >
               {l.label}
             </Link>
@@ -365,7 +361,7 @@ function SimplePanel({
       </ul>
       <Link
         href={footerHref}
-        className="block border-t border-[var(--color-beige-warm)] bg-white px-4 py-3 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+        className="block border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] px-4 py-3 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
       >
         {footerLabel}
       </Link>
