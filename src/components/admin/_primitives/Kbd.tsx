@@ -48,7 +48,7 @@ export default function Kbd({
 
   return (
     <span
-      className={`inline-flex items-center gap-0.5 border border-[var(--color-beige-warm)] bg-white px-1.5 py-0.5 font-mono text-[10px] text-[var(--color-stone)] ${className}`}
+      className={`inline-flex items-center gap-0.5 rounded-[6px] border border-[var(--color-beige-warm)] bg-white px-1.5 py-0.5 font-mono text-[10px] text-[var(--color-stone)] ${className}`}
     >
       {parts.map((p, i) => (
         <span key={i}>{p}</span>

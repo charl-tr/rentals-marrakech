@@ -76,7 +76,7 @@ export default async function AdminEquipePage() {
                 <Link
                   key={advisor.slug}
                   href={`/admin/equipe/${advisor.slug}`}
-                  className="group flex flex-col border border-[var(--color-beige-warm)] bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--color-charcoal)] hover:shadow-[var(--shadow-card)]"
+                  className="group flex flex-col rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--color-charcoal)] hover:shadow-[var(--shadow-card)]"
                 >
                   <div className="flex items-start gap-3">
                     <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-charcoal)] text-sm font-medium uppercase text-white">

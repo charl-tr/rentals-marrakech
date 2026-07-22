@@ -115,11 +115,11 @@ export default async function AdminAgendaPage() {
                     <Link
                       key={lead.id}
                       href={`/admin/leads/${lead.id}`}
-                      className={`group flex items-center gap-5 bg-white border border-[var(--color-beige-warm)] px-5 py-4 transition-colors hover:border-[var(--color-charcoal)] ${
+                      className={`group flex items-center gap-5 rounded-[14px] bg-white border border-[var(--color-beige-warm)] px-5 py-4 transition-colors hover:border-[var(--color-charcoal)] ${
                         isPast ? "opacity-70" : ""
                       }`}
                     >
-                      <div className="flex h-12 w-14 flex-shrink-0 flex-col items-center justify-center border border-[var(--color-beige-warm)] text-center">
+                      <div className="flex h-12 w-14 flex-shrink-0 flex-col items-center justify-center rounded-[10px] border border-[var(--color-beige-warm)] text-center">
                         <div className="font-serif text-xl leading-none text-[var(--color-charcoal)]">
                           {formatTime(lead.nextVisit!.at)}
                         </div>

@@ -12,12 +12,12 @@ export default function BiensLoading() {
       {/* FilterBar skeleton */}
       <div className="flex flex-col border-b border-[var(--color-beige-warm)] bg-white">
         <div className="flex items-center gap-3 px-5 py-4 md:px-8">
-          <Skeleton className="h-8 max-w-md flex-1" />
-          <Skeleton className="h-8 w-16" />
+          <Skeleton className="h-8 max-w-md flex-1 rounded-[10px]" />
+          <Skeleton className="h-8 w-16 rounded-[10px]" />
         </div>
         <div className="flex gap-2 border-t border-[var(--color-beige-warm)] px-5 py-3 md:px-8">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-7 w-24" />
+            <Skeleton key={i} className="h-7 w-24 rounded-[10px]" />
           ))}
         </div>
       </div>

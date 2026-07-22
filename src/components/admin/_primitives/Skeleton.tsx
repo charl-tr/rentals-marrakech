@@ -32,7 +32,7 @@ export function SkeletonLine({
 }) {
   return (
     <Skeleton
-      className={`h-3 ${className}`}
+      className={`h-3 rounded-[6px] ${className}`}
       {...({ style: { width } } as object)}
     />
   );
@@ -44,17 +44,17 @@ export function SkeletonTableRow() {
     <div className="grid grid-cols-[32px_1.4fr_0.8fr_2fr_0.8fr_0.5fr_0.6fr_20px] items-center gap-3 border-b border-[var(--color-beige-warm)] px-4 py-3.5">
       <Skeleton className="h-2 w-2 rounded-full" />
       <div className="space-y-1.5">
-        <Skeleton className="h-3.5 w-3/4" />
-        <Skeleton className="h-2.5 w-1/2 opacity-60" />
+        <Skeleton className="h-3.5 w-3/4 rounded-[6px]" />
+        <Skeleton className="h-2.5 w-1/2 rounded-[6px] opacity-60" />
       </div>
-      <Skeleton className="h-5 w-16" />
+      <Skeleton className="h-5 w-16 rounded-full" />
       <div className="space-y-1.5">
-        <Skeleton className="h-3.5 w-5/6" />
-        <Skeleton className="h-2.5 w-2/3 opacity-60" />
+        <Skeleton className="h-3.5 w-5/6 rounded-[6px]" />
+        <Skeleton className="h-2.5 w-2/3 rounded-[6px] opacity-60" />
       </div>
-      <Skeleton className="h-4 w-20" />
+      <Skeleton className="h-4 w-20 rounded-[6px]" />
       <Skeleton className="h-4 w-4 mx-auto rounded-full" />
-      <Skeleton className="h-3 w-12 justify-self-end" />
+      <Skeleton className="h-3 w-12 justify-self-end rounded-[6px]" />
       <div />
     </div>
   );
@@ -63,15 +63,15 @@ export function SkeletonTableRow() {
 /** Card grille bien. */
 export function SkeletonCard() {
   return (
-    <div className="overflow-hidden border border-[var(--color-beige-warm)] bg-white">
+    <div className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
       <Skeleton className="aspect-[4/3] w-full" />
       <div className="space-y-2 p-4">
-        <Skeleton className="h-2.5 w-1/3" />
-        <Skeleton className="h-4 w-5/6" />
-        <Skeleton className="h-4 w-2/3" />
+        <Skeleton className="h-2.5 w-1/3 rounded-[6px]" />
+        <Skeleton className="h-4 w-5/6 rounded-[6px]" />
+        <Skeleton className="h-4 w-2/3 rounded-[6px]" />
         <div className="mt-3 flex items-center justify-between border-t border-[var(--color-beige-warm)] pt-3">
-          <Skeleton className="h-5 w-24" />
-          <Skeleton className="h-3 w-14" />
+          <Skeleton className="h-5 w-24 rounded-[6px]" />
+          <Skeleton className="h-3 w-14 rounded-[6px]" />
         </div>
       </div>
     </div>
@@ -84,11 +84,11 @@ export function SkeletonPageHeader() {
     <div className="border-b border-[var(--color-beige-warm)] bg-white px-5 py-6 md:px-8">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="space-y-2">
-          <Skeleton className="h-3 w-40" />
-          <Skeleton className="h-9 w-56" />
-          <Skeleton className="h-3 w-72" />
+          <Skeleton className="h-3 w-40 rounded-[6px]" />
+          <Skeleton className="h-9 w-56 rounded-[6px]" />
+          <Skeleton className="h-3 w-72 rounded-[6px]" />
         </div>
-        <Skeleton className="h-9 w-32" />
+        <Skeleton className="h-9 w-32 rounded-[10px]" />
       </div>
     </div>
   );
@@ -98,8 +98,8 @@ export function SkeletonPageHeader() {
 export function SkeletonKpi() {
   return (
     <div className="p-6">
-      <Skeleton className="h-3 w-20" />
-      <Skeleton className="mt-3 h-8 w-16" />
+      <Skeleton className="h-3 w-20 rounded-[6px]" />
+      <Skeleton className="mt-3 h-8 w-16 rounded-[6px]" />
     </div>
   );
 }

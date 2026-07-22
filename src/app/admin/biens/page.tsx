@@ -108,7 +108,7 @@ export default async function AdminBiensPage({
 
           <button
             type="button"
-            className="inline-flex items-center gap-2 bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
+            className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
           >
             + Nouveau bien
           </button>
@@ -122,7 +122,7 @@ export default async function AdminBiensPage({
         {view === "grid" ? (
           <BiensGrid properties={filtered} leadsCountBySlug={leadsByProp} />
         ) : filtered.length === 0 ? (
-          <div className="border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
+          <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
             <div className="font-serif text-xl text-[var(--color-charcoal)]">
               Aucun bien ne matche.
             </div>
@@ -131,7 +131,7 @@ export default async function AdminBiensPage({
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden border border-[var(--color-beige-warm)] bg-white">
+          <div className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
             <div className="grid grid-cols-[60px_minmax(240px,2fr)_minmax(120px,0.8fr)_minmax(100px,0.7fr)_minmax(80px,0.5fr)_minmax(60px,0.4fr)_20px] items-center gap-3 border-b border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
               <div></div>
               <div>Bien</div>
@@ -150,7 +150,7 @@ export default async function AdminBiensPage({
                   className="group grid grid-cols-[60px_minmax(240px,2fr)_minmax(120px,0.8fr)_minmax(100px,0.7fr)_minmax(80px,0.5fr)_minmax(60px,0.4fr)_20px] items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--color-cream)]"
                 >
                   {/* Thumbnail */}
-                  <div className="relative h-12 w-14 flex-shrink-0 overflow-hidden bg-[var(--color-beige)]">
+                  <div className="relative h-12 w-14 flex-shrink-0 overflow-hidden rounded-[8px] bg-[var(--color-beige)]">
                     {p.images[0] && (
                       <Image
                         src={p.images[0]}
@@ -252,7 +252,7 @@ function StatusBadge({ status }: { status: PropertyStatus }) {
       : "bg-[var(--color-success-soft)] text-[var(--color-success)]";
   return (
     <span
-      className={`inline-flex items-center justify-center px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] ${style}`}
+      className={`inline-flex items-center justify-center rounded-full px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] ${style}`}
     >
       {STATUS_LABELS[status]}
     </span>

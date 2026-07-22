@@ -67,7 +67,7 @@ function OwnerCard({
   const hasOwner = owner.name || owner.phone || owner.email;
 
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-white">
+    <div className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
       <div className="flex items-start justify-between gap-3 border-b border-[var(--color-beige-warm)] px-4 py-3">
         <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
           <User size={12} />
@@ -130,7 +130,7 @@ function OwnerCard({
               <button
                 type="button"
                 onClick={() => setEditing(false)}
-                className="border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
+                className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
               >
                 Annuler
               </button>
@@ -205,7 +205,7 @@ function MandateCard({
   const expiryBadge = mandate ? mandateExpiryBadge(mandate) : null;
 
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-white">
+    <div className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
       <div className="flex items-start justify-between gap-3 border-b border-[var(--color-beige-warm)] px-4 py-3">
         <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
           <ScrollText size={12} />
@@ -292,7 +292,7 @@ function MandateCard({
               <button
                 type="button"
                 onClick={() => setShowCreate(false)}
-                className="border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
+                className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
               >
                 Annuler
               </button>
@@ -306,20 +306,20 @@ function MandateCard({
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="bg-[var(--color-charcoal)] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
+              <span className="rounded-full bg-[var(--color-charcoal)] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
                 {MANDATE_TYPE_LABELS[mandate.type]}
               </span>
               {mandate.exclusivity && (
-                <span className="bg-[var(--color-terracotta)] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
+                <span className="rounded-full bg-[var(--color-terracotta)] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
                   ★ Exclusif
                 </span>
               )}
-              <span className="bg-[var(--color-success-soft)] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-[var(--color-success)]">
+              <span className="rounded-full bg-[var(--color-success-soft)] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-[var(--color-success)]">
                 {MANDATE_STATUS_LABELS[mandate.status]}
               </span>
               {expiryBadge && (
                 <span
-                  className={`px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] ${
+                  className={`rounded-full px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] ${
                     expiryBadge.status === "expired"
                       ? "bg-[var(--color-alert-soft)] text-[var(--color-alert)]"
                       : expiryBadge.status === "watch"
@@ -361,7 +361,7 @@ function MandateCard({
                 onClick={() => setShowClose(false)}
               >
                 <div
-                  className="w-full max-w-md border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
+                  className="w-full max-w-md rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="flex items-start justify-between">
@@ -394,7 +394,7 @@ function MandateCard({
                       <button
                         type="button"
                         onClick={() => setShowClose(false)}
-                        className="border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
+                        className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
                       >
                         Annuler
                       </button>
@@ -414,7 +414,7 @@ function MandateCard({
 // ── Primitives locales ─────────────────────────────────────────────
 
 const inputCls =
-  "w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-sm focus:border-[var(--color-charcoal)] focus:outline-none";
+  "w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-sm focus:border-[var(--color-charcoal)] focus:outline-none";
 
 function Field({
   label,
@@ -439,7 +439,7 @@ function SubmitBtn({ label }: { label: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
+      className="rounded-[10px] bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? "…" : label}
     </button>

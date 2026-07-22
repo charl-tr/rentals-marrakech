@@ -31,12 +31,12 @@ export default function StatusChanger({
         type="button"
         data-shortcut="open-status"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+        className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
         title="Changer statut (s)"
       >
         Changer statut
         <ChevronDown size={12} />
-        <kbd className="ml-1 inline-flex items-center border border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-1 py-px font-mono text-[9px] normal-case">
+        <kbd className="ml-1 inline-flex items-center rounded-[6px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-1 py-px font-mono text-[9px] normal-case">
           s
         </kbd>
       </button>
@@ -47,7 +47,7 @@ export default function StatusChanger({
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
+            className="w-full max-w-md rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between">
@@ -88,12 +88,12 @@ export default function StatusChanger({
                   name="note"
                   rows={3}
                   placeholder="Ex : appelé à 14h30, pas décroché — à rappeler demain…"
-                  className="mt-2 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                  className="mt-2 w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
                 />
               </label>
 
               {state.status === "error" && (
-                <div className="border-l-2 border-[var(--color-terracotta)] bg-[var(--color-cream)] px-3 py-2 text-xs text-[var(--color-charcoal)]">
+                <div className="rounded-[10px] border-l-2 border-[var(--color-terracotta)] bg-[var(--color-cream)] px-3 py-2 text-xs text-[var(--color-charcoal)]">
                   {state.message}
                 </div>
               )}
@@ -119,7 +119,7 @@ function StatusButton({
       name="status"
       value={status}
       disabled={disabled || pending}
-      className={`border px-3 py-2.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
+      className={`rounded-[10px] border px-3 py-2.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
         disabled
           ? "cursor-not-allowed border-[var(--color-beige-warm)] bg-[var(--color-cream)] text-[var(--color-stone-soft)]"
           : "border-[var(--color-beige-warm)] bg-white text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-white"

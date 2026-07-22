@@ -85,10 +85,10 @@ export default async function AdminPropertyDetailPage({
             <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-stone)]">
               Réf. {property.reference}
             </span>
-            <span className="inline-flex items-center bg-[var(--color-charcoal)]/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)]">
+            <span className="inline-flex items-center rounded-full bg-[var(--color-charcoal)]/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)]">
               {propertyTypeLabel(property.type)}
             </span>
-            <span className="inline-flex items-center bg-[var(--color-cream)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)]">
+            <span className="inline-flex items-center rounded-full bg-[var(--color-cream)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)]">
               {property.listing === "vente"
                 ? "Vente"
                 : property.listing === "location-saisonniere"
@@ -96,7 +96,7 @@ export default async function AdminPropertyDetailPage({
                 : "Location"}
             </span>
             {property.exclusivity && (
-              <span className="inline-flex items-center bg-[var(--color-terracotta)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-white">
+              <span className="inline-flex items-center rounded-full bg-[var(--color-terracotta)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-white">
                 ★ Exclusivité
               </span>
             )}
@@ -133,7 +133,7 @@ export default async function AdminPropertyDetailPage({
           <Link
             href={publicHref}
             target="_blank"
-            className="inline-flex items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+            className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
           >
             Voir sur le site
             <ArrowUpRight size={12} />
@@ -148,7 +148,7 @@ export default async function AdminPropertyDetailPage({
           {/* Aperçu visuel */}
           {property.images[0] && (
             <section>
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--color-charcoal)]">
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[14px] bg-[var(--color-charcoal)]">
                 <Image
                   src={property.images[0]}
                   alt={property.title}
@@ -163,7 +163,7 @@ export default async function AdminPropertyDetailPage({
                   {property.images.slice(1, 5).map((img, i) => (
                     <div
                       key={i}
-                      className="relative aspect-[4/3] overflow-hidden bg-[var(--color-beige)]"
+                      className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-[var(--color-beige)]"
                     >
                       <Image
                         src={img}
@@ -212,7 +212,7 @@ export default async function AdminPropertyDetailPage({
                           {l.buyer.country} · {relativeTime(l.createdAt, now)}
                         </div>
                       </div>
-                      <span className="flex-shrink-0 bg-[var(--color-cream)] px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]">
+                      <span className="flex-shrink-0 rounded-full bg-[var(--color-cream)] px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]">
                         {LEAD_STATUS_LABELS[l.status]}
                       </span>
                     </Link>
@@ -346,7 +346,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border border-[var(--color-beige-warm)] bg-white p-5">
+    <section className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-5">
       <div className="mb-4 flex items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
         <Icon size={12} />
         {title}

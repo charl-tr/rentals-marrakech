@@ -40,7 +40,7 @@ export default function PropertyAdminActions({
 }) {
   if (!canEdit) {
     return (
-      <div className="border-l-2 border-[var(--color-stone-soft)] bg-[var(--color-cream)] px-4 py-3 text-xs text-[var(--color-stone)]">
+      <div className="rounded-[14px] border-l-2 border-[var(--color-stone-soft)] bg-[var(--color-cream)] px-4 py-3 text-xs text-[var(--color-stone)]">
         Les actions sur les biens sont réservées au directeur. Vue lecture seule.
       </div>
     );
@@ -62,7 +62,7 @@ function PublishCard({ slug, isPublished }: { slug: string; isPublished: boolean
   const [state, action] = useActionState(togglePublished, idle);
   useMutationToast(state);
   return (
-    <form action={action} className="border border-[var(--color-beige-warm)] bg-white p-4">
+    <form action={action} className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-4">
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="published" value={(!isPublished).toString()} />
 
@@ -105,7 +105,7 @@ function FeaturedCard({ slug, isFeatured }: { slug: string; isFeatured: boolean 
   const [state, action] = useActionState(toggleFeatured, idle);
   useMutationToast(state);
   return (
-    <form action={action} className="border border-[var(--color-beige-warm)] bg-white p-4">
+    <form action={action} className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-4">
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="featured" value={(!isFeatured).toString()} />
 
@@ -162,7 +162,7 @@ function StatusCard({
   if (state.status === "success" && open) setOpen(false);
 
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-white p-4">
+    <div className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <div className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
@@ -175,7 +175,7 @@ function StatusCard({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+          className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
         >
           Changer
         </button>
@@ -188,7 +188,7 @@ function StatusCard({
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
+            className="w-full max-w-md rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between">
@@ -241,7 +241,7 @@ function StatusOption({
       name="status"
       value={status}
       disabled={disabled || pending}
-      className={`border px-3 py-2.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
+      className={`rounded-[10px] border px-3 py-2.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
         disabled
           ? "cursor-not-allowed border-[var(--color-beige-warm)] bg-[var(--color-cream)] text-[var(--color-stone-soft)]"
           : "border-[var(--color-beige-warm)] bg-white text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-white"
@@ -269,7 +269,7 @@ function PriceCard({
   if (state.status === "success" && editing) setEditing(false);
 
   return (
-    <div className="border border-[var(--color-beige-warm)] bg-white p-4">
+    <div className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <div className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
@@ -287,7 +287,7 @@ function PriceCard({
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+            className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
           >
             Ajuster
           </button>
@@ -304,14 +304,14 @@ function PriceCard({
             min={1}
             step={1000}
             autoFocus
-            className="flex-1 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+            className="flex-1 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
           />
           <span className="text-xs text-[var(--color-stone)]">€</span>
           <SubmitButton label="Valider" variant="primary" />
           <button
             type="button"
             onClick={() => setEditing(false)}
-            className="border border-[var(--color-beige-warm)] bg-white p-2 text-[var(--color-stone)] hover:border-[var(--color-charcoal)] hover:text-[var(--color-charcoal)]"
+            className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white p-2 text-[var(--color-stone)] hover:border-[var(--color-charcoal)] hover:text-[var(--color-charcoal)]"
           >
             <X size={12} />
           </button>
@@ -340,7 +340,7 @@ function SubmitButton({
     <button
       type="submit"
       disabled={pending}
-      className={`${cls} whitespace-nowrap px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors disabled:cursor-not-allowed disabled:opacity-60`}
+      className={`${cls} whitespace-nowrap rounded-[10px] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors disabled:cursor-not-allowed disabled:opacity-60`}
     >
       {pending ? "…" : label}
     </button>

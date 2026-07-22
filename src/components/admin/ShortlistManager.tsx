@@ -43,7 +43,7 @@ export default function ShortlistManager({
   return (
     <div className="space-y-4">
       {/* Portail link pour copy */}
-      <div className="flex flex-col gap-2 border border-[var(--color-beige-warm)] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-2 rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <div className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-terracotta)]">
             Lien de l&apos;espace client
@@ -56,7 +56,7 @@ export default function ShortlistManager({
       </div>
 
       {/* Shortlist */}
-      <div className="border border-[var(--color-beige-warm)] bg-white">
+      <div className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
         <div className="flex items-center justify-between border-b border-[var(--color-beige-warm)] px-4 py-3">
           <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
             <Sparkles size={12} />
@@ -129,7 +129,7 @@ function ShortlistRow({
 
   return (
     <div className="flex gap-3 p-4">
-      <Link href={href} target="_blank" className="relative h-14 w-20 flex-shrink-0 overflow-hidden bg-[var(--color-beige)]">
+      <Link href={href} target="_blank" className="relative h-14 w-20 flex-shrink-0 overflow-hidden rounded-[8px] bg-[var(--color-beige)]">
         {property.images[0] && (
           <Image src={property.images[0]} alt="" fill sizes="80px" className="object-cover" />
         )}
@@ -212,7 +212,7 @@ function AdderDialog({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]"
+        className="w-full max-w-2xl overflow-hidden rounded-[16px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between border-b border-[var(--color-beige-warm)] p-6">
@@ -241,7 +241,7 @@ function AdderDialog({
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Chercher par titre, référence, quartier…"
               autoFocus
-              className="w-full border border-[var(--color-beige-warm)] bg-[var(--color-cream)] py-2 pl-9 pr-3 text-sm focus:border-[var(--color-charcoal)] focus:bg-white focus:outline-none"
+              className="w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] py-2 pl-9 pr-3 text-sm focus:border-[var(--color-charcoal)] focus:bg-white focus:outline-none"
             />
           </div>
         </div>
@@ -260,7 +260,7 @@ function AdderDialog({
                   onClick={() => setSelected(p.slug)}
                   className="flex w-full items-center gap-3 border-b border-[var(--color-beige-warm)] p-3 text-left transition-colors hover:bg-[var(--color-cream)]"
                 >
-                  <div className="relative h-10 w-14 flex-shrink-0 overflow-hidden bg-[var(--color-beige)]">
+                  <div className="relative h-10 w-14 flex-shrink-0 overflow-hidden rounded-[8px] bg-[var(--color-beige)]">
                     {p.images[0] && (
                       <Image src={p.images[0]} alt="" fill sizes="56px" className="object-cover" />
                     )}
@@ -282,13 +282,13 @@ function AdderDialog({
           <form action={action} className="space-y-4 p-6">
             <input type="hidden" name="leadId" value={leadId} />
             <input type="hidden" name="propertySlug" value={selected} />
-            <div className="flex items-center gap-3 border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-3">
+            <div className="flex items-center gap-3 rounded-[10px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] p-3">
               {(() => {
                 const p = properties.find((pp) => pp.slug === selected);
                 if (!p) return null;
                 return (
                   <>
-                    <div className="relative h-12 w-16 flex-shrink-0 overflow-hidden bg-[var(--color-beige)]">
+                    <div className="relative h-12 w-16 flex-shrink-0 overflow-hidden rounded-[8px] bg-[var(--color-beige)]">
                       {p.images[0] && (
                         <Image src={p.images[0]} alt="" fill sizes="64px" className="object-cover" />
                       )}
@@ -319,7 +319,7 @@ function AdderDialog({
                 name="note"
                 rows={3}
                 placeholder="Ex : L'emplacement correspond exactement à vos critères, et le propriétaire est ouvert à négocier."
-                className="mt-2 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                className="mt-2 w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
               />
               <span className="mt-1 block text-[10px] text-[var(--color-stone)]">
                 La note apparaît sur l&apos;espace client à côté du bien.
@@ -330,7 +330,7 @@ function AdderDialog({
               <button
                 type="button"
                 onClick={onClose}
-                className="border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
+                className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
               >
                 Annuler
               </button>
@@ -349,7 +349,7 @@ function AddSubmit() {
     <button
       type="submit"
       disabled={pending}
-      className="bg-[var(--color-charcoal)] px-5 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
+      className="rounded-[10px] bg-[var(--color-charcoal)] px-5 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? "…" : "Ajouter à la shortlist"}
     </button>
@@ -370,7 +370,7 @@ function CopyButton({ text }: { text: string }) {
           setTimeout(() => setCopied(false), 2000);
         } catch {}
       }}
-      className="whitespace-nowrap border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+      className="whitespace-nowrap rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
     >
       {copied ? "Copié ✓" : "Copier le lien"}
     </button>

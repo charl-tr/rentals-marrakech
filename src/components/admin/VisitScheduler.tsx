@@ -34,7 +34,7 @@ export default function VisitScheduler({
             name="visitAt"
             required
             defaultValue={existingVisit ? toLocal(existingVisit.at) : ""}
-            className="w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm text-[var(--color-charcoal)] focus:border-[var(--color-charcoal)] focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm text-[var(--color-charcoal)] focus:border-[var(--color-charcoal)] focus:outline-none"
           />
         </div>
 
@@ -48,7 +48,7 @@ export default function VisitScheduler({
             required
             placeholder="ex: villa-palmeraie-xyz"
             defaultValue={existingVisit?.propertySlug ?? defaultPropertySlug ?? ""}
-            className="w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm text-[var(--color-charcoal)] placeholder:text-[var(--color-stone)]/50 focus:border-[var(--color-charcoal)] focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm text-[var(--color-charcoal)] placeholder:text-[var(--color-stone)]/50 focus:border-[var(--color-charcoal)] focus:outline-none"
           />
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function VisitScheduler({
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 bg-[var(--color-charcoal)] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:opacity-50"
         >
           <CalendarPlus size={13} />
           {existingVisit ? "Modifier la visite" : "Programmer une visite"}

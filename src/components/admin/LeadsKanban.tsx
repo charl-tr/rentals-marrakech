@@ -81,7 +81,7 @@ function KanbanColumn({
 
       <div className="mt-3 flex flex-col gap-2.5">
         {leads.length === 0 ? (
-          <div className="border border-dashed border-[var(--color-beige-warm)] px-3 py-6 text-center text-[11px] text-[var(--color-stone)]">
+          <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] px-3 py-6 text-center text-[11px] text-[var(--color-stone)]">
             —
           </div>
         ) : (
@@ -116,7 +116,7 @@ function LeadCard({
   return (
     <Link
       href={`/admin/leads/${lead.id}`}
-      className={`group block border bg-white p-3 transition-all hover:-translate-y-0.5 hover:border-[var(--color-charcoal)] hover:shadow-[var(--shadow-card)] ${
+      className={`group block rounded-[14px] border bg-white p-3 transition-all hover:-translate-y-0.5 hover:border-[var(--color-charcoal)] hover:shadow-[var(--shadow-card)] ${
         dimmed ? "border-[var(--color-beige-warm)] opacity-75" : "border-[var(--color-beige-warm)]"
       }`}
     >

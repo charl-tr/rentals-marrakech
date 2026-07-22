@@ -108,7 +108,7 @@ async function DashboardBody({
       </p>
 
       {/* KPI CARDS */}
-      <div className="grid gap-0 border border-[var(--color-beige-warm)] bg-white md:grid-cols-4 md:divide-x md:divide-[var(--color-beige-warm)]">
+      <div className="grid gap-0 overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white md:grid-cols-4 md:divide-x md:divide-[var(--color-beige-warm)]">
         <KpiCard
           value={totalActive}
           label="leads actifs"
@@ -148,7 +148,7 @@ async function DashboardBody({
             </Link>
           </div>
 
-          <div className="mt-6 divide-y divide-[var(--color-beige-warm)] border border-[var(--color-beige-warm)] bg-white">
+          <div className="mt-6 divide-y divide-[var(--color-beige-warm)] overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
             {urgentLeads.length === 0 && (
               <div className="p-8 text-center text-sm text-[var(--color-stone)]">
                 Rien d&apos;urgent. Tous les SLA tiennent.
@@ -177,7 +177,7 @@ async function DashboardBody({
           {topMatch ? (
             <Link
               href="/admin/matching"
-              className="group mt-6 block border border-[var(--color-charcoal)] bg-[var(--color-charcoal)] p-6 text-white transition-transform hover:-translate-y-1"
+              className="group mt-6 block rounded-[14px] border border-[var(--color-charcoal)] bg-[var(--color-charcoal)] p-6 text-white transition-transform hover:-translate-y-1"
             >
               <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta-light)]">
                 <Sparkles size={12} />
@@ -227,7 +227,7 @@ async function DashboardBody({
               </div>
             </Link>
           ) : (
-            <div className="mt-6 border border-[var(--color-beige-warm)] bg-white p-8 text-center">
+            <div className="mt-6 rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-8 text-center">
               <p className="text-sm text-[var(--color-stone)]">Aucun matching actif.</p>
             </div>
           )}
@@ -255,7 +255,7 @@ async function DashboardBody({
           </Link>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-0 border border-[var(--color-beige-warm)] bg-white md:grid-cols-6 md:divide-x md:divide-[var(--color-beige-warm)]">
+        <div className="mt-6 grid grid-cols-2 gap-0 overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white md:grid-cols-6 md:divide-x md:divide-[var(--color-beige-warm)]">
           {KANBAN_COLUMNS.map((status) => (
             <Link
               key={status}
@@ -281,25 +281,25 @@ async function DashboardBody({
 function DashboardSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="mb-8 h-4 w-24 bg-[var(--color-beige-warm)]" />
-      <div className="grid gap-0 border border-[var(--color-beige-warm)] bg-white md:grid-cols-4 md:divide-x md:divide-[var(--color-beige-warm)]">
+      <div className="mb-8 h-4 w-24 rounded-[6px] bg-[var(--color-beige-warm)]" />
+      <div className="grid gap-0 overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white md:grid-cols-4 md:divide-x md:divide-[var(--color-beige-warm)]">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="p-8">
-            <div className="h-3 w-20 bg-[var(--color-beige-warm)]" />
-            <div className="mt-4 h-12 w-14 bg-[var(--color-beige-warm)]" />
+            <div className="h-3 w-20 rounded-[6px] bg-[var(--color-beige-warm)]" />
+            <div className="mt-4 h-12 w-14 rounded-[6px] bg-[var(--color-beige-warm)]" />
           </div>
         ))}
       </div>
       <div className="mt-12 grid gap-8 lg:grid-cols-[1.3fr_1fr]">
         <div className="space-y-3">
-          <div className="h-7 w-40 bg-[var(--color-beige-warm)]" />
-          <div className="border border-[var(--color-beige-warm)] bg-white p-8">
-            <div className="h-4 w-48 bg-[var(--color-beige-warm)]" />
+          <div className="h-7 w-40 rounded-[6px] bg-[var(--color-beige-warm)]" />
+          <div className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-8">
+            <div className="h-4 w-48 rounded-[6px] bg-[var(--color-beige-warm)]" />
           </div>
         </div>
         <div className="space-y-3">
-          <div className="h-7 w-24 bg-[var(--color-beige-warm)]" />
-          <div className="h-48 bg-[var(--color-beige-warm)]" />
+          <div className="h-7 w-24 rounded-[6px] bg-[var(--color-beige-warm)]" />
+          <div className="h-48 rounded-[12px] bg-[var(--color-beige-warm)]" />
         </div>
       </div>
     </div>

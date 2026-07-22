@@ -76,7 +76,7 @@ export default function TeamDistribution({
         </div>
       </div>
 
-      <div className="mt-6 overflow-hidden border border-[var(--color-beige-warm)] bg-white">
+      <div className="mt-6 overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
         {/* Header */}
         <div className="grid grid-cols-[minmax(180px,2fr)_repeat(5,minmax(0,1fr))_minmax(80px,1fr)] border-b border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-5 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
           <div>Conseiller</div>

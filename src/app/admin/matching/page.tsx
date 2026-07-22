@@ -55,7 +55,7 @@ export default async function AdminMatchingPage() {
       </div>
 
       {/* STATS RAPIDES */}
-      <div className="mt-12 grid gap-0 border border-[var(--color-beige-warm)] bg-white md:grid-cols-3 md:divide-x md:divide-[var(--color-beige-warm)]">
+      <div className="mt-12 grid gap-0 overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white md:grid-cols-3 md:divide-x md:divide-[var(--color-beige-warm)]">
         <StatBlock value={results.length} label="biens matchés" />
         <StatBlock value={totalMatchedBuyers} label="acheteurs concernés" />
         <StatBlock value={`${avgScore}%`} label="score moyen" accent />
@@ -64,7 +64,7 @@ export default async function AdminMatchingPage() {
       {/* RESULTS LIST */}
       <div className="mt-14 space-y-10">
         {results.length === 0 ? (
-          <div className="border border-[var(--color-beige-warm)] bg-white p-12 text-center">
+          <div className="rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-12 text-center">
             <p className="text-sm text-[var(--color-stone)]">
               Aucun matching actif. Ajoutez des biens à la vente ou qualifiez des acheteurs.
             </p>
@@ -118,7 +118,7 @@ function MatchingCard({
   matches: Array<{ lead: AdminLead; score: number; reasons: string[] }>;
 }) {
   return (
-    <article className="border border-[var(--color-charcoal)] bg-white">
+    <article className="overflow-hidden rounded-[14px] border border-[var(--color-charcoal)] bg-white">
       {/* TOP : property header */}
       <div className="grid gap-0 md:grid-cols-[320px_1fr]">
         {/* Image */}
@@ -192,7 +192,7 @@ function MatchingCard({
             <Link
               href={`/acheter/${property.slug}`}
               target="_blank"
-              className="inline-flex items-center justify-center gap-2 border border-[var(--color-charcoal)] bg-white px-6 py-3.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+              className="inline-flex items-center justify-center gap-2 rounded-[10px] border border-[var(--color-charcoal)] bg-white px-6 py-3.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
             >
               Voir la fiche publique
             </Link>
@@ -248,7 +248,7 @@ function MatchingCard({
                   {match.reasons.slice(0, 3).map((r, j) => (
                     <span
                       key={j}
-                      className="bg-white px-2 py-1 text-[10px] text-[var(--color-charcoal)]"
+                      className="rounded-full bg-white px-2 py-1 text-[10px] text-[var(--color-charcoal)]"
                     >
                       <Check size={9} className="mr-1 inline text-[var(--color-terracotta)]" />
                       {r}
@@ -271,7 +271,7 @@ function MatchingCard({
               <div className="flex items-center gap-3">
                 <Link
                   href={`/admin/leads/${match.lead.id}`}
-                  className="inline-flex items-center gap-1 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+                  className="inline-flex items-center gap-1 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
                 >
                   Ouvrir lead
                   <ChevronRight size={10} />

@@ -115,7 +115,7 @@ export default async function AdminLayout({
               href="/"
               title="Retour au site public"
               aria-label="Retour au site public"
-              className="hidden h-9 w-9 items-center justify-center border border-[var(--color-beige-warm)] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)] hover:text-[var(--color-charcoal)] md:inline-flex"
+              className="hidden h-9 w-9 items-center justify-center rounded-[10px] border border-[var(--color-beige-warm)] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)] hover:text-[var(--color-charcoal)] md:inline-flex"
             >
               <ArrowUpRight size={14} />
             </Link>

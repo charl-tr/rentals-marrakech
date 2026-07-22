@@ -114,7 +114,7 @@ export default async function AdminLeadDetailPage({
       />
 
       {isDirectorViewingOther && advisor && (
-        <div className="mt-5 flex items-center gap-3 border-l-2 border-[var(--color-terracotta)] bg-white px-4 py-2.5 text-xs text-[var(--color-charcoal)]">
+        <div className="mt-5 flex items-center gap-3 rounded-[10px] border-l-2 border-[var(--color-terracotta)] bg-white px-4 py-2.5 text-xs text-[var(--color-charcoal)]">
           <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-terracotta)]">
             Vue directrice
           </span>
@@ -155,7 +155,7 @@ export default async function AdminLeadDetailPage({
         <div className="flex flex-wrap items-center gap-2">
           <a
             href={`tel:${lead.buyer.phone.replace(/\s/g, "")}`}
-            className="inline-flex items-center gap-2 border border-[var(--color-charcoal)] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+            className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-charcoal)] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
           >
             <Phone size={12} />
             Appeler
@@ -164,7 +164,7 @@ export default async function AdminLeadDetailPage({
             href={`https://wa.me/${lead.buyer.phone.replace(/\D/g, "")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[var(--color-charcoal)] px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
+            className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
           >
             <MessageCircle size={12} />
             WhatsApp
@@ -241,7 +241,7 @@ export default async function AdminLeadDetailPage({
                 target="_blank"
                 className="group block"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-charcoal)]">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[12px] bg-[var(--color-charcoal)]">
                   {sourceProperty.images[0] && (
                     <Image
                       src={sourceProperty.images[0]}
@@ -251,7 +251,7 @@ export default async function AdminLeadDetailPage({
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   )}
-                  <div className="absolute bottom-3 left-3 bg-[var(--color-charcoal)]/85 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-white">
+                  <div className="absolute bottom-3 left-3 rounded-full bg-[var(--color-charcoal)]/85 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-white">
                     Réf. {sourceProperty.reference}
                   </div>
                 </div>
@@ -286,9 +286,9 @@ export default async function AdminLeadDetailPage({
                 {viewedProps.filter(Boolean).map((p, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 border border-[var(--color-beige-warm)] bg-white p-2.5"
+                    className="flex items-center gap-3 rounded-[10px] border border-[var(--color-beige-warm)] bg-white p-2.5"
                   >
-                    <div className="relative h-10 w-14 flex-shrink-0 overflow-hidden bg-[var(--color-charcoal)]">
+                    <div className="relative h-10 w-14 flex-shrink-0 overflow-hidden rounded-[8px] bg-[var(--color-charcoal)]">
                       {p!.images[0] && (
                         <Image
                           src={p!.images[0]}
@@ -341,7 +341,7 @@ export default async function AdminLeadDetailPage({
 
           {/* Advisor assigné */}
           {advisor && (
-            <div className="border border-[var(--color-charcoal)] bg-[var(--color-charcoal)] p-6 text-white">
+            <div className="rounded-[14px] border border-[var(--color-charcoal)] bg-[var(--color-charcoal)] p-6 text-white">
               <div className="flex items-center gap-4">
                 {advisor.photo && (
                   <div className="relative h-14 w-14 overflow-hidden rounded-full">
@@ -429,7 +429,7 @@ export default async function AdminLeadDetailPage({
           {lead.nextVisit && (
             <Section title="Prochaine visite" icon={Calendar}>
               <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 flex-shrink-0 flex-col items-center justify-center border border-[var(--color-beige-warm)] bg-white">
+                <div className="flex h-16 w-16 flex-shrink-0 flex-col items-center justify-center rounded-[10px] border border-[var(--color-beige-warm)] bg-white">
                   <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-[var(--color-terracotta)]">
                     {new Intl.DateTimeFormat("fr-FR", { month: "short" })
                       .format(new Date(lead.nextVisit.at))
@@ -497,7 +497,7 @@ function Section({
 }) {
   return (
     <section
-      className={`border ${
+      className={`rounded-[14px] border ${
         accent
           ? "border-[var(--color-terracotta)]/40 bg-[var(--color-cream)]"
           : "border-[var(--color-beige-warm)] bg-white"
@@ -533,7 +533,7 @@ function StatusBadge({ status }: { status: LeadStatus }) {
       ? "bg-[var(--color-terracotta)]/10 text-[var(--color-terracotta)]"
       : "bg-[var(--color-charcoal)]/10 text-[var(--color-charcoal)]";
   return (
-    <span className={`px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] ${style}`}>
+    <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] ${style}`}>
       {STATUS_LABELS[status]}
     </span>
   );
@@ -566,7 +566,7 @@ function SlaBadge({
   const Icon = sla === "breach" ? AlertCircle : sla === "watch" ? AlertCircle : Check;
   return (
     <span
-      className={`flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] ${colors[sla]}`}
+      className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.22em] ${colors[sla]}`}
     >
       <Icon size={10} />
       {labels[sla]}

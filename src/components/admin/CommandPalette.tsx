@@ -203,7 +203,7 @@ export default function CommandPalette({ data }: { data: CommandPaletteData }) {
       onClick={() => setOpen(false)}
     >
       <div
-        className="w-full max-w-2xl border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]"
+        className="w-full max-w-2xl overflow-hidden rounded-[16px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Input */}

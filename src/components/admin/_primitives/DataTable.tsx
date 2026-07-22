@@ -111,7 +111,7 @@ export default function DataTable<T>({
   if (data.length === 0) {
     return (
       emptyState ?? (
-        <div className="border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
+        <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
           <div className="font-serif text-xl text-[var(--color-charcoal)]">
             Aucune donnée.
           </div>
@@ -136,7 +136,7 @@ export default function DataTable<T>({
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden border border-[var(--color-beige-warm)] bg-white"
+      className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white"
     >
       {/* Header */}
       <div
@@ -257,15 +257,15 @@ export default function DataTable<T>({
       {keyboard && (
         <div className="flex items-center justify-between border-t border-[var(--color-beige-warm)] bg-[var(--color-cream)]/50 px-4 py-1.5 text-[10px] text-[var(--color-stone)]">
           <div className="flex items-center gap-2">
-            <kbd className="inline-flex items-center border border-[var(--color-beige-warm)] bg-white px-1 py-px font-mono text-[9px]">
+            <kbd className="inline-flex items-center rounded-[6px] border border-[var(--color-beige-warm)] bg-white px-1 py-px font-mono text-[9px]">
               j
             </kbd>
-            <kbd className="inline-flex items-center border border-[var(--color-beige-warm)] bg-white px-1 py-px font-mono text-[9px]">
+            <kbd className="inline-flex items-center rounded-[6px] border border-[var(--color-beige-warm)] bg-white px-1 py-px font-mono text-[9px]">
               k
             </kbd>
             <span>naviguer</span>
             <span className="mx-1">·</span>
-            <kbd className="inline-flex items-center border border-[var(--color-beige-warm)] bg-white px-1 py-px font-mono text-[9px]">
+            <kbd className="inline-flex items-center rounded-[6px] border border-[var(--color-beige-warm)] bg-white px-1 py-px font-mono text-[9px]">
               ↵
             </kbd>
             <span>ouvrir</span>

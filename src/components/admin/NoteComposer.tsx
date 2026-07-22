@@ -31,7 +31,7 @@ export default function NoteComposer({ leadId }: { leadId: string }) {
         required
         data-shortcut="focus-note"
         placeholder="Note privée (visible uniquement par l'équipe)… Raccourci : n"
-        className="mt-2 w-full border border-[var(--color-beige-warm)] bg-white px-4 py-3 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+        className="mt-2 w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-3 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
       />
 
       {state.status === "error" && (
@@ -53,7 +53,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="bg-[var(--color-charcoal)] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
+      className="rounded-[10px] bg-[var(--color-charcoal)] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? "Enregistrement…" : "Enregistrer"}
     </button>

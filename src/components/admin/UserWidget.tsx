@@ -45,7 +45,7 @@ export default function UserWidget({
           <div className="flex items-center gap-1.5 text-xs font-medium">
             {name}
             {isDirector && (
-              <span className="bg-[var(--color-terracotta)] px-1.5 py-0.5 text-[8px] font-medium uppercase tracking-[0.22em] text-white">
+              <span className="rounded-full bg-[var(--color-terracotta)] px-1.5 py-0.5 text-[8px] font-medium uppercase tracking-[0.22em] text-white">
                 Dir.
               </span>
             )}
@@ -55,14 +55,14 @@ export default function UserWidget({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-40 mt-2 w-64 border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-card)]">
+        <div className="absolute right-0 top-full z-40 mt-2 w-64 overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-card)]">
           <div className="border-b border-[var(--color-beige-warm)] px-4 py-3">
             <div className="flex items-center gap-2">
               <div className="text-sm font-medium text-[var(--color-charcoal)]">
                 {name}
               </div>
               {isDirector && (
-                <span className="bg-[var(--color-terracotta)] px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
+                <span className="rounded-full bg-[var(--color-terracotta)] px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
                   Directeur
                 </span>
               )}

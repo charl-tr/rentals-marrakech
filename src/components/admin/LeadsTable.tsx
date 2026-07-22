@@ -135,7 +135,7 @@ export default function LeadsTable({
       rowHref={(lead) => `/admin/leads/${lead.id}`}
       defaultSort={{ columnKey: "priority", dir: "asc" }}
       emptyState={
-        <div className="border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
+        <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
           <div className="font-serif text-xl text-[var(--color-charcoal)]">
             Aucun dossier ne matche.
           </div>
@@ -216,7 +216,7 @@ function StatusBadge({ status }: { status: AdminLead["status"] }) {
       : "bg-[var(--color-cream)] text-[var(--color-charcoal)]";
   return (
     <span
-      className={`inline-flex items-center justify-center px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] ${style}`}
+      className={`inline-flex items-center justify-center rounded-full px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] ${style}`}
     >
       {STATUS_LABELS[status]}
     </span>

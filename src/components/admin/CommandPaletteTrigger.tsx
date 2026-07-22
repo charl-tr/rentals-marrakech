@@ -33,7 +33,7 @@ export default function CommandPaletteTrigger() {
           })
         );
       }}
-      className="hidden h-9 items-center gap-2 border border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-3 text-xs text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)] md:inline-flex"
+      className="hidden h-9 items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-3 text-xs text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)] md:inline-flex"
     >
       <Search size={12} />
       <span className="hidden text-[11px] lg:inline">Rechercher</span>

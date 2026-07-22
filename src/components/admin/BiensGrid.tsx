@@ -18,7 +18,7 @@ export default function BiensGrid({
 }) {
   if (properties.length === 0) {
     return (
-      <div className="border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
+      <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
         <div className="font-serif text-xl text-[var(--color-charcoal)]">
           Aucun bien ne matche.
         </div>
@@ -54,7 +54,7 @@ function BienCard({
   return (
     <Link
       href={`/admin/biens/${property.slug}`}
-      className={`group flex flex-col overflow-hidden border bg-white transition-all hover:-translate-y-0.5 hover:border-[var(--color-charcoal)] hover:shadow-[var(--shadow-card)] ${
+      className={`group flex flex-col overflow-hidden rounded-[14px] border bg-white transition-all hover:-translate-y-0.5 hover:border-[var(--color-charcoal)] hover:shadow-[var(--shadow-card)] ${
         unpublished
           ? "border-[var(--color-beige-warm)] opacity-80"
           : "border-[var(--color-beige-warm)]"
@@ -82,7 +82,7 @@ function BienCard({
           {unpublished && (
             <span
               title="Masqué"
-              className="inline-flex items-center gap-1 bg-[var(--color-charcoal)]/85 px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-sm"
+              className="inline-flex items-center gap-1 rounded-full bg-[var(--color-charcoal)]/85 px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-sm"
             >
               <EyeOff size={9} /> Off
             </span>
@@ -90,7 +90,7 @@ function BienCard({
           {property.featured && (
             <span
               title="En avant"
-              className="inline-flex items-center justify-center bg-[var(--color-terracotta)] p-1 text-white"
+              className="inline-flex items-center justify-center rounded-full bg-[var(--color-terracotta)] p-1 text-white"
             >
               <Star size={10} fill="currentColor" />
             </span>
@@ -98,7 +98,7 @@ function BienCard({
         </div>
 
         {/* Reference bottom-right */}
-        <div className="absolute bottom-2 right-2 bg-[var(--color-charcoal)]/85 px-2 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
+        <div className="absolute bottom-2 right-2 rounded-full bg-[var(--color-charcoal)]/85 px-2 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
           {property.reference}
         </div>
       </div>
@@ -143,7 +143,7 @@ function StatusPill({ status }: { status: PropertyStatus }) {
       : "bg-white/95 text-[var(--color-charcoal)]";
   return (
     <span
-      className={`inline-flex items-center px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] backdrop-blur-sm ${style}`}
+      className={`inline-flex items-center rounded-full px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] backdrop-blur-sm ${style}`}
     >
       {STATUS_LABELS[status]}
     </span>

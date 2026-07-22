@@ -30,7 +30,7 @@ export default function NextActionCard({
 
   return (
     <section
-      className={`mt-8 border-l-4 ${
+      className={`mt-8 rounded-[14px] border-l-4 ${
         accent === "alert"
           ? "border-[var(--color-alert)] bg-[var(--color-alert-soft)]"
           : accent === "terra"
@@ -87,7 +87,7 @@ export default function NextActionCard({
             {phone && (
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
-                className="flex flex-1 items-center justify-center gap-2 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
               >
                 <Phone size={12} />
                 Appeler
@@ -98,7 +98,7 @@ export default function NextActionCard({
                 href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
               >
                 <MessageCircle size={12} />
                 WhatsApp
@@ -210,7 +210,7 @@ function LogInteractionForm({
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
+            className="w-full max-w-md rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between">
@@ -241,14 +241,14 @@ function LogInteractionForm({
                   name="body"
                   rows={3}
                   placeholder="Ex : appelé à 15h, pas décroché — rappel demain matin"
-                  className="mt-2 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                  className="mt-2 w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
                 />
               </label>
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)] hover:text-[var(--color-charcoal)]"
+                  className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)] hover:text-[var(--color-charcoal)]"
                 >
                   Annuler
                 </button>
@@ -298,7 +298,7 @@ function NoteQuickForm({
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
+            className="w-full max-w-md rounded-[14px] border border-[var(--color-beige-warm)] bg-white p-8 shadow-[var(--shadow-luxe)]"
             onClick={(e) => e.stopPropagation()}
           >
             <form action={action} className="space-y-4">
@@ -312,14 +312,14 @@ function NoteQuickForm({
                   rows={4}
                   required
                   autoFocus
-                  className="mt-2 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                  className="mt-2 w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
                 />
               </label>
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
+                  className="rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:border-[var(--color-charcoal)]"
                 >
                   Annuler
                 </button>
@@ -360,7 +360,7 @@ function SubmitBtn({ label }: { label: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="bg-[var(--color-charcoal)] px-5 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
+      className="rounded-[10px] bg-[var(--color-charcoal)] px-5 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? "…" : label}
     </button>
@@ -385,7 +385,7 @@ function Feedback({ state }: { state: MutationState }) {
 
 function btnClass(accent: "alert" | "terra" | "neutral"): string {
   const base =
-    "flex w-full items-center justify-center gap-1.5 px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors disabled:cursor-not-allowed disabled:opacity-60";
+    "flex w-full items-center justify-center gap-1.5 rounded-[10px] px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] transition-colors disabled:cursor-not-allowed disabled:opacity-60";
   if (accent === "alert") {
     return `${base} bg-[var(--color-alert)] text-white hover:bg-[var(--color-terracotta-deep)]`;
   }

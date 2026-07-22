@@ -148,7 +148,7 @@ export default async function AdminLeadsPage({
             <ExportButton />
             <button
               type="button"
-              className="inline-flex items-center gap-2 bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
+              className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
             >
               + Nouveau lead
             </button>
@@ -167,7 +167,7 @@ export default async function AdminLeadsPage({
       <div className="px-5 py-6 md:px-8">
         {leads.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center border border-[var(--color-beige-warm)] text-[var(--color-stone)]">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[10px] border border-[var(--color-beige-warm)] text-[var(--color-stone)]">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>

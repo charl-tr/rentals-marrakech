@@ -116,7 +116,7 @@ function SearchInput({
             if (target.value === v) setParam(paramKey, v);
           }, debounceMs);
         }}
-        className="w-full border border-[var(--color-beige-warm)] bg-[var(--color-cream)] py-2 pl-9 pr-3 text-sm focus:border-[var(--color-charcoal)] focus:bg-white focus:outline-none"
+        className="w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] py-2 pl-9 pr-3 text-sm focus:border-[var(--color-charcoal)] focus:bg-white focus:outline-none"
       />
     </div>
   );
@@ -146,7 +146,7 @@ function Toggle<T extends string | null>({
   const current = (useCurrentParam(param) ?? defaultValue) as T;
 
   return (
-    <div className="flex border border-[var(--color-beige-warm)] bg-white">
+    <div className="flex overflow-hidden rounded-[10px] border border-[var(--color-beige-warm)] bg-white">
       {options.map((opt, i) => {
         const active = current === opt.value;
         return (
@@ -203,7 +203,7 @@ function Pill({
           const v = e.target.value;
           setParam(param, v === "" ? null : v);
         }}
-        className={`appearance-none border px-3 py-1.5 pr-7 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors focus:outline-none ${
+        className={`appearance-none rounded-[10px] border px-3 py-1.5 pr-7 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors focus:outline-none ${
           isActive
             ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
             : "border-[var(--color-beige-warm)] bg-white text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"

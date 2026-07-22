@@ -139,7 +139,7 @@ export default async function AdvisorPortfolioPage({
                 {advisor.name}
               </h1>
               {isDirectorProfile && (
-                <span className="bg-[var(--color-terracotta)] px-2 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
+                <span className="rounded-full bg-[var(--color-terracotta)] px-2 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-white">
                   Directeur
                 </span>
               )}
@@ -166,7 +166,7 @@ export default async function AdvisorPortfolioPage({
           {advisor.phone && (
             <a
               href={`tel:${advisor.phone.replace(/\s/g, "")}`}
-              className="inline-flex items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+              className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
             >
               <Phone size={12} />
               Appeler
@@ -177,7 +177,7 @@ export default async function AdvisorPortfolioPage({
               href={`https://wa.me/${advisor.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+              className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
             >
               <MessageCircle size={12} />
               WhatsApp
@@ -186,7 +186,7 @@ export default async function AdvisorPortfolioPage({
           {advisor.email && (
             <a
               href={`mailto:${advisor.email}`}
-              className="inline-flex items-center gap-2 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
+              className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
             >
               <Mail size={12} />
               Mail
@@ -196,7 +196,7 @@ export default async function AdvisorPortfolioPage({
       </div>
 
       {/* KPIs */}
-      <div className="mt-8 grid grid-cols-2 gap-0 border border-[var(--color-beige-warm)] bg-white md:grid-cols-5 md:divide-x md:divide-[var(--color-beige-warm)]">
+      <div className="mt-8 grid grid-cols-2 gap-0 overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white md:grid-cols-5 md:divide-x md:divide-[var(--color-beige-warm)]">
         <Kpi label="Leads actifs" value={activeLeads.length} />
         <Kpi
           label="Mandats actifs"
@@ -253,7 +253,7 @@ export default async function AdvisorPortfolioPage({
             </Link>
           </div>
 
-          <div className="mt-5 divide-y divide-[var(--color-beige-warm)] border border-[var(--color-beige-warm)] bg-white">
+          <div className="mt-5 divide-y divide-[var(--color-beige-warm)] overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
             {activeLeads.length === 0 ? (
               <div className="p-6 text-sm text-[var(--color-stone)]">
                 Aucun lead actif.
@@ -310,7 +310,7 @@ export default async function AdvisorPortfolioPage({
             </Link>
           </div>
 
-          <div className="mt-5 divide-y divide-[var(--color-beige-warm)] border border-[var(--color-beige-warm)] bg-white">
+          <div className="mt-5 divide-y divide-[var(--color-beige-warm)] overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
             {mandatesEnriched.length === 0 ? (
               <div className="p-6 text-sm text-[var(--color-stone)]">
                 Aucun mandat actif.
@@ -325,7 +325,7 @@ export default async function AdvisorPortfolioPage({
                     className="group flex items-center gap-3 p-4 transition-colors hover:bg-[var(--color-cream)]"
                   >
                     {p?.images[0] && (
-                      <div className="relative h-12 w-14 flex-shrink-0 overflow-hidden bg-[var(--color-beige)]">
+                      <div className="relative h-12 w-14 flex-shrink-0 overflow-hidden rounded-[8px] bg-[var(--color-beige)]">
                         <Image
                           src={p.images[0]}
                           alt=""
@@ -381,14 +381,14 @@ export default async function AdvisorPortfolioPage({
             </span>
           </h2>
 
-          <div className="mt-5 divide-y divide-[var(--color-beige-warm)] border border-[var(--color-beige-warm)] bg-white">
+          <div className="mt-5 divide-y divide-[var(--color-beige-warm)] overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
             {visitsUpcoming.slice(0, 6).map((lead) => (
               <Link
                 key={lead.id}
                 href={`/admin/leads/${lead.id}`}
                 className="group grid grid-cols-[80px_1fr_auto] items-center gap-4 p-4 transition-colors hover:bg-[var(--color-cream)]"
               >
-                <div className="flex flex-col items-center border border-[var(--color-beige-warm)] bg-white py-2">
+                <div className="flex flex-col items-center rounded-[10px] border border-[var(--color-beige-warm)] bg-white py-2">
                   <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-[var(--color-terracotta)]">
                     {new Intl.DateTimeFormat("fr-FR", { month: "short" })
                       .format(new Date(lead.nextVisit!.at))
