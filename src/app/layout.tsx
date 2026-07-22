@@ -32,6 +32,10 @@ export const metadata: Metadata = {
     "immobilier Essaouira",
     "agence immobilière Marrakech",
   ],
+  icons: {
+    icon: "/logo-original.png",
+    apple: "/logo-original.png",
+  },
   openGraph: {
     title: "Marrakech Realty",
     description: "Immobilier de caractère à Marrakech et Essaouira.",
@@ -42,13 +46,6 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image" },
 };
-
-// ════════════════════════════════════════════════════════════════════
-// Root layout — html/body/fonts uniquement.
-// La chrome publique (Navbar/Footer/CookieBanner) vit dans
-// src/app/(public)/layout.tsx — l'admin a sa propre chrome dans
-// src/app/admin/layout.tsx. Ainsi pas de double header.
-// ════════════════════════════════════════════════════════════════════
 
 export default function RootLayout({
   children,

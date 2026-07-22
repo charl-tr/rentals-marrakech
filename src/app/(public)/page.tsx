@@ -79,7 +79,6 @@ export default async function Home() {
   const featuredProperties = await getFeaturedProperties(12);
   const essaouiraFallback = await getFirstEssaouiraProperty();
 
-  // Protagonistes visuels — toutes images issues du portefeuille réel
   const hero = featuredProperties[0];
   const heroImage = hero?.images[1] ?? hero?.images[0];
   const essaouiraHighlight =
@@ -104,7 +103,6 @@ export default async function Home() {
             className="object-cover animate-ken-burns"
           />
         )}
-        {/* Dégradés superposés pour lisibilité garantie */}
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-charcoal)]/60 via-[var(--color-charcoal)]/35 to-[var(--color-charcoal)]/85" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.55)_0%,_rgba(0,0,0,0.15)_55%,_rgba(0,0,0,0)_85%)]" />
 
@@ -223,7 +221,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* FEATURED PROPERTIES — mosaïque éditoriale : 1 bien vedette + 2 secondaires */}
+      {/* FEATURED PROPERTIES */}
       <section className="bg-[var(--color-cream)] py-28">
         <div className="container-luxe">
           <FadeInOnScroll as="div" className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
@@ -248,7 +246,6 @@ export default async function Home() {
 
           {featuredProperties.length >= 3 && (
             <div className="mt-16 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:gap-10">
-              {/* HERO bien — à gauche, grand format */}
               <Link
                 href={`/acheter/${featuredProperties[0].slug}`}
                 className="group relative block aspect-[4/5] overflow-hidden bg-[var(--color-charcoal)] shadow-[var(--shadow-card)] transition-shadow duration-500 hover:shadow-[var(--shadow-luxe)] lg:aspect-auto"
@@ -301,7 +298,6 @@ export default async function Home() {
                 </div>
               </Link>
 
-              {/* Deux biens secondaires — à droite, empilés */}
               <div className="flex flex-col gap-8 lg:gap-10">
                 {featuredProperties.slice(1, 3).map((property) => (
                   <PropertyCard key={property.slug} property={property} />
@@ -361,7 +357,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* PRESS MENTIONS — crédibilité éditoriale */}
+      {/* PRESS MENTIONS */}
       <PressMentions />
 
       {/* ESSAOUIRA IMMERSIVE */}
@@ -376,18 +372,18 @@ export default async function Home() {
               className="object-cover animate-ken-burns"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-charcoal)]/70 via-[var(--color-charcoal)]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-charcoal)]/75 via-[var(--color-charcoal)]/45 to-[var(--color-charcoal)]/15" />
 
           <div className="container-luxe relative z-10 flex min-h-[640px] items-center py-20">
             <FadeInOnScroll as="div" className="max-w-xl text-white">
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta)]">
+              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
                 Cap sur l&apos;océan
               </div>
-              <h2 className="mt-5 font-serif text-5xl leading-tight md:text-6xl">
+              <h2 className="mt-5 font-serif text-5xl leading-tight drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)] md:text-6xl">
                 Essaouira,<br />
-                <span className="italic text-[var(--color-terracotta)]">l&apos;autre Maroc.</span>
+                <span className="italic text-[var(--color-terracotta-light)]">l&apos;autre Maroc.</span>
               </h2>
-              <p className="mt-8 text-white/90 md:text-lg">
+              <p className="mt-8 text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)] md:text-lg">
                 À trois heures de Marrakech, la cité des Alizés conjugue médina UNESCO, plages
                 infinies et douceur de vivre. Nos biens à Essaouira : riads à restaurer, maisons
                 d&apos;hôtes en activité, villas contemporaines pieds dans l&apos;eau.
@@ -447,7 +443,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* DOUBLE CTA */}
+      {/* DOUBLE CTA — Vendre / Acheter */}
       <section className="grid md:grid-cols-2">
         <div className="relative min-h-[420px] overflow-hidden">
           {ctaVendreImage && (
@@ -459,20 +455,21 @@ export default async function Home() {
               className="object-cover transition-transform duration-[900ms] hover:scale-105"
             />
           )}
-          <div className="absolute inset-0 bg-[var(--color-charcoal)]/55" />
+          <div className="absolute inset-0 bg-[var(--color-charcoal)]/60" />
           <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-center p-12 text-white md:p-16">
-            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta)]">
+            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
               Vous vendez ?
             </div>
-            <h3 className="mt-5 font-serif text-4xl leading-tight md:text-5xl">
+            <h3 className="mt-5 font-serif text-4xl leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)] md:text-5xl">
               Estimation gratuite<br />sous 24 heures.
             </h3>
-            <p className="mt-5 max-w-md text-white/90">
+            <p className="mt-5 max-w-md text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.3)]">
               Un conseiller senior évalue votre bien et vous remet une estimation argumentée,
               appuyée sur les transactions comparables des 18 derniers mois.
             </p>
-            <Link href="/contact" className="btn-gold mt-8">
-              Estimer mon bien
+            <Link href="/deposer-un-bien" className="btn-gold mt-8">
+              Déposer mon bien
+              <ArrowRight size={14} />
             </Link>
           </div>
         </div>
@@ -487,20 +484,21 @@ export default async function Home() {
               className="object-cover transition-transform duration-[900ms] hover:scale-105"
             />
           )}
-          <div className="absolute inset-0 bg-[var(--color-charcoal)]/55" />
+          <div className="absolute inset-0 bg-[var(--color-charcoal)]/60" />
           <div className="relative z-10 flex h-full min-h-[420px] flex-col items-start justify-center p-12 text-white md:p-16">
-            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta)]">
+            <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
               Vous recherchez ?
             </div>
-            <h3 className="mt-5 font-serif text-4xl leading-tight md:text-5xl">
+            <h3 className="mt-5 font-serif text-4xl leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)] md:text-5xl">
               Recherche<br />personnalisée.
             </h3>
-            <p className="mt-5 max-w-md text-white/90">
+            <p className="mt-5 max-w-md text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.3)]">
               Décrivez-nous votre projet : nous activons notre réseau et notre portefeuille
               confidentiel pour vous trouver le bien qui vous ressemble.
             </p>
-            <Link href="/contact" className="btn-outline-light mt-8">
-              Démarrer ma recherche
+            <Link href="/acheter" className="btn-outline-light mt-8">
+              Explorer les biens
+              <ArrowRight size={14} />
             </Link>
           </div>
         </div>

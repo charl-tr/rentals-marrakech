@@ -7,6 +7,7 @@ import {
   Phone,
 } from "lucide-react";
 import SectionHero from "@/components/SectionHero";
+import DepositForm from "@/components/DepositForm";
 
 export const metadata: Metadata = {
   title: "Vendre votre bien — Estimation 24h · Marrakech Realty",
@@ -60,7 +61,6 @@ export default function DeposerPage() {
         subtitle="Vingt-cinq ans d'expérience à Marrakech et Essaouira. Acquéreurs qualifiés européens, américains et marocains résidents. Discrétion absolue."
       />
 
-      {/* PROCESS */}
       <section className="bg-white py-24">
         <div className="container-luxe">
           <div className="text-center">
@@ -91,7 +91,6 @@ export default function DeposerPage() {
         </div>
       </section>
 
-      {/* FORM */}
       <section className="bg-[var(--color-cream)] py-24">
         <div className="container-luxe">
           <div className="mx-auto max-w-3xl">
@@ -105,90 +104,9 @@ export default function DeposerPage() {
               </p>
             </div>
 
-            <form className="mt-12 space-y-6 border border-[var(--color-beige-warm)] bg-white p-10">
-              <div className="grid gap-6 md:grid-cols-2">
-                <Field label="Prénom" required>
-                  <input className={inputCls} required />
-                </Field>
-                <Field label="Nom" required>
-                  <input className={inputCls} required />
-                </Field>
-                <Field label="E-mail" required>
-                  <input type="email" className={inputCls} required />
-                </Field>
-                <Field label="Téléphone" required>
-                  <input type="tel" className={inputCls} required />
-                </Field>
-              </div>
-
-              <Field label="Type de bien" required>
-                <select className={inputCls} required defaultValue="">
-                  <option value="" disabled>
-                    Choisir…
-                  </option>
-                  <option>Riad rénové</option>
-                  <option>Riad à rénover</option>
-                  <option>Villa</option>
-                  <option>Appartement</option>
-                  <option>Maison d&apos;hôtes en activité</option>
-                  <option>Terrain</option>
-                  <option>Programme neuf</option>
-                </select>
-              </Field>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                <Field label="Ville" required>
-                  <select className={inputCls} required defaultValue="">
-                    <option value="" disabled>
-                      Choisir…
-                    </option>
-                    <option>Marrakech</option>
-                    <option>Essaouira</option>
-                    <option>Autre</option>
-                  </select>
-                </Field>
-                <Field label="Quartier ou route">
-                  <input className={inputCls} placeholder="Palmeraie, Médina, Diabat…" />
-                </Field>
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-3">
-                <Field label="Surface habitable (m²)">
-                  <input type="number" className={inputCls} />
-                </Field>
-                <Field label="Surface terrain (m²)">
-                  <input type="number" className={inputCls} />
-                </Field>
-                <Field label="Chambres">
-                  <input type="number" className={inputCls} />
-                </Field>
-              </div>
-
-              <Field label="Particularités du bien">
-                <textarea
-                  rows={4}
-                  className={`${inputCls} resize-none`}
-                  placeholder="Restauration récente, vue exceptionnelle, dépendances, dossier juridique en règle…"
-                />
-              </Field>
-
-              <Field label="Calendrier de vente envisagé">
-                <select className={inputCls} defaultValue="">
-                  <option value="">Pas pressé</option>
-                  <option>Sous 3 mois</option>
-                  <option>Sous 6 mois</option>
-                  <option>Cette année</option>
-                </select>
-              </Field>
-
-              <button type="submit" className="btn-gold w-full justify-center">
-                Demander une estimation gratuite
-              </button>
-              <p className="text-[11px] text-[var(--color-stone)]">
-                Vos informations restent strictement confidentielles. Aucun partage avec
-                des tiers, aucun acquéreur ne sera contacté sans votre accord express.
-              </p>
-            </form>
+            <div className="mt-12">
+              <DepositForm />
+            </div>
           </div>
         </div>
       </section>
@@ -207,28 +125,5 @@ export default function DeposerPage() {
         </div>
       </section>
     </>
-  );
-}
-
-const inputCls =
-  "w-full border border-[var(--color-beige-warm)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)] focus:border-[var(--color-terracotta)] focus:outline-none";
-
-function Field({
-  label,
-  required,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-        {label}
-        {required && <span className="text-[var(--color-terracotta)]"> *</span>}
-      </span>
-      <div className="mt-2">{children}</div>
-    </label>
   );
 }
