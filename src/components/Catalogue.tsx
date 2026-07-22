@@ -1,14 +1,10 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import PropertyCard from "@/components/PropertyCard";
 import Breadcrumbs, { type Crumb } from "@/components/Breadcrumbs";
 import BackToList from "@/components/BackToList";
-import FilterToolbar, { type FilterMode } from "@/components/FilterToolbar";
-import MapClientWrapper from "@/components/MapClientWrapper";
+import CatalogueBrowser from "@/components/CatalogueBrowser";
 import { type Property, type PropertyType } from "@/data/properties";
-import { getAllProperties, type PropertyPin } from "@/lib/db";
+import { getAllProperties } from "@/lib/db";
 
-export type { FilterMode };
+export type FilterMode = "vente" | "location";
 
 export interface CatalogueProps {
   eyebrow: string;
@@ -63,52 +59,6 @@ const TYPES_LOCATION: PropertyType[] = [
   "maison-hotes",
 ];
 
-function matchesFilters(
-  p: Property,
-  f: Record<string, string | undefined>,
-  buckets: readonly { key: string; min?: number; max?: number }[],
-  mode: FilterMode
-): boolean {
-  if (f.type && p.type !== f.type) return false;
-  if (f.quartier && p.neighborhoodSlug !== f.quartier) return false;
-  if (f.ville && p.city !== f.ville) return false;
-  if (f.budget) {
-    const bucket = buckets.find((b) => b.key === f.budget);
-    if (bucket) {
-      if (bucket.min !== undefined && p.price < bucket.min) return false;
-      if (bucket.max !== undefined && p.price > bucket.max) return false;
-    }
-  }
-  if (f.chambres) {
-    const min = parseInt(f.chambres, 10);
-    if (!Number.isNaN(min) && p.bedrooms < min) return false;
-  }
-  if (f.piscine === "1" && !p.pool) return false;
-  if (f.duree && mode === "location") {
-    if (f.duree === "longue" && p.listing !== "location") return false;
-    if (f.duree === "saisonnier" && p.listing !== "location-saisonniere")
-      return false;
-  }
-  return true;
-}
-
-function propertyToPin(p: Property): PropertyPin {
-  return {
-    slug: p.slug,
-    title: p.title,
-    price: p.price,
-    priceUnit: p.priceUnit ?? undefined,
-    listing: p.listing,
-    type: p.type,
-    coordinates: p.coordinates,
-    neighborhoodSlug: p.neighborhoodSlug ?? "",
-    city: p.city,
-    image: p.images[0] ?? null,
-    bedrooms: p.bedrooms,
-    surface: p.surface ?? 0,
-  };
-}
-
 export default async function Catalogue({
   eyebrow,
   title,
@@ -129,25 +79,14 @@ export default async function Catalogue({
   selectedFilters = {},
 }: CatalogueProps) {
   const all = await getAllProperties();
-  const BUCKETS = filterMode === "location" ? BUDGET_LOCATION : BUDGET_VENTE;
+  const buckets = filterMode === "location" ? BUDGET_LOCATION : BUDGET_VENTE;
   const availableTypes = filterMode === "location" ? TYPES_LOCATION : TYPES_VENTE;
 
   const prefiltered = all.filter(prefilter);
 
-  let items = prefiltered.filter((p) =>
-    matchesFilters(p, selectedFilters, BUCKETS, filterMode)
-  );
-
-  const tri = selectedFilters.tri ?? "default";
-  if (tri === "price-asc") items = [...items].sort((a, b) => a.price - b.price);
-  else if (tri === "price-desc")
-    items = [...items].sort((a, b) => b.price - a.price);
-  else if (tri === "surface-desc")
-    items = [...items].sort((a, b) => (b.surface ?? 0) - (a.surface ?? 0));
-
   return (
     <>
-      {/* HEADER — éditorial, bandeau noir, ZÉRO image stock */}
+      {/* HEADER — éditorial, bandeau noir, zéro image stock */}
       <section className="bg-[var(--color-charcoal-deep)] text-white">
         <div className="container-luxe pt-28 pb-12 md:pt-32 md:pb-16">
           {(breadcrumbs || backFallbackHref) && (
@@ -172,51 +111,16 @@ export default async function Catalogue({
         </div>
       </section>
 
-      {/* TOOLBAR + DRAWER (Client Component) */}
-      <FilterToolbar
+      {/* EXPÉRIENCE DE NAVIGATION — filtrage/tri instantané côté client */}
+      <CatalogueBrowser
         properties={prefiltered}
         mode={filterMode}
         baseHref={baseHref}
-        selectedFilters={selectedFilters}
         visibleFilters={visibleFilters}
-        buckets={BUCKETS}
+        buckets={buckets}
         availableTypes={availableTypes}
+        initial={selectedFilters}
       />
-
-      {/* MAP VIEW */}
-      {selectedFilters.vue === "carte" ? (
-        <div className="h-[calc(100dvh-6.5rem)] lg:h-[calc(100dvh-7.5rem)]">
-          <MapClientWrapper pins={items.map(propertyToPin)} />
-        </div>
-      ) : (
-        /* GRID VIEW — blanc crisp, grille aérée */
-        <section className="bg-white py-14 md:py-20">
-          <div className="container-luxe">
-            {items.length === 0 ? (
-              <div className="mx-auto max-w-lg py-20 text-center">
-                <div className="eyebrow">Aucun résultat</div>
-                <div className="mt-4 font-serif text-2xl text-[var(--color-charcoal)] md:text-3xl">
-                  Aucun bien correspondant<br />à ces critères.
-                </div>
-                <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[var(--color-stone)]">
-                  Notre portefeuille évolue chaque semaine — confiez-nous vos
-                  critères, nous activerons notre réseau et notre fichier off-market.
-                </p>
-                <Link href="/contact" className="btn-gold mt-8 inline-flex">
-                  Nous décrire votre projet
-                  <ArrowRight size={14} />
-                </Link>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
-                {items.map((p, i) => (
-                  <PropertyCard key={p.slug} property={p} priority={i < 3} />
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
     </>
   );
 }
