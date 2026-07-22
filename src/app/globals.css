@@ -20,6 +20,7 @@
   --color-accent: #6e4f3a;            /* CTA, liens actifs, eyebrows */
   --color-accent-deep: #4e3625;       /* hover / pressed */
   --color-accent-light: #8e6b4b;      /* sur fond sombre */
+  --color-accent-glow: #d9b98c;       /* accent LUMINEUX — texte/liens sur imagerie claire */
   --color-accent-soft: #f3ece1;       /* tint bg */
   --color-accent-veil: rgba(110, 79, 58, 0.06);
 
@@ -52,6 +53,7 @@
   --color-terracotta: var(--color-accent);
   --color-terracotta-deep: var(--color-accent-deep);
   --color-terracotta-light: var(--color-accent-light);
+  --color-terracotta-glow: var(--color-accent-glow);
   --color-terracotta-veil: var(--color-accent-veil);
   --color-gold: var(--color-accent);
   --color-gold-dark: var(--color-accent-deep);
@@ -198,6 +200,29 @@
       0 2px 12px rgba(0, 0, 0, 0.55),
       0 1px 3px rgba(0, 0, 0, 0.35);
   }
+
+  /* ── Nav underline — interaction luxe (Barnes/Aman signature) ──────
+     Le lien reste crisp (pas de changement de couleur muddy), un filet
+     accent croît depuis le centre au survol. */
+  .nav-underline {
+    position: relative;
+  }
+  .nav-underline::after {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0.15rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-underline:hover::after,
+  .nav-underline[data-active="true"]::after {
+    transform: scaleX(1);
+  }
 }
 
 @keyframes fade-up {
@@ -282,12 +307,11 @@
 [data-fade-in][data-delay="3"] { transition-delay: 0.24s; }
 [data-fade-in][data-delay="4"] { transition-delay: 0.32s; }
 
-/* ══ Scroll indicator subtle bounce remplacé par pulse lente ═════ */
-@keyframes slow-pulse {
-  0%, 100% { opacity: 0.45; }
-  50%      { opacity: 0.9; }
+/* ══ Mega-menu — apparition douce (fade + slide) ═══════════════════ */
+@keyframes mega-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-.animate-slow-pulse {
-  animation: slow-pulse 2.5s ease-in-out infinite;
+.animate-mega-in {
+  animation: mega-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
