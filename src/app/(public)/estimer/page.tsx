@@ -56,7 +56,7 @@ export default async function EstimerPage({
         title={
           <>
             Combien vaut votre bien ?<br />
-            <span className="italic text-[var(--color-terracotta-light)]">
+            <span className="italic text-[var(--color-accent-light)]">
               Fourchette en 60 secondes.
             </span>
           </>
@@ -68,7 +68,7 @@ export default async function EstimerPage({
         <div className="container-luxe max-w-3xl">
           <form
             method="get"
-            className="border border-[var(--color-beige-warm)] bg-white p-8"
+            className="rounded-[14px] border border-[var(--color-border)] bg-white p-8"
           >
             <div className="eyebrow">Votre bien</div>
             <h2 className="mt-3 font-serif text-2xl text-[var(--color-charcoal)]">
@@ -84,7 +84,7 @@ export default async function EstimerPage({
                   name="type"
                   defaultValue={type ?? ""}
                   required
-                  className="mt-1.5 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                  className="field mt-1.5"
                 >
                   <option value="" disabled>
                     Choisir…
@@ -105,7 +105,7 @@ export default async function EstimerPage({
                   name="zone"
                   defaultValue={zone ?? ""}
                   required
-                  className="mt-1.5 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                  className="field mt-1.5"
                 >
                   <option value="" disabled>
                     Choisir…
@@ -129,7 +129,7 @@ export default async function EstimerPage({
                   step={5}
                   defaultValue={surface ?? ""}
                   required
-                  className="mt-1.5 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                  className="field mt-1.5"
                 />
               </label>
 
@@ -143,7 +143,7 @@ export default async function EstimerPage({
                   min={0}
                   step={1}
                   defaultValue={bedrooms ?? ""}
-                  className="mt-1.5 w-full border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                  className="field mt-1.5"
                 />
               </label>
             </div>
@@ -169,7 +169,7 @@ export default async function EstimerPage({
           )}
 
           {hasInput && !result && (
-            <div className="mt-8 border border-[var(--color-beige-warm)] bg-white p-8 text-center">
+            <div className="mt-8 rounded-[14px] border border-[var(--color-border)] bg-white p-8 text-center">
               <div className="eyebrow">Pas assez de données</div>
               <p className="mt-4 text-sm text-[var(--color-stone)]">
                 Nous n&apos;avons pas assez de biens comparables dans notre
