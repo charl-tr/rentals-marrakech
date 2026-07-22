@@ -1,28 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  /* ═══ PALETTE v6 — Aman ════════════════════════════════════════════
-     Sobriété extrême, presque monochrome. Neutres chauds + une argile
-     assourdie utilisée avec parcimonie. Angles droits. Ombres plates.
-     La typographie (Cormorant Garamond) et l'espace portent tout. */
+  /* ═══ PALETTE v7 — Aman + angles doux ═══════════════════════════════
+     Sobriété Aman (neutres chauds, argile assourdie, ombres plates,
+     Cormorant Garamond) MAIS avec des angles doux et maîtrisés. */
 
   /* ── Backgrounds — neutres chauds ──────────────────────────────*/
   --color-bg: #ffffff;
-  --color-bg-alt: #f7f5f0;            /* off-white chaud */
+  --color-bg-alt: #f7f5f0;
   --color-bg-tint: #efeae1;
-  --color-noir: #17140f;             /* presque noir, chaud */
+  --color-noir: #17140f;
 
   /* ── Encre / texte ──────────────────────────────────────────────*/
-  --color-ink: #23201b;              /* soft black chaud (pas #000) */
+  --color-ink: #23201b;
   --color-ink-soft: #4a443c;
   --color-ink-muted: #877f73;
   --color-ink-hint: #b3aa9c;
 
   /* ── Accent — argile assourdie, RARE ──────────────────────────*/
-  --color-accent: #9c7256;           /* clay désaturée, discrète */
+  --color-accent: #9c7256;
   --color-accent-deep: #7c5942;
   --color-accent-light: #b3927a;
-  --color-accent-glow: #d8c3ab;      /* lumineux sur imagerie */
+  --color-accent-glow: #d8c3ab;
   --color-accent-soft: #f1ebe3;
   --color-accent-veil: rgba(156, 114, 86, 0.05);
 
@@ -35,7 +34,7 @@
   --color-dark: var(--color-noir);
   --color-dark-soft: #262119;
 
-  /* ── Status — sourds ───────────────────────────────────────────*/
+  /* ── Status ────────────────────────────────────────────────────*/
   --color-success: #5e7266;
   --color-success-soft: #e6ebe6;
   --color-warning: var(--color-accent-light);
@@ -66,12 +65,12 @@
   --font-serif: var(--font-playfair), "Cormorant Garamond", Georgia, serif;
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 
-  /* ── RADIUS — angles droits (Aman) ─────────────────────────────*/
-  --radius-btn: 0px;
-  --radius-card: 0px;
-  --radius-img: 0px;
+  /* ── RADIUS — angles doux (restauré) ───────────────────────────*/
+  --radius-btn: 10px;
+  --radius-card: 14px;
+  --radius-img: 16px;
 
-  /* ── Ombres — plates, à peine perceptibles ────────────────────*/
+  /* ── Ombres — plates, à peine perceptibles (Aman) ─────────────*/
   --shadow-soft: 0 1px 2px rgba(23, 20, 15, 0.03);
   --shadow-card: 0 1px 2px rgba(23, 20, 15, 0.03), 0 6px 20px -12px rgba(23, 20, 15, 0.08);
   --shadow-hover: 0 8px 28px -14px rgba(23, 20, 15, 0.14);
@@ -103,9 +102,9 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
+    border-radius: 6px;
   }
 
-  /* Titres — Cormorant Garamond, élégant, tracking quasi neutre */
   :where(h1, h2, h3, h4, h5) {
     font-family: var(--font-serif);
     font-weight: 500;
@@ -128,22 +127,22 @@
     @apply mx-auto w-full max-w-[1280px] px-6 lg:px-10;
   }
 
-  /* ── Boutons — angles droits, calmes (Aman) ───────────────────*/
+  /* ── Boutons — angles doux, calmes (Aman) ─────────────────────*/
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-none bg-[var(--color-charcoal)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-accent)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-accent)];
   }
 
   .btn-terracotta,
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-none bg-[var(--color-accent)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-accent-deep)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-accent-deep)];
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-none border border-[var(--color-charcoal)] bg-transparent px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-[var(--color-charcoal)] transition-colors duration-300 hover:bg-[var(--color-charcoal)] hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] border border-[var(--color-charcoal)] bg-transparent px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-[var(--color-charcoal)] transition-colors duration-300 hover:bg-[var(--color-charcoal)] hover:text-white;
   }
 
   .btn-outline-light {
-    @apply inline-flex items-center justify-center gap-2 rounded-none border border-white/40 bg-transparent px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-[var(--color-charcoal)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] border border-white/40 bg-transparent px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-[var(--color-charcoal)];
   }
 
   /* ── Eyebrow — argile assourdie, discret ──────────────────────*/
@@ -156,9 +155,9 @@
     @apply mx-auto my-7 h-px w-12 bg-[var(--color-border-strong)];
   }
 
-  /* ── Carte média — angles droits, ombre plate discrète ────────*/
+  /* ── Carte média — angles doux, ombre plate discrète ──────────*/
   .card-media {
-    @apply overflow-hidden shadow-[var(--shadow-card)] transition-shadow duration-500;
+    @apply overflow-hidden rounded-[16px] shadow-[var(--shadow-card)] transition-shadow duration-500;
   }
   .group:hover .card-media {
     box-shadow: var(--shadow-hover);
