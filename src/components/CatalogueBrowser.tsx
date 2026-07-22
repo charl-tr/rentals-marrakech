@@ -168,8 +168,8 @@ export default function CatalogueBrowser({
             {/* Groupe filtres (gauche) */}
             <div className="flex flex-wrap items-center gap-2.5">
               <div className="mr-1 hidden items-baseline gap-2 md:flex">
-                <span className="font-serif text-2xl text-[var(--color-charcoal)]">{items.length}</span>
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
+                <span className="font-serif text-[1.6rem] text-[var(--color-charcoal)]">{items.length}</span>
+                <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
                   {items.length > 1 ? "biens" : "bien"}
                 </span>
               </div>
@@ -218,7 +218,7 @@ export default function CatalogueBrowser({
               <button
                 type="button"
                 onClick={() => set({ piscine: filters.piscine === "1" ? undefined : "1" })}
-                className={`whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] transition-all duration-200 ${
+                className={`whitespace-nowrap border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
                   filters.piscine === "1"
                     ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
                     : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
@@ -231,7 +231,7 @@ export default function CatalogueBrowser({
                 <button
                   type="button"
                   onClick={clearAll}
-                  className="ml-1 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)] transition-colors hover:text-[var(--color-terracotta)]"
+                  className="ml-1 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)] transition-colors hover:text-[var(--color-accent)]"
                 >
                   Effacer ({activeCount})
                 </button>
@@ -252,7 +252,7 @@ export default function CatalogueBrowser({
                 type="button"
                 onClick={() => set({ vue: isMap ? undefined : "carte" })}
                 aria-label={isMap ? "Afficher en liste" : "Afficher sur une carte"}
-                className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
+                className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.24em] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
               >
                 {isMap ? <LayoutGrid size={13} /> : <MapIcon size={13} />}
                 <span className="hidden sm:inline">{isMap ? "Liste" : "Carte"}</span>
@@ -268,12 +268,12 @@ export default function CatalogueBrowser({
           <MapClientWrapper pins={items.map(toPin)} />
         </div>
       ) : (
-        <section className="bg-white py-14 md:py-20">
+        <section className="bg-white py-16 md:py-24">
           <div className="container-luxe">
             {items.length === 0 ? (
               <div className="mx-auto max-w-lg py-20 text-center">
                 <div className="eyebrow">Aucun résultat</div>
-                <div className="mt-4 font-serif text-2xl text-[var(--color-charcoal)] md:text-3xl">
+                <div className="mt-4 font-serif text-3xl text-[var(--color-charcoal)] md:text-4xl">
                   Aucun bien correspondant<br />à ces critères.
                 </div>
                 <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[var(--color-stone)]">
@@ -291,7 +291,7 @@ export default function CatalogueBrowser({
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-20">
                 {items.map((p, i) => (
                   <PropertyCard key={p.slug} property={p} priority={i < 3} />
                 ))}
@@ -354,10 +354,10 @@ function Pill({
         onClick={onToggle}
         className={
           bare
-            ? `inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.22em] transition-colors ${
-                active ? "text-[var(--color-terracotta)]" : "text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
+            ? `inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.24em] transition-colors ${
+                active ? "text-[var(--color-accent)]" : "text-[var(--color-charcoal)] hover:text-[var(--color-accent)]"
               }`
-            : `inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] transition-all duration-200 ${
+            : `inline-flex items-center gap-2 whitespace-nowrap border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
                 active
                   ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
                   : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
@@ -371,7 +371,7 @@ function Pill({
 
       {open && (
         <div
-          className={`animate-mega-in absolute top-[calc(100%+8px)] z-50 max-h-80 min-w-[240px] overflow-hidden overflow-y-auto rounded-[14px] border border-[var(--color-border)] bg-white py-1.5 shadow-[var(--shadow-luxe)] ${
+          className={`animate-mega-in absolute top-[calc(100%+8px)] z-50 max-h-80 min-w-[240px] overflow-y-auto border border-[var(--color-border)] bg-white py-1.5 shadow-[var(--shadow-luxe)] ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
@@ -379,7 +379,7 @@ function Pill({
             type="button"
             onClick={() => onSelect(undefined)}
             className={`flex w-full items-center justify-between gap-3 px-5 py-3 text-left text-[13px] transition-colors hover:bg-[var(--color-cream)] ${
-              !value ? "text-[var(--color-terracotta)]" : "text-[var(--color-stone)]"
+              !value ? "text-[var(--color-accent)]" : "text-[var(--color-stone)]"
             }`}
           >
             {allLabel}
@@ -393,7 +393,7 @@ function Pill({
                 type="button"
                 onClick={() => onSelect(o.value)}
                 className={`flex w-full items-center justify-between gap-3 px-5 py-3 text-left text-[13px] transition-colors hover:bg-[var(--color-cream)] ${
-                  sel ? "text-[var(--color-terracotta)]" : "text-[var(--color-charcoal)]"
+                  sel ? "text-[var(--color-accent)]" : "text-[var(--color-charcoal)]"
                 }`}
               >
                 {o.label}
