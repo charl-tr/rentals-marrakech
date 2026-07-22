@@ -32,12 +32,13 @@ export default async function AdminLayout({
 }) {
   const session = await getAdminSession();
 
-  // Garde de sécurité : si la session est invalide (cookie expiré, email
-  // hors whitelist advisors), on redirige vers la page de login. Le proxy
-  // couvre déjà le cas "pas de user auth", mais pas le cas "auth OK mais
-  // email non whitelisté dans advisors" — d'où cette vérif en layout.
+  // Garde de sécurité : session invalide (cookie expiré) OU email authentifié
+  // mais hors whitelist advisors. On route vers /admin/signout (qui PURGE la
+  // session avant de renvoyer sur /admin/login) plutôt que directement vers
+  // /admin/login : sinon, pour un utilisateur authentifié mais non-whitelisté,
+  // le proxy le renverrait aussitôt sur /admin → boucle de redirection infinie.
   if (!session) {
-    redirect("/admin/login");
+    redirect("/admin/signout");
   }
 
   // Data pour le CommandPalette — session garantie non-null après redirect

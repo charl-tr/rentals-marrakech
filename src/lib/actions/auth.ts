@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export type LoginActionState =
   | { status: "idle" }
@@ -64,4 +65,7 @@ export async function sendMagicLink(
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
+  // Redirection déterministe (comme la route GET /admin/signout) : on ne laisse
+  // pas l'UI compter sur un re-render RSC implicite pour bouncer vers le login.
+  redirect("/admin/login");
 }
