@@ -93,11 +93,12 @@ export default function Navbar() {
     setOpenMenu(null);
   }, [pathname]);
 
-  const textColor = solid ? "text-[var(--color-charcoal)]" : "text-white";
-  // Underline: terracotta sur fond clair, glow lumineux sur image
-  const underline = solid
-    ? "bg-[var(--color-terracotta)]"
-    : "bg-[var(--color-terracotta-glow)]";
+  // Texte : charcoal sur fond clair, blanc + ombre défensive sur image
+  const textColor = solid
+    ? "text-[var(--color-charcoal)]"
+    : "text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]";
+  // Filet : terracotta sur fond clair, blanc crisp sur image (max lisibilité)
+  const underline = solid ? "bg-[var(--color-terracotta)]" : "bg-white";
 
   return (
     <header
@@ -107,7 +108,15 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="container-luxe flex h-14 items-center justify-between lg:h-16">
+      {/* Voile dégradé — garantit la lisibilité du nav blanc sur toute image */}
+      {!solid && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/45 via-black/15 to-transparent"
+        />
+      )}
+
+      <div className="container-luxe relative flex h-14 items-center justify-between lg:h-16">
         <Link href="/" aria-label="Marrakech Realty — Accueil" className="block">
           <Image
             src="/logo-complete.png"
@@ -118,7 +127,7 @@ export default function Navbar() {
             className={`h-7 w-auto object-contain transition-[filter] duration-500 lg:h-8 ${
               solid
                 ? ""
-                : "brightness-0 invert drop-shadow-[0_1px_4px_rgba(0,0,0,0.25)]"
+                : "brightness-0 invert drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)]"
             }`}
           />
         </Link>
@@ -187,7 +196,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setMobileOpen((s) => !s)}
-          className={`lg:hidden ${solid ? "text-[var(--color-charcoal)]" : "text-white"}`}
+          className={`lg:hidden ${solid ? "text-[var(--color-charcoal)]" : "text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"}`}
           aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
         >
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -304,7 +313,7 @@ function MegaPanel({
   footerLabel: string;
 }) {
   return (
-    <div className="border border-[var(--color-border)] bg-white shadow-[var(--shadow-luxe)]">
+    <div className="overflow-hidden border border-white/40 bg-[rgba(250,248,244,0.78)] shadow-[var(--shadow-luxe)] backdrop-blur-2xl">
       <div className="grid grid-cols-4 gap-x-8 gap-y-2 p-8">
         {columns.map((col) => (
           <div key={col.heading}>
@@ -316,7 +325,7 @@ function MegaPanel({
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="group inline-flex items-center gap-1.5 text-[13px] text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-terracotta)]"
+                    className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
                   >
                     {l.label}
                   </Link>
@@ -328,7 +337,7 @@ function MegaPanel({
       </div>
       <Link
         href={footerHref}
-        className="block border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] px-8 py-3.5 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+        className="block border-t border-white/40 bg-[rgba(242,237,228,0.6)] px-8 py-3.5 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
       >
         {footerLabel} →
       </Link>
@@ -346,13 +355,13 @@ function SimplePanel({
   footerLabel: string;
 }) {
   return (
-    <div className="border border-[var(--color-border)] bg-white shadow-[var(--shadow-luxe)]">
+    <div className="overflow-hidden border border-white/40 bg-[rgba(250,248,244,0.78)] shadow-[var(--shadow-luxe)] backdrop-blur-2xl">
       <ul className="p-2">
         {links.map((l) => (
           <li key={l.href}>
             <Link
               href={l.href}
-              className="block px-4 py-2.5 text-[13px] text-[var(--color-ink-soft)] transition-colors hover:bg-[var(--color-bg-alt)] hover:text-[var(--color-terracotta)]"
+              className="block px-4 py-2.5 text-[13px] text-[var(--color-charcoal)] transition-colors hover:bg-white/60 hover:text-[var(--color-terracotta)]"
             >
               {l.label}
             </Link>
@@ -361,7 +370,7 @@ function SimplePanel({
       </ul>
       <Link
         href={footerHref}
-        className="block border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] px-4 py-3 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+        className="block border-t border-white/40 bg-[rgba(242,237,228,0.6)] px-4 py-3 text-center text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
       >
         {footerLabel}
       </Link>
