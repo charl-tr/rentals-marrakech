@@ -5,7 +5,7 @@ import PropertyCard from "@/components/PropertyCard";
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import PressMentions from "@/components/PressMentions";
 import HeroSearch from "@/components/HeroSearch";
-import { getFeaturedProperties, getFirstEssaouiraProperty } from "@/lib/db";
+import { getFeaturedProperties } from "@/lib/db";
 
 // ISR — home en cache, revalidée toutes les 5 min. Navigation quasi instantanée.
 export const revalidate = 300;
@@ -66,7 +66,6 @@ const TESTIMONIALS = [
 
 export default async function Home() {
   const featuredProperties = await getFeaturedProperties(12);
-  await getFirstEssaouiraProperty();
 
   return (
     <>
@@ -136,18 +135,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ FEATURED — CRÈME, mosaïque des vrais biens ═══ */}
+      {/* ═══ FEATURED — CRÈME, grille simple des vrais biens ═══ */}
       {featuredProperties.length >= 3 && (
         <section className="bg-[var(--color-cream)] py-28">
           <div className="container-luxe">
-            <FadeInOnScroll as="div" className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-              <div className="max-w-xl">
-                <div className="eyebrow">Notre sélection</div>
-                <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">
-                  Biens d&apos;exception<br />
-                  <span className="italic text-[var(--color-terracotta)]">du moment</span>.
-                </h2>
-              </div>
+            <FadeInOnScroll as="div" className="flex items-center justify-between gap-6">
+              <div className="eyebrow">Notre sélection</div>
               <Link
                 href="/acheter"
                 className="group inline-flex items-center gap-2 text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
@@ -157,71 +150,10 @@ export default async function Home() {
               </Link>
             </FadeInOnScroll>
 
-            <div className="mt-16 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:gap-10">
-              <Link
-                href={`/acheter/${featuredProperties[0].slug}`}
-                className="group relative block aspect-[4/5] overflow-hidden bg-[var(--color-charcoal-deep)] shadow-[var(--shadow-card)] transition-shadow duration-500 hover:shadow-[var(--shadow-luxe)] lg:aspect-auto"
-              >
-                <Image
-                  src={featuredProperties[0].images[0]}
-                  alt={featuredProperties[0].title}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-cover transition-transform duration-[900ms] group-hover:scale-105"
-                />
-                <div className="hero-overlay-bottom absolute inset-0" />
-
-                <div className="absolute inset-x-0 top-0 flex items-start gap-3 p-6">
-                  {featuredProperties[0].exclusivity && (
-                    <span className="bg-[var(--color-terracotta)] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white">
-                      Exclusivité
-                    </span>
-                  )}
-                  <span className="bg-white/90 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] backdrop-blur-sm">
-                    {featuredProperties[0].city}, {featuredProperties[0].neighborhood}
-                  </span>
-                </div>
-
-                <div className="absolute inset-x-0 bottom-0 p-8 text-white md:p-10">
-                  <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-glow)]">
-                    Le bien vedette
-                  </div>
-                  <h3 className="mt-4 max-w-md font-serif text-3xl leading-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] md:text-4xl lg:text-5xl">
-                    {featuredProperties[0].tagline}
-                  </h3>
-                  <div className="mt-6 flex items-end justify-between border-t border-white/20 pt-5">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-[0.22em] text-white/80">
-                        Prix de vente
-                      </div>
-                      <div className="mt-1 font-serif text-2xl md:text-3xl">
-                        {new Intl.NumberFormat("fr-FR", {
-                          style: "currency",
-                          currency: featuredProperties[0].currency,
-                          maximumFractionDigits: 0,
-                        }).format(featuredProperties[0].price)}
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/80">
-                      Réf. {featuredProperties[0].reference}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-
-              <div className="flex flex-col gap-8 lg:gap-10">
-                {featuredProperties.slice(1, 3).map((property) => (
-                  <PropertyCard key={property.slug} property={property} />
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-16 text-center">
-              <Link href="/acheter" className="btn-outline">
-                Voir tous les biens à vendre
-                <ArrowRight size={16} />
-              </Link>
+            <div className="mt-12 grid gap-8 md:grid-cols-3">
+              {featuredProperties.slice(0, 3).map((property) => (
+                <PropertyCard key={property.slug} property={property} />
+              ))}
             </div>
           </div>
         </section>
@@ -276,9 +208,8 @@ export default async function Home() {
       {/* ═══ PRESS — BLANC ═══ */}
       <PressMentions />
 
-      {/* ═══ ESSAOUIRA — NOIR éditorial, ZÉRO image (fini la Guadeloupe) ═══ */}
+      {/* ═══ ESSAOUIRA — NOIR éditorial, ZÉRO image ═══ */}
       <section className="relative overflow-hidden bg-[var(--color-charcoal-deep)] py-28 text-white md:py-36">
-        {/* filet terracotta décoratif discret */}
         <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-[var(--color-terracotta)] to-transparent opacity-40" />
         <div className="container-luxe">
           <div className="grid gap-12 md:grid-cols-[1fr_1fr] md:items-center md:gap-20">
@@ -344,10 +275,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ DOUBLE CTA — deux blocs couleur pleins (fini les images stock) ═══ */}
-      <section className="grid md:grid-cols-2">
-        {/* Vendre — bloc NOIR */}
-        <div className="flex flex-col items-start justify-center gap-6 bg-[var(--color-charcoal-deep)] p-12 py-20 text-white md:p-20">
+      {/* ═══ DOUBLE CTA — deux blocs NOIRS, un seul accent (le bouton) ═══ */}
+      <section className="grid bg-[var(--color-charcoal-deep)] md:grid-cols-2">
+        {/* Vendre */}
+        <div className="flex flex-col items-start justify-center gap-6 p-12 py-20 text-white md:p-20">
           <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
             Vous vendez ?
           </div>
@@ -364,15 +295,15 @@ export default async function Home() {
           </Link>
         </div>
 
-        {/* Acheter — bloc TERRACOTTA */}
-        <div className="flex flex-col items-start justify-center gap-6 bg-[var(--color-terracotta)] p-12 py-20 text-white md:p-20">
-          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
+        {/* Acheter — même fond noir, séparé par un filet */}
+        <div className="flex flex-col items-start justify-center gap-6 border-t border-white/10 p-12 py-20 text-white md:border-l md:border-t-0 md:p-20">
+          <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/50">
             Vous recherchez ?
           </div>
           <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
             Recherche<br />personnalisée.
           </h3>
-          <p className="max-w-md text-white/80">
+          <p className="max-w-md text-white/60">
             Décrivez-nous votre projet : nous activons notre réseau et notre
             portefeuille confidentiel pour trouver le bien qui vous ressemble.
           </p>
