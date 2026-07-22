@@ -33,16 +33,11 @@ export default function BackToList({
     // sinon : navigation normale via le href
   };
 
-  const colorClasses =
-    variant === "dark"
-      ? "text-white/85 hover:text-[var(--color-terracotta-light)] border-white/30 hover:border-white/60"
-      : "text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)] border-[var(--color-charcoal)]/30 hover:border-[var(--color-charcoal)]";
-
   return (
     <a
       href={fallbackHref}
       onClick={handleClick}
-      className={`inline-flex items-center gap-2 border bg-transparent px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] backdrop-blur-sm transition-colors ${colorClasses}`}
+      className={variant === "dark" ? "btn-back-dark" : "btn-back"}
     >
       <ArrowLeft size={12} />
       {hasHistory ? "Retour" : fallbackLabel}
