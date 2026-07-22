@@ -1,5 +1,5 @@
 import "server-only";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import type { z } from "zod";
 import {
   requireAdminSession,
@@ -121,6 +121,9 @@ export function defineMutation<TSchema extends z.ZodTypeAny>(
         const paths = config.revalidate(ctx);
         for (const path of paths) revalidatePath(path);
       }
+      // Invalide le cache court (15s) des lectures admin taggées "admin" dans
+      // db.ts — toute mutation rafraîchit immédiatement les listes admin.
+      revalidateTag("admin");
 
       return { status: "success", message: result.message };
     } catch (err) {

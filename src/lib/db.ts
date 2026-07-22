@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase";
 import { supabaseAdmin } from "./supabase-admin";
 import type { AdminSession } from "./auth";
@@ -187,30 +188,40 @@ export async function getPropertiesBySlugs(slugs: string[]): Promise<Map<string,
  * Admin read — retourne TOUS les biens (publiés ou non) via service-role.
  * À utiliser dans /admin/biens/* uniquement.
  */
-export const getAllPropertiesAdmin = cache(async (): Promise<Property[]> => {
-  const { data, error } = await supabaseAdmin
-    .from("properties")
-    .select(PROPERTY_SELECT)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data as PropertyWithNeigh[]).map((r) =>
-    rowToProperty(r, r.neighborhood?.name ?? null)
-  );
-});
+export const getAllPropertiesAdmin = cache(
+  unstable_cache(
+    async (): Promise<Property[]> => {
+      const { data, error } = await supabaseAdmin
+        .from("properties")
+        .select(PROPERTY_SELECT)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data as PropertyWithNeigh[]).map((r) =>
+        rowToProperty(r, r.neighborhood?.name ?? null)
+      );
+    },
+    ["properties-admin"],
+    { tags: ["admin"], revalidate: 15 }
+  )
+);
 
 /** Compte des leads par property_slug — pour health check dans l'admin biens. */
-export async function getLeadsCountByProperty(): Promise<Record<string, number>> {
-  const { data, error } = await supabaseAdmin
-    .from("leads")
-    .select("property_slug")
-    .not("property_slug", "is", null);
-  if (error) throw error;
-  const counts: Record<string, number> = {};
-  for (const row of (data as { property_slug: string }[]) ?? []) {
-    counts[row.property_slug] = (counts[row.property_slug] ?? 0) + 1;
-  }
-  return counts;
-}
+export const getLeadsCountByProperty = unstable_cache(
+  async (): Promise<Record<string, number>> => {
+    const { data, error } = await supabaseAdmin
+      .from("leads")
+      .select("property_slug")
+      .not("property_slug", "is", null);
+    if (error) throw error;
+    const counts: Record<string, number> = {};
+    for (const row of (data as { property_slug: string }[]) ?? []) {
+      counts[row.property_slug] = (counts[row.property_slug] ?? 0) + 1;
+    }
+    return counts;
+  },
+  ["leads-count-by-property"],
+  { tags: ["admin"], revalidate: 15 }
+);
 
 /** Leads associés à un bien donné — pour la fiche admin bien. */
 export async function getLeadsForProperty(slug: string): Promise<AdminLead[]> {
@@ -309,11 +320,17 @@ function rowToAdvisor(r: AdvisorRow): Advisor {
   };
 }
 
-export const getAllAdvisors = cache(async (): Promise<Advisor[]> => {
-  const { data, error } = await supabase.from("advisors").select("*");
-  if (error) throw error;
-  return (data as AdvisorRow[]).map(rowToAdvisor);
-});
+export const getAllAdvisors = cache(
+  unstable_cache(
+    async (): Promise<Advisor[]> => {
+      const { data, error } = await supabase.from("advisors").select("*");
+      if (error) throw error;
+      return (data as AdvisorRow[]).map(rowToAdvisor);
+    },
+    ["all-advisors"],
+    { tags: ["admin"], revalidate: 15 }
+  )
+);
 
 export async function getAdvisor(slug: string): Promise<Advisor | null> {
   const { data, error } = await supabase
@@ -566,22 +583,24 @@ function rowToLeadEvent(row: LeadEventRow): LeadEvent {
  *
  * Le contrôle d'accès par session vit dans getLeadsForSession ci-dessous.
  */
-export async function getAllLeads(options?: {
-  assignedAdvisorSlug?: string;
-}): Promise<AdminLead[]> {
-  let query = supabaseAdmin
-    .from("leads")
-    .select("*")
-    .order("created_at", { ascending: false });
+export const getAllLeads = unstable_cache(
+  async (options?: { assignedAdvisorSlug?: string }): Promise<AdminLead[]> => {
+    let query = supabaseAdmin
+      .from("leads")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  if (options?.assignedAdvisorSlug) {
-    query = query.eq("assigned_advisor_slug", options.assignedAdvisorSlug);
-  }
+    if (options?.assignedAdvisorSlug) {
+      query = query.eq("assigned_advisor_slug", options.assignedAdvisorSlug);
+    }
 
-  const { data, error } = await query;
-  if (error) throw error;
-  return (data as LeadRow[]).map(rowToAdminLead);
-}
+    const { data, error } = await query;
+    if (error) throw error;
+    return (data as LeadRow[]).map(rowToAdminLead);
+  },
+  ["all-leads"],
+  { tags: ["admin"], revalidate: 15 }
+);
 
 /**
  * Lecture scoped par session :
