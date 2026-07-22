@@ -16,8 +16,8 @@ interface Props {
   priority?: boolean;
 }
 
-// ── Carte de bien — Soft premium 2026 : image arrondie, la carte lève au
-// survol (spring), l'ombre grandit, zoom lent de l'image. Typo éditoriale.
+// ── Carte de bien — Aman : angles droits, calme, l'image et l'espace
+// portent tout. Zoom lent et discret au survol, ombre plate.
 export default function PropertyCard({ property, priority = false }: Props) {
   const isLocation = property.listing !== "vente";
   const href = `${isLocation ? "/louer" : "/acheter"}/${property.slug}`;
@@ -38,11 +38,9 @@ export default function PropertyCard({ property, priority = false }: Props) {
   return (
     <Link
       href={href}
-      className={`group block transition-transform duration-[450ms] [transition-timing-function:var(--ease-spring)] hover:-translate-y-1.5 ${
-        isUnavailable ? "opacity-80" : ""
-      }`}
+      className={`group block ${isUnavailable ? "opacity-80" : ""}`}
     >
-      {/* Image — arrondie, ombre douce qui grandit au survol */}
+      {/* Image — angles droits, ombre plate discrète */}
       <div className="card-media relative aspect-[4/5] bg-[var(--color-charcoal-deep)]">
         <Image
           src={property.images[0]}
@@ -50,7 +48,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
           fill
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className={`object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06] ${
+          className={`object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.045] ${
             isUnavailable ? "grayscale-[40%]" : ""
           }`}
         />
@@ -59,16 +57,16 @@ export default function PropertyCard({ property, priority = false }: Props) {
         <div className="absolute left-0 top-0 p-4">
           {property.status && property.status !== "available" ? (
             <span
-              className={`rounded-[8px] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] ${
+              className={`px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] ${
                 property.status === "new"
-                  ? "bg-[var(--color-terracotta)] text-white"
-                  : "bg-[var(--color-charcoal-deep)]/90 text-white backdrop-blur-sm"
+                  ? "bg-[var(--color-accent)] text-white"
+                  : "bg-[var(--color-charcoal-deep)]/85 text-white backdrop-blur-sm"
               }`}
             >
               {STATUS_LABELS[property.status]}
             </span>
           ) : property.exclusivity ? (
-            <span className="rounded-[8px] bg-[var(--color-charcoal-deep)]/90 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
+            <span className="bg-[var(--color-charcoal-deep)]/85 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
               Exclusivité
             </span>
           ) : null}
@@ -82,15 +80,15 @@ export default function PropertyCard({ property, priority = false }: Props) {
       </div>
 
       {/* Contenu — éditorial, sous l'image */}
-      <div className="pt-5">
-        <div className="flex items-center justify-between gap-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
+      <div className="pt-6">
+        <div className="flex items-center justify-between gap-3 text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
           <span className="truncate">
             {property.neighborhood} · {property.city}
           </span>
           <span className="shrink-0">{propertyTypeLabel(property.type)}</span>
         </div>
 
-        <h3 className="mt-3 line-clamp-1 font-serif text-xl text-[var(--color-charcoal)]">
+        <h3 className="mt-3 line-clamp-1 font-serif text-[1.55rem] leading-tight text-[var(--color-charcoal)]">
           {property.title}
         </h3>
 
@@ -100,9 +98,9 @@ export default function PropertyCard({ property, priority = false }: Props) {
           </div>
         )}
 
-        <div className="mt-5 flex items-end justify-between gap-4 border-t border-[var(--color-border)] pt-5">
+        <div className="mt-6 flex items-end justify-between gap-4 border-t border-[var(--color-border)] pt-5">
           <div>
-            <div className="font-serif text-2xl text-[var(--color-charcoal)]">
+            <div className="font-serif text-[1.75rem] leading-none text-[var(--color-charcoal)]">
               <PriceDisplay
                 priceEur={property.price}
                 listing={property.listing}
@@ -110,16 +108,16 @@ export default function PropertyCard({ property, priority = false }: Props) {
               />
             </div>
             {property.priceMad && (
-              <div className="mt-1 text-[10px] text-[var(--color-stone)]">
+              <div className="mt-1.5 text-[10px] text-[var(--color-stone)]">
                 {formatMad(property.priceMad)}
               </div>
             )}
           </div>
-          <span className="flex shrink-0 items-center gap-1.5 pb-1 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors group-hover:text-[var(--color-terracotta)]">
+          <span className="flex shrink-0 items-center gap-1.5 pb-1 text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-charcoal)] transition-colors group-hover:text-[var(--color-accent)]">
             Découvrir
             <ArrowRight
               size={13}
-              className="transition-transform duration-300 group-hover:translate-x-1"
+              className="transition-transform duration-500 group-hover:translate-x-1"
             />
           </span>
         </div>
