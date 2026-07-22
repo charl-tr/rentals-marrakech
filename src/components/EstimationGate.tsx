@@ -35,8 +35,8 @@ export default function EstimationGate({
   return (
     <div className="mt-8">
       {/* ── Teaser (toujours visible) ──────────────────────────── */}
-      <div className="border-l-4 border-[var(--color-terracotta)] bg-white p-8">
-        <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
+      <div className="rounded-[14px] border-l-4 border-[var(--color-accent)] bg-white p-8">
+        <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-accent)]">
           <Sparkles size={12} />
           {unlocked ? "Votre fourchette estimée" : "Votre estimation est prête"}
         </div>
@@ -48,7 +48,7 @@ export default function EstimationGate({
               <span className="flex items-center gap-1.5">
                 <TrendingUp
                   size={14}
-                  className="text-[var(--color-terracotta)]"
+                  className="text-[var(--color-accent)]"
                 />
                 {result.comparablesCount} biens comparables analysés
               </span>
@@ -65,7 +65,7 @@ export default function EstimationGate({
               </span>
             </div>
 
-            <div className="mt-6 border-t border-[var(--color-beige-warm)] pt-6">
+            <div className="mt-6 border-t border-[var(--color-border)] pt-6">
               <div className="flex items-start gap-3">
                 <Lock
                   size={16}
@@ -95,14 +95,14 @@ export default function EstimationGate({
                     type="text"
                     name="firstName"
                     placeholder="Prénom (optionnel)"
-                    className="w-36 border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                    className="field w-36"
                   />
                   <input
                     type="email"
                     name="email"
                     required
                     placeholder="Votre email"
-                    className="flex-1 border border-[var(--color-beige-warm)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-charcoal)] focus:outline-none"
+                    className="field flex-1"
                   />
                   <button
                     type="submit"
@@ -115,7 +115,7 @@ export default function EstimationGate({
                 </div>
 
                 {state.status === "error" && (
-                  <p className="mt-2 text-xs text-[var(--color-alert)]">
+                  <p className="mt-2 text-xs text-[var(--color-accent-deep)]">
                     {state.message}
                   </p>
                 )}
@@ -136,8 +136,8 @@ export default function EstimationGate({
                   {formatInCurrency(result.estimatedPriceLow, "EUR")}
                 </div>
               </div>
-              <div className="border-l border-r border-[var(--color-beige-warm)] px-4">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--color-terracotta)]">
+              <div className="border-l border-r border-[var(--color-border)] px-4">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--color-accent)]">
                   Médiane
                 </div>
                 <div className="mt-1 font-serif text-3xl text-[var(--color-charcoal)]">
@@ -154,11 +154,11 @@ export default function EstimationGate({
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--color-beige-warm)] pt-4 text-xs text-[var(--color-stone)]">
+            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--color-border)] pt-4 text-xs text-[var(--color-stone)]">
               <span className="flex items-center gap-1.5">
                 <TrendingUp
                   size={12}
-                  className="text-[var(--color-terracotta)]"
+                  className="text-[var(--color-accent)]"
                 />
                 {result.pricePerSqm.toLocaleString("fr-FR")} € / m² médian
               </span>
@@ -187,7 +187,7 @@ export default function EstimationGate({
               </ul>
             )}
 
-            <div className="mt-8 border-t border-[var(--color-beige-warm)] pt-6">
+            <div className="mt-8 border-t border-[var(--color-border)] pt-6">
               <p className="text-sm text-[var(--color-charcoal)]">
                 Cette fourchette est indicative. Pour une estimation précise
                 qui prend en compte l&apos;état du bien, les rénovations
