@@ -7,13 +7,13 @@ import {
   Compass,
   Key,
   Quote,
-  Search,
   Shield,
   Star,
 } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import PressMentions from "@/components/PressMentions";
+import HeroSearch from "@/components/HeroSearch";
 import { getFeaturedProperties, getFirstEssaouiraProperty } from "@/lib/db";
 
 const STATS = [
@@ -89,7 +89,7 @@ export default async function Home() {
   return (
     <>
       {/* HERO — image fixe, texte minimal, l'image domine */}
-      <section className="relative flex h-[100dvh] min-h-[600px] items-end overflow-hidden pb-12 md:min-h-[720px] md:pb-16">
+      <section className="relative flex h-[100dvh] min-h-[600px] items-end overflow-hidden pb-14 md:min-h-[720px] md:pb-20">
         <Image
           src="/hero-home.jpg"
           alt="Villa avec piscine à Marrakech — murs ocre et palmiers"
@@ -99,93 +99,24 @@ export default async function Home() {
           className="object-cover"
         />
         {/* Overlay léger — juste assez pour lire, pas plus */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(23,20,15,0.75)] via-[rgba(23,20,15,0.20)] to-[rgba(23,20,15,0.15)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(23,20,15,0.78)] via-[rgba(23,20,15,0.20)] to-[rgba(23,20,15,0.12)]" />
 
         <div className="container-luxe relative z-10">
           {/* Texte — compact, retenu, luxe */}
           <div className="mb-10 max-w-xl animate-fade-up md:mb-14">
             <div className="mb-4 text-[11px] font-medium uppercase tracking-[0.32em] text-white/60">
-              Marrakech & Essaouira
+              Marrakech &amp; Essaouira
             </div>
             <h1 className="hero-text font-serif text-[2.4rem] leading-[1.06] text-white sm:text-[3.2rem] md:text-[3.6rem]">
               L&apos;art de vivre<br />
-              <span className="italic text-[var(--color-terracotta-light)]">
+              <span className="italic text-[var(--color-terracotta-glow)]">
                 marrakchi.
               </span>
             </h1>
           </div>
 
-          {/* Recherche — semi-transparent, intégrée dans l'image */}
-          <form
-            action="/acheter"
-            method="get"
-            className="max-w-4xl animate-fade-up border border-white/15 bg-[rgba(23,20,15,0.45)] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl"
-          >
-            <div className="grid grid-cols-1 gap-0 md:grid-cols-[1fr_1fr_1fr_auto]">
-              <label className="border-b border-white/10 p-4 text-left md:border-b-0 md:border-r md:p-5">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50">
-                  Type de bien
-                </span>
-                <select
-                  name="type"
-                  defaultValue=""
-                  className="mt-1 w-full bg-transparent text-sm font-medium text-white focus:outline-none [&>option]:text-[var(--color-charcoal)]"
-                >
-                  <option value="">Tous les biens</option>
-                  <option value="riad-renove">Riad rénové</option>
-                  <option value="riad-a-renover">Riad à rénover</option>
-                  <option value="villa">Villa</option>
-                  <option value="appartement">Appartement</option>
-                  <option value="programme-neuf">Programme neuf</option>
-                  <option value="terrain">Terrain</option>
-                </select>
-              </label>
-              <label className="border-b border-white/10 p-4 text-left md:border-b-0 md:border-r md:p-5">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50">
-                  Quartier
-                </span>
-                <select
-                  name="quartier"
-                  defaultValue=""
-                  className="mt-1 w-full bg-transparent text-sm font-medium text-white focus:outline-none [&>option]:text-[var(--color-charcoal)]"
-                >
-                  <option value="">Toutes les zones</option>
-                  <option value="medina">Médina</option>
-                  <option value="palmeraie">Palmeraie</option>
-                  <option value="hivernage">Hivernage</option>
-                  <option value="gueliz">Guéliz</option>
-                  <option value="targa">Targa</option>
-                  <option value="amelkis">Amelkis</option>
-                  <option value="ourika">Route de l&apos;Ourika</option>
-                  <option value="diabat">Diabat (Essaouira)</option>
-                </select>
-              </label>
-              <label className="border-b border-white/10 p-4 text-left md:border-b-0 md:border-r md:p-5">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50">
-                  Budget
-                </span>
-                <select
-                  name="budget"
-                  defaultValue=""
-                  className="mt-1 w-full bg-transparent text-sm font-medium text-white focus:outline-none [&>option]:text-[var(--color-charcoal)]"
-                >
-                  <option value="">Tous budgets</option>
-                  <option value="300">Jusqu&apos;à 300 000 €</option>
-                  <option value="600">300 000 € – 600 000 €</option>
-                  <option value="1000">600 000 € – 1 M€</option>
-                  <option value="2000">1 M€ – 2 M€</option>
-                  <option value="high">Plus de 2 M€</option>
-                </select>
-              </label>
-              <button
-                type="submit"
-                className="flex items-center justify-center gap-2 bg-white/10 px-8 py-5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all hover:bg-white hover:text-[var(--color-charcoal)]"
-              >
-                <Search size={15} />
-                Rechercher
-              </button>
-            </div>
-          </form>
+          {/* Recherche custom — dropdowns qui s'ouvrent vers le haut */}
+          <HeroSearch />
         </div>
       </section>
 
@@ -256,7 +187,7 @@ export default async function Home() {
                 </div>
 
                 <div className="absolute inset-x-0 bottom-0 p-8 text-white md:p-10">
-                  <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-light)]">
+                  <div className="hero-text-soft text-[11px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta-glow)]">
                     Le bien vedette
                   </div>
                   <h3 className="mt-4 max-w-md font-serif text-3xl leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] md:text-4xl lg:text-5xl">
@@ -366,7 +297,7 @@ export default async function Home() {
               </div>
               <h2 className="mt-5 hero-text font-serif text-4xl leading-tight md:text-5xl lg:text-6xl">
                 Essaouira,<br />
-                <span className="italic text-[var(--color-terracotta-light)]">l&apos;autre Maroc.</span>
+                <span className="italic text-[var(--color-terracotta-glow)]">l&apos;autre Maroc.</span>
               </h2>
               <p className="hero-text-soft mt-6 max-w-md text-white/80 md:text-lg">
                 Médina UNESCO, plages infinies et douceur de vivre. Riads, maisons
