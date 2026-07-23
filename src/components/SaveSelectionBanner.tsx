@@ -14,6 +14,7 @@ import {
   type SelectionLink,
 } from "@/lib/selection-link";
 import EmailField from "@/components/EmailField";
+import FormGuard from "@/components/FormGuard";
 
 const DISMISS_KEY_PREFIX = "mr:save-selection-dismissed:";
 
@@ -191,6 +192,7 @@ export default function SaveSelectionBanner({
           action={action}
           className="flex flex-shrink-0 flex-col gap-2 sm:flex-row"
         >
+          <FormGuard />
           <input type="hidden" name="kind" value={kind} />
           <input type="hidden" name="slugs" value={JSON.stringify(slugs)} />
           <input type="hidden" name="email" value={email} />

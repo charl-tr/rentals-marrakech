@@ -15,6 +15,7 @@ import { getPropertyBySlug } from "@/lib/db";
 import { formatPrice } from "@/data/properties";
 import { computeSlaDueAt, computeSlaTier } from "@/lib/leads";
 import { sendEmail } from "@/lib/email/client";
+import { isLikelyBot } from "@/lib/anti-spam";
 import { z } from "zod";
 
 const UUID_RE =
@@ -35,6 +36,11 @@ export async function submitFavoritesLead(
   _prev: FavoritesLeadState,
   formData: FormData
 ): Promise<FavoritesLeadState> {
+  // Anti-spam — drop silencieux (le bot reçoit un "succès", token neutre)
+  if (isLikelyBot(formData)) {
+    return { status: "success", token: "" };
+  }
+
   const raw = Object.fromEntries(formData.entries());
   const parsed = schema.safeParse(raw);
   if (!parsed.success) {

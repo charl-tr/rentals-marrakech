@@ -21,6 +21,7 @@ import {
 } from "@/lib/form-memory";
 import PhoneField from "@/components/PhoneField";
 import EmailField from "@/components/EmailField";
+import FormGuard from "@/components/FormGuard";
 
 const PHONE = "+212660629444";
 const PHONE_DISPLAY = "+212 660 62 94 44";
@@ -227,6 +228,7 @@ export default function DepositForm() {
         action={formAction}
         className="rounded-[16px] border border-[var(--color-border)] bg-white p-8 shadow-[var(--shadow-card)] md:p-10"
       >
+        <FormGuard />
         {/* Valeurs complètes portées en caché → FormData toujours complet */}
         <input type="hidden" name="firstName" value={values.firstName} />
         <input type="hidden" name="lastName" value={values.lastName} />

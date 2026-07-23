@@ -20,6 +20,7 @@ import {
 } from "@/lib/form-memory";
 import PhoneField from "@/components/PhoneField";
 import EmailField from "@/components/EmailField";
+import FormGuard from "@/components/FormGuard";
 
 interface ContactFormProps {
   advisors: Advisor[];
@@ -225,6 +226,7 @@ export default function ContactForm({
         action={action}
         className="rounded-[16px] border border-[var(--color-border)] bg-white p-8 shadow-[var(--shadow-card)] md:p-10"
       >
+        <FormGuard />
         <input type="hidden" name="channel" value={channel} />
         {propertySlug && (
           <input type="hidden" name="propertySlug" value={propertySlug} />

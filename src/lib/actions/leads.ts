@@ -30,6 +30,7 @@ import {
   renderClientConfirmation,
   renderAdvisorNotification,
 } from "@/lib/email/templates";
+import { isLikelyBot, looksSpammy } from "@/lib/anti-spam";
 
 // ── État retourné à useActionState ─────────────────────────────────
 export type LeadActionState =
@@ -83,6 +84,11 @@ export async function submitLead(
   _prev: LeadActionState,
   formData: FormData
 ): Promise<LeadActionState> {
+  // 0. Anti-spam — drop silencieux (le bot reçoit un "succès", ne réessaie pas)
+  if (isLikelyBot(formData)) {
+    return { status: "success", leadId: "", advisorSlug: null };
+  }
+
   // 1. Parse brut
   const raw = Object.fromEntries(formData.entries());
   const parsed = leadSubmitSchema.safeParse(raw);
@@ -96,6 +102,11 @@ export async function submitLead(
     };
   }
   const input = parsed.data;
+
+  // 1b. Contenu manifestement spammy (liens en rafale) → drop silencieux
+  if (looksSpammy(input.message)) {
+    return { status: "success", leadId: "", advisorSlug: null };
+  }
 
   // 2. Contexte bien (si slug fourni)
   const property = input.propertySlug

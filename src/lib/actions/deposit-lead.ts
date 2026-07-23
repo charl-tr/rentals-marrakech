@@ -3,6 +3,7 @@
 import { updateTag } from "next/cache";
 import { supabase } from "@/lib/supabase";
 import { computeSlaDueAt, computeSlaTier } from "@/lib/leads";
+import { isLikelyBot } from "@/lib/anti-spam";
 import { z } from "zod";
 
 const depositSchema = z.object({
@@ -30,6 +31,11 @@ export async function submitDepositLead(
   _prev: DepositLeadState,
   formData: FormData
 ): Promise<DepositLeadState> {
+  // Anti-spam — drop silencieux (le bot reçoit un "succès")
+  if (isLikelyBot(formData)) {
+    return { status: "success" };
+  }
+
   const raw = Object.fromEntries(formData.entries());
   const parsed = depositSchema.safeParse(raw);
 
