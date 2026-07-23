@@ -13,6 +13,12 @@ import {
   submitDepositLead,
   type DepositLeadState,
 } from "@/lib/actions/deposit-lead";
+import {
+  clearSentRecord,
+  getSentRecord,
+  setSentRecord,
+  type SentRecord,
+} from "@/lib/form-memory";
 import PhoneField from "@/components/PhoneField";
 import EmailField from "@/components/EmailField";
 
@@ -21,6 +27,9 @@ const PHONE_DISPLAY = "+212 660 62 94 44";
 const WHATSAPP = "https://wa.me/212660629444";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Contexte unique pour la mémoire d'envoi (un seul formulaire de dépôt).
+const CONTEXT_ID = "deposit";
 
 type Values = {
   firstName: string;
@@ -49,6 +58,38 @@ export default function DepositForm() {
   useEffect(() => {
     firstInputRef.current?.focus();
   }, [step]);
+
+  // Mémoire locale : "un bien a déjà été déposé depuis ce navigateur" → au
+  // refresh, on reconnaît l'envoi au lieu de réafficher un formulaire vierge
+  // (fini l'impression de non-envoi / le double dépôt accidentel).
+  const [mounted, setMounted] = useState(false);
+  const [memory, setMemory] = useState<SentRecord | null>(null);
+  const [forceForm, setForceForm] = useState(false);
+
+  useEffect(() => {
+    setMemory(getSentRecord(CONTEXT_ID));
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (state.status === "success") {
+      const rec: SentRecord = { sentAt: Date.now(), advisorSlug: null };
+      setSentRecord(CONTEXT_ID, rec);
+      setMemory(rec);
+      setForceForm(false);
+    }
+    // On ne réagit qu'à la transition de l'action.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  const handleReopen = () => {
+    clearSentRecord(CONTEXT_ID);
+    setMemory(null);
+    setForceForm(true);
+    setStep(0);
+    setValues({ firstName: "", lastName: "", phone: "", email: "" });
+    setError(null);
+  };
 
   const set = (patch: Partial<Values>) => {
     setValues((v) => ({ ...v, ...patch }));
@@ -107,8 +148,10 @@ export default function DepositForm() {
     }
   };
 
-  // ── Succès ────────────────────────────────────────────────────────
-  if (state.status === "success") {
+  // ── Succès (à l'instant ou mémorisé d'une visite précédente) ──────
+  const showSuccess =
+    !forceForm && (state.status === "success" || (mounted && memory !== null));
+  if (showSuccess) {
     return (
       <div className="rounded-[16px] border border-[var(--color-border)] bg-white p-10 text-center shadow-[var(--shadow-card)]">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-success)] text-white">
@@ -140,6 +183,14 @@ export default function DepositForm() {
             {PHONE_DISPLAY}
           </a>
         </div>
+
+        <button
+          type="button"
+          onClick={handleReopen}
+          className="mt-8 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-stone)] underline-offset-4 transition-colors hover:text-[var(--color-accent)] hover:underline"
+        >
+          Déposer un autre bien
+        </button>
       </div>
     );
   }
