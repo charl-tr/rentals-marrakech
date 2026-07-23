@@ -61,37 +61,8 @@ export default function DeposerPage() {
         subtitle="Vingt-cinq ans d'expérience à Marrakech et Essaouira. Acquéreurs qualifiés européens, américains et marocains résidents. Discrétion absolue."
       />
 
-      <section className="bg-white py-24">
-        <div className="container-luxe">
-          <div className="text-center">
-            <div className="eyebrow">Notre processus</div>
-            <h2 className="mt-4 font-serif text-3xl md:text-4xl">
-              Quatre étapes, jamais plus.
-            </h2>
-            <div className="gold-rule" />
-          </div>
-          <div className="mt-16 grid gap-px bg-[var(--color-beige-warm)] md:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s) => (
-              <div key={s.n} className="rounded-[14px] bg-white p-8">
-                <div className="flex items-center justify-between">
-                  <s.icon size={20} className="text-[var(--color-terracotta)]" />
-                  <span className="font-serif text-3xl text-[var(--color-stone-soft)]">
-                    {s.n}
-                  </span>
-                </div>
-                <h3 className="mt-6 font-serif text-xl text-[var(--color-charcoal)]">
-                  {s.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--color-stone)]">
-                  {s.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[var(--color-cream)] py-24">
+      {/* FORMULAIRE — remonté juste sous le hero (conversion) */}
+      <section className="bg-[var(--color-cream)] pt-14 pb-20 md:pt-16">
         <div className="container-luxe">
           <div className="mx-auto max-w-3xl">
             <div className="text-center">
@@ -105,9 +76,40 @@ export default function DeposerPage() {
               </p>
             </div>
 
-            <div className="mt-12">
+            <div className="mt-10">
               <DepositForm />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROCESSUS — réassurance, sous le formulaire */}
+      <section className="bg-white py-24">
+        <div className="container-luxe">
+          <div className="text-center">
+            <div className="eyebrow">Notre processus</div>
+            <h2 className="mt-4 font-serif text-3xl md:text-4xl">
+              Quatre étapes, jamais plus.
+            </h2>
+            <div className="gold-rule" />
+          </div>
+          <div className="mt-16 grid gap-px bg-[var(--color-beige-warm)] md:grid-cols-2 lg:grid-cols-4">
+            {STEPS.map((s) => (
+              <div key={s.n} className="rounded-[14px] bg-white p-8">
+                <div className="flex items-center justify-between">
+                  <s.icon size={20} className="text-[var(--color-accent)]" />
+                  <span className="font-serif text-3xl text-[var(--color-stone-soft)]">
+                    {s.n}
+                  </span>
+                </div>
+                <h3 className="mt-6 font-serif text-xl text-[var(--color-charcoal)]">
+                  {s.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-stone)]">
+                  {s.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
