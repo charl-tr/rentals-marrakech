@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { submitLead, type LeadActionState } from "@/lib/actions/leads";
 import type { Advisor } from "@/data/properties";
+import PhoneField from "@/components/PhoneField";
+import EmailField from "@/components/EmailField";
 
 interface ContactFormProps {
   advisors: Advisor[];
@@ -229,24 +231,18 @@ export default function ContactForm({
 
             {current.key === "contact" && (
               <div className="space-y-4">
-                <input
+                <EmailField
                   ref={firstInputRef}
-                  type="email"
-                  className="field"
-                  placeholder="E-mail *"
-                  autoComplete="email"
                   value={values.email}
-                  onChange={(e) => set({ email: e.target.value })}
+                  onChange={(v) => set({ email: v })}
                   onKeyDown={onKeyDown}
+                  placeholder="E-mail *"
                 />
-                <input
-                  type="tel"
-                  className="field"
-                  placeholder="Téléphone (facultatif)"
-                  autoComplete="tel"
+                <PhoneField
                   value={values.phone}
-                  onChange={(e) => set({ phone: e.target.value })}
+                  onChange={(v) => set({ phone: v })}
                   onKeyDown={onKeyDown}
+                  placeholder="Téléphone (facultatif)"
                 />
               </div>
             )}

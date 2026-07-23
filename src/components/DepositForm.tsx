@@ -13,6 +13,8 @@ import {
   submitDepositLead,
   type DepositLeadState,
 } from "@/lib/actions/deposit-lead";
+import PhoneField from "@/components/PhoneField";
+import EmailField from "@/components/EmailField";
 
 const PHONE = "+212660629444";
 const PHONE_DISPLAY = "+212 660 62 94 44";
@@ -66,7 +68,7 @@ export default function DepositForm() {
       key: "phone",
       question: "Votre numéro de téléphone ?",
       hint: "Un conseiller vous rappelle dans la journée.",
-      valid: () => values.phone.trim().length >= 6,
+      valid: () => values.phone.replace(/\D/g, "").length >= 8,
       invalidMsg: "Indiquez un numéro valide.",
     },
     {
@@ -228,27 +230,20 @@ export default function DepositForm() {
               </div>
             )}
             {current.key === "phone" && (
-              <input
+              <PhoneField
                 ref={firstInputRef}
-                type="tel"
-                className="field"
-                placeholder="+33 ou +212…"
-                autoComplete="tel"
                 value={values.phone}
-                onChange={(e) => set({ phone: e.target.value })}
+                onChange={(v) => set({ phone: v })}
                 onKeyDown={onKeyDown}
               />
             )}
             {current.key === "email" && (
-              <input
+              <EmailField
                 ref={firstInputRef}
-                type="email"
-                className="field"
-                placeholder="vous@exemple.com"
-                autoComplete="email"
                 value={values.email}
-                onChange={(e) => set({ email: e.target.value })}
+                onChange={(v) => set({ email: v })}
                 onKeyDown={onKeyDown}
+                placeholder="vous@exemple.com"
               />
             )}
           </div>
