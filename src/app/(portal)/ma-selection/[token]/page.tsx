@@ -30,5 +30,12 @@ export default async function MaSelectionPage({
   const selection = await getSavedSelectionByToken(token);
   if (!selection) notFound();
 
-  return <RestoreSelection kind={selection.kind} slugs={selection.slugs} />;
+  return (
+    <RestoreSelection
+      token={token}
+      email={selection.email}
+      kind={selection.kind}
+      slugs={selection.slugs}
+    />
+  );
 }

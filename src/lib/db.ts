@@ -974,11 +974,11 @@ export async function getLeadByPortalToken(token: string): Promise<AdminLead | n
  * la route de restauration.
  */
 export async function getSavedSelectionByToken(token: string): Promise<
-  { kind: "favoris" | "comparateur"; slugs: string[] } | null
+  { kind: "favoris" | "comparateur"; slugs: string[]; email: string } | null
 > {
   const { data, error } = await supabaseAdmin
     .from("leads")
-    .select("meta")
+    .select("email, meta")
     .eq("portal_token", token)
     .maybeSingle();
   if (error) throw error;
@@ -993,7 +993,7 @@ export async function getSavedSelectionByToken(token: string): Promise<
   if (slugs.length === 0) return null;
 
   const kind = meta.saved_kind === "comparateur" ? "comparateur" : "favoris";
-  return { kind, slugs };
+  return { kind, slugs, email: (data.email as string) ?? "" };
 }
 
 interface ShortlistRow {

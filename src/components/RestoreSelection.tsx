@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Check, GitCompare, Heart } from "lucide-react";
+import { setSelectionLink } from "@/lib/selection-link";
 
 // ════════════════════════════════════════════════════════════════════
 // RestoreSelection — réinjecte une sélection (favoris/comparateur) dans le
@@ -32,9 +33,13 @@ const CONFIG = {
 } as const;
 
 export default function RestoreSelection({
+  token,
+  email,
   kind,
   slugs,
 }: {
+  token: string;
+  email: string;
   kind: "favoris" | "comparateur";
   slugs: string[];
 }) {
@@ -64,7 +69,12 @@ export default function RestoreSelection({
     window.localStorage.setItem(cfg.key, JSON.stringify(capped));
     window.dispatchEvent(new CustomEvent(cfg.event, { detail: capped }));
     setCount(capped.length);
-  }, [cfg, slugs]);
+
+    // Ce navigateur est désormais LIÉ à cette sélection : l'app le reconnaîtra
+    // (plus de re-proposition de sauvegarde ; mise à jour du même enregistrement).
+    // La sélection sauvegardée de référence reste celle du serveur (`slugs`).
+    setSelectionLink(kind, { token, email, savedSlugs: slugs });
+  }, [cfg, slugs, kind, token, email]);
 
   const Icon = cfg.Icon;
   const n = count ?? slugs.length;
