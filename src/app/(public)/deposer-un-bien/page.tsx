@@ -95,12 +95,13 @@ export default function DeposerPage() {
         <div className="container-luxe">
           <div className="mx-auto max-w-3xl">
             <div className="text-center">
-              <div className="eyebrow">Décrire le bien</div>
+              <div className="eyebrow">Être rappelé</div>
               <h2 className="mt-4 font-serif text-3xl md:text-4xl">
-                Quelques minutes pour démarrer.
+                Moins d&apos;une minute pour démarrer.
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-sm text-[var(--color-stone)]">
-                Renseignez l&apos;essentiel — un conseiller vous rappelle dans la journée.
+                Vos coordonnées suffisent. Les détails du bien sont facultatifs —
+                un conseiller vous rappelle dans la journée.
               </p>
             </div>
 

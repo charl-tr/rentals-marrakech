@@ -5,12 +5,13 @@ import { computeSlaDueAt, computeSlaTier } from "@/lib/leads";
 import { z } from "zod";
 
 const depositSchema = z.object({
+  // Strict minimum pour être rappelé — le reste est facultatif.
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   email: z.string().email(),
   phone: z.string().min(6),
-  type: z.string().min(1),
-  city: z.string().min(1),
+  type: z.string().optional(),
+  city: z.string().optional(),
   neighborhood: z.string().optional(),
   surface: z.string().optional(),
   landSurface: z.string().optional(),
