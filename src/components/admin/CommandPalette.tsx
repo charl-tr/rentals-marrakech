@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { useKeyboard } from "@/lib/hooks/useKeyboard";
+import { getCommandPaletteData } from "@/lib/actions/command-palette";
 import Kbd from "./_primitives/Kbd";
 
 // ════════════════════════════════════════════════════════════════════
@@ -72,13 +73,21 @@ interface Item {
   icon: React.ElementType;
 }
 
-export default function CommandPalette({ data }: { data: CommandPaletteData }) {
+const EMPTY_DATA: CommandPaletteData = { leads: [], properties: [], advisors: [] };
+
+export default function CommandPalette() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  // Chargement paresseux — récupéré au premier ⌘K, pas au chargement du
+  // layout : la nav reste utilisable instantanément (items statiques),
+  // leads/biens/équipe se remplissent dès la première ouverture.
+  const [data, setData] = useState<CommandPaletteData | null>(null);
+  const fetchedRef = useRef(false);
 
   // cmd+K → toggle + reset au passage à open=true
   const togglePalette = () => {
@@ -88,6 +97,10 @@ export default function CommandPalette({ data }: { data: CommandPaletteData }) {
         setQuery("");
         setActiveIdx(0);
         setTimeout(() => inputRef.current?.focus(), 10);
+        if (!fetchedRef.current) {
+          fetchedRef.current = true;
+          void getCommandPaletteData().then(setData);
+        }
       }
       return !prev;
     });
@@ -107,8 +120,10 @@ export default function CommandPalette({ data }: { data: CommandPaletteData }) {
     return () => window.removeEventListener("keydown", onEsc);
   }, [open]);
 
-  // Compile items (tous + filtrés par query)
+  // Compile items (tous + filtrés par query) — data peut être null tant que
+  // le premier ⌘K n'a pas résolu ; la nav statique reste utilisable direct.
   const items = useMemo<Item[]>(() => {
+    const d = data ?? EMPTY_DATA;
     const all: Item[] = [
       ...NAV_ITEMS.map((n) => ({
         kind: "nav" as const,
@@ -117,7 +132,7 @@ export default function CommandPalette({ data }: { data: CommandPaletteData }) {
         href: n.href,
         icon: n.icon,
       })),
-      ...data.leads.map((l) => ({
+      ...d.leads.map((l) => ({
         kind: "lead" as const,
         group: "Leads récents",
         label: l.name,
@@ -125,7 +140,7 @@ export default function CommandPalette({ data }: { data: CommandPaletteData }) {
         href: `/admin/leads/${l.id}`,
         icon: Users,
       })),
-      ...data.properties.map((p) => ({
+      ...d.properties.map((p) => ({
         kind: "property" as const,
         group: "Biens",
         label: p.title,
@@ -133,7 +148,7 @@ export default function CommandPalette({ data }: { data: CommandPaletteData }) {
         href: `/admin/biens/${p.slug}`,
         icon: Home,
       })),
-      ...data.advisors.map((a) => ({
+      ...d.advisors.map((a) => ({
         kind: "advisor" as const,
         group: "Équipe",
         label: a.name,

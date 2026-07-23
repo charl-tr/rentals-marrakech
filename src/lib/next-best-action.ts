@@ -107,12 +107,19 @@ export function computeNextAction(
     };
   }
 
-  // ── Lead "new" standard depuis >6h ─────────────────────────────
-  if (lead.status === "new" && ageMs > 6 * H) {
+  // ── Lead "new" jamais triagé — TOUJOURS remonté en tête de liste.
+  // Sans cette règle, un lead qui vient d'arriver (trop récent pour
+  // déclencher les règles SLA/budget ci-dessus) n'a aucune action calculée
+  // → tombe en toute dernière position du tri par priorité, invisible.
+  // Le premier contact est la priorité n°1 d'un pipeline commercial.
+  if (lead.status === "new") {
+    const fresh = ageMs <= 6 * H;
     return {
-      priority: "high",
-      label: "Première réponse",
-      reason: `Demande reçue il y a ${relativeFrom(created, now)}`,
+      priority: fresh ? "urgent" : "high",
+      label: fresh ? "Nouveau — premier contact" : "Première réponse",
+      reason: fresh
+        ? `Demande reçue à l'instant (${relativeFrom(created, now)})`
+        : `Demande reçue il y a ${relativeFrom(created, now)}`,
       suggested: {
         type: "status_change",
         statusTo: "contacted",

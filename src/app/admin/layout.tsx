@@ -8,8 +8,8 @@ import UserWidget from "@/components/admin/UserWidget";
 import CommandPalette from "@/components/admin/CommandPalette";
 import CommandPaletteTrigger from "@/components/admin/CommandPaletteTrigger";
 import RealtimeSync from "@/components/admin/RealtimeSync";
+import AdminNotificationsProvider from "@/components/admin/AdminNotificationsProvider";
 import { getAdminSession } from "@/lib/auth";
-import { getAllAdvisors, getAllLeads, getAllPropertiesAdmin } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Administration — Marrakech Realty",
@@ -41,27 +41,6 @@ export default async function AdminLayout({
     redirect("/admin/signout");
   }
 
-  // Data pour le CommandPalette — session garantie non-null après redirect
-  const [allLeads, allProperties, allAdvisors] = await Promise.all([
-    getAllLeads(),
-    getAllPropertiesAdmin(),
-    getAllAdvisors(),
-  ]);
-
-  const paletteData = {
-    leads: allLeads.slice(0, 30).map((l) => ({
-      id: l.id,
-      name: `${l.buyer.firstName} ${l.buyer.lastName}`.trim(),
-      status: l.status,
-    })),
-    properties: allProperties.slice(0, 30).map((p) => ({
-      slug: p.slug,
-      title: p.title,
-      reference: p.reference,
-    })),
-    advisors: allAdvisors.map((a) => ({ slug: a.slug, name: a.name })),
-  };
-
   const loggedUser = {
     name: session.advisorName,
     role: session.advisorRole.split("—")[0]?.trim() ?? session.advisorRole,
@@ -74,6 +53,10 @@ export default async function AdminLayout({
   };
 
   return (
+    <AdminNotificationsProvider
+      isDirector={session.role === "director"}
+      advisorSlug={session.advisorSlug}
+    >
     <div className="min-h-screen bg-[var(--color-cream)] text-[var(--color-charcoal)]">
       {/* Top nav — dense, utilitaire, full-width */}
       <header className="sticky top-0 z-30 border-b border-[var(--color-beige-warm)] bg-white/95 backdrop-blur-md">
@@ -146,11 +129,13 @@ export default async function AdminLayout({
 
       <main>{children}</main>
 
-      {/* Command palette global — écoute cmd+K */}
-      <CommandPalette data={paletteData} />
+      {/* Command palette global — écoute cmd+K, charge ses données à la
+          première ouverture (ne bloque pas la navigation) */}
+      <CommandPalette />
 
       {/* Sync Realtime — silent, refresh RSC sur DB changes */}
       <RealtimeSync />
     </div>
+    </AdminNotificationsProvider>
   );
 }
