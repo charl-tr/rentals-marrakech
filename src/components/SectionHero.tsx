@@ -68,7 +68,7 @@ export default function SectionHero({
  <div className="hero-text-soft eyebrow-light">
  {eyebrow}
  </div>
- <h1 className="mt-5 max-w-3xl font-serif text-5xl leading-[1.05] md:text-6xl lg:text-[68px]">
+ <h1 className="mt-5 max-w-3xl font-serif text-5xl leading-[1.05] text-white md:text-6xl lg:text-[68px]">
  {title}
  </h1>
  {subtitle && (

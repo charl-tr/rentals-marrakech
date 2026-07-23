@@ -72,7 +72,24 @@ const VENDRE_LINKS = [
 
 // Routes dont le haut de page est sombre (hero image ou bandeau noir) :
 // la navbar y est transparente en haut, puis claire au scroll.
-const DARK_TOP_PREFIXES = ["/acheter", "/louer", "/essaouira", "/quartiers"];
+// Routes dont le haut de page est sombre (hero SectionHero charcoal ou image) :
+// la navbar y est transparente en haut puis se solidifie au scroll.
+const DARK_TOP_PREFIXES = [
+  "/acheter",
+  "/louer",
+  "/essaouira",
+  "/quartiers",
+  "/contact",
+  "/estimer",
+  "/favoris",
+  "/a-propos",
+  "/savoir-acheter",
+  "/journal",
+  "/collections",
+  "/deposer-un-bien",
+  "/faq",
+  "/equipe",
+];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);

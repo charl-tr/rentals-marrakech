@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import CompareFloatingDock from "@/components/CompareFloatingDock";
+import FloatingContact from "@/components/FloatingContact";
 import ScrollToTop from "@/components/ScrollToTop";
 
 // ── Cache ISR par défaut sur tout le groupe public ────────────────────
@@ -63,6 +64,7 @@ export default function PublicLayout({
       <Footer />
       <CookieBanner />
       <CompareFloatingDock />
+      <FloatingContact />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}
