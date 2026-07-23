@@ -12,6 +12,12 @@ import {
 } from "lucide-react";
 import { submitLead, type LeadActionState } from "@/lib/actions/leads";
 import type { Advisor } from "@/data/properties";
+import {
+  clearSentRecord,
+  getSentRecord,
+  setSentRecord,
+  type SentRecord,
+} from "@/lib/form-memory";
 import PhoneField from "@/components/PhoneField";
 import EmailField from "@/components/EmailField";
 
@@ -73,14 +79,63 @@ export default function ContactForm({
   const [error, setError] = useState<string | null>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
 
+  // Mémoire locale : "cette demande a déjà été envoyée depuis ce navigateur".
+  // Clé par contexte (bien précis, ou formulaire générique) → au refresh on
+  // reconnaît l'envoi au lieu de réafficher un formulaire vierge.
+  const contextId = `${channel}:${propertySlug ?? "generic"}`;
+  const [mounted, setMounted] = useState(false);
+  const [memory, setMemory] = useState<SentRecord | null>(null);
+  const [forceForm, setForceForm] = useState(false);
+
   useEffect(() => {
     firstInputRef.current?.focus();
   }, [step]);
 
-  if (state.status === "success") {
-    const advisor =
-      advisors.find((a) => a.slug === state.advisorSlug) ?? advisors[0];
-    return <SuccessPanel advisor={advisor} />;
+  useEffect(() => {
+    setMemory(getSentRecord(contextId));
+    setMounted(true);
+  }, [contextId]);
+
+  // À la réussite : on grave la trace (avec le conseiller assigné).
+  useEffect(() => {
+    if (state.status === "success") {
+      const rec: SentRecord = {
+        sentAt: Date.now(),
+        advisorSlug: state.advisorSlug,
+      };
+      setSentRecord(contextId, rec);
+      setMemory(rec);
+      setForceForm(false);
+    }
+    // On ne réagit qu'à la transition de l'action.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  const handleReopen = () => {
+    clearSentRecord(contextId);
+    setMemory(null);
+    setForceForm(true);
+    setStep(0);
+    setValues({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      project: defaultProject ?? "",
+      message: "",
+    });
+    setError(null);
+  };
+
+  // "Déjà envoyé" : soit à l'instant, soit mémorisé d'une visite précédente.
+  // Réouvrable explicitement via "Envoyer un autre message".
+  const advisorSlug =
+    state.status === "success" ? state.advisorSlug : memory?.advisorSlug ?? null;
+  const showSuccess =
+    !forceForm && (state.status === "success" || (mounted && memory !== null));
+  if (showSuccess) {
+    const advisor = advisors.find((a) => a.slug === advisorSlug) ?? advisors[0];
+    return <SuccessPanel advisor={advisor} onReopen={handleReopen} />;
   }
 
   const set = (patch: Partial<Values>) => {
@@ -321,7 +376,13 @@ export default function ContactForm({
 // ─────────────────────────────────────────────────────────────────────
 // État de succès — "Je sais qui est mon interlocuteur, comment le joindre."
 
-function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
+function SuccessPanel({
+  advisor,
+  onReopen,
+}: {
+  advisor: Advisor | undefined;
+  onReopen?: () => void;
+}) {
   if (!advisor) {
     return (
       <div className="rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-10">
@@ -330,6 +391,7 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
         <p className="mt-3 text-sm text-[var(--color-stone)]">
           Un conseiller vous recontacte sous 24 heures ouvrées.
         </p>
+        {onReopen && <ReopenLink onReopen={onReopen} />}
       </div>
     );
   }
@@ -416,6 +478,25 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
           </div>
         </div>
       </div>
+
+      {onReopen && <ReopenLink onReopen={onReopen} />}
+    </div>
+  );
+}
+
+// Réouverture explicite — envoyer une AUTRE demande (efface la mémoire locale
+// de ce contexte et réaffiche un formulaire vierge). Empêche la re-soumission
+// accidentelle sans jamais bloquer une relance volontaire.
+function ReopenLink({ onReopen }: { onReopen: () => void }) {
+  return (
+    <div className="mt-8 border-t border-[var(--color-border)] pt-6">
+      <button
+        type="button"
+        onClick={onReopen}
+        className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-stone)] underline-offset-4 transition-colors hover:text-[var(--color-accent)] hover:underline"
+      >
+        Envoyer un autre message
+      </button>
     </div>
   );
 }
