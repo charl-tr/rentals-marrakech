@@ -266,25 +266,25 @@ export default function DepositForm() {
               Retour
             </button>
           )}
-          {!isLast ? (
-            <button
-              type="button"
-              onClick={goNext}
-              className="btn-gold ml-auto"
-            >
-              Continuer
-              <ArrowRight size={14} />
-            </button>
-          ) : (
-            <button
-              type="submit"
-              disabled={isPending || !current.valid()}
-              className="btn-gold ml-auto disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isPending ? "Envoi…" : "Être rappelé·e"}
-              {!isPending && <ArrowRight size={14} />}
-            </button>
-          )}
+          {/* Un seul bouton, toujours type="submit" — le comportement
+              (avancer ou envoyer) est décidé en JS via preventDefault(),
+              jamais en changeant l'attribut type d'un bouton déjà ciblé par
+              le clic (ce changement in-place pouvait déclencher une
+              soumission native fantôme du formulaire). */}
+          <button
+            type="submit"
+            disabled={isLast && (isPending || !current.valid())}
+            onClick={(e) => {
+              if (!isLast) {
+                e.preventDefault();
+                goNext();
+              }
+            }}
+            className="btn-gold ml-auto disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLast ? (isPending ? "Envoi…" : "Être rappelé·e") : "Continuer"}
+            {!(isLast && isPending) && <ArrowRight size={14} />}
+          </button>
         </div>
 
         <p className="mt-6 flex items-center justify-center gap-2 text-[11px] text-[var(--color-stone)]">

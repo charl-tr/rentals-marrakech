@@ -289,21 +289,25 @@ export default function ContactForm({
               Retour
             </button>
           )}
-          {!isLast ? (
-            <button type="button" onClick={goNext} className="btn-gold ml-auto">
-              Continuer
-              <ArrowRight size={14} />
-            </button>
-          ) : (
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn-gold ml-auto disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isPending ? "Envoi…" : "Envoyer"}
-              {!isPending && <ArrowRight size={14} />}
-            </button>
-          )}
+          {/* Un seul bouton, toujours type="submit" — le comportement (avancer
+              ou envoyer) est décidé en JS via preventDefault(), jamais en
+              changeant l'attribut type d'un bouton déjà ciblé par le clic
+              (ce changement d'attribut in-place pouvait déclencher une
+              soumission native fantôme du formulaire). */}
+          <button
+            type="submit"
+            disabled={isLast && isPending}
+            onClick={(e) => {
+              if (!isLast) {
+                e.preventDefault();
+                goNext();
+              }
+            }}
+            className="btn-gold ml-auto disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLast ? (isPending ? "Envoi…" : "Envoyer") : "Continuer"}
+            {!(isLast && isPending) && <ArrowRight size={14} />}
+          </button>
         </div>
 
         <p className="mt-6 text-center text-[11px] text-[var(--color-stone)]">
