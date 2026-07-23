@@ -16,10 +16,16 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    // Cache routeur client : réutilise le rendu des routes déjà visitées.
-    // dynamic=30s → re-switcher vers un onglet admin vu récemment est
-    // instantané (zéro aller-retour serveur, zéro skeleton). static≥30 requis.
-    staleTimes: { dynamic: 30, static: 180 },
+    // Cache routeur client. dynamic=0 (désactivé) : chaque navigation vers
+    // une route dynamique (tout l'admin, notamment) refait un aller-retour
+    // serveur — indispensable pour un CRM, car des mutations depuis d'AUTRES
+    // sessions/onglets (ex. un formulaire public qui crée un lead) ne
+    // peuvent pas invalider ce cache côté navigateur : avec dynamic>0, un
+    // onglet admin resté ouvert pouvait montrer un rendu périmé jusqu'à 30s
+    // sans aucun moyen de le savoir. La vitesse perçue vient du cache
+    // serveur (unstable_cache 15s sur les lectures admin) + des loading.tsx,
+    // pas de ce cache client. static reste élevé (pages ISR sans ce risque).
+    staleTimes: { dynamic: 0, static: 180 },
   },
 
   // Préservation du SEO marrakechrealty.com → 308 Permanent Redirect
