@@ -1,9 +1,15 @@
 "use client";
 
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Check, Phone, MessageCircle, Mail } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Mail,
+  MessageCircle,
+  Phone,
+} from "lucide-react";
 import { submitLead, type LeadActionState } from "@/lib/actions/leads";
 import type { Advisor } from "@/data/properties";
 
@@ -29,10 +35,20 @@ const PROJECT_OPTIONS = [
   "Autre",
 ];
 
-const initialState: LeadActionState = { status: "idle" };
-
 const PHONE = "+212660629444";
 const WHATSAPP = "https://wa.me/212660629444";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const initialState: LeadActionState = { status: "idle" };
+
+type Values = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  project: string;
+  message: string;
+};
 
 export default function ContactForm({
   advisors,
@@ -40,10 +56,24 @@ export default function ContactForm({
   sourcePage,
   defaultProject,
   channel = "contact_form",
-  title = "Décrivez-nous votre projet.",
-  subtitle = "Nous vous répondons sous 24 heures ouvrées.",
 }: ContactFormProps) {
-  const [state, action] = useActionState(submitLead, initialState);
+  const [state, action, isPending] = useActionState(submitLead, initialState);
+
+  const [step, setStep] = useState(0);
+  const [values, setValues] = useState<Values>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    project: defaultProject ?? "",
+    message: "",
+  });
+  const [error, setError] = useState<string | null>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    firstInputRef.current?.focus();
+  }, [step]);
 
   if (state.status === "success") {
     const advisor =
@@ -51,16 +81,63 @@ export default function ContactForm({
     return <SuccessPanel advisor={advisor} />;
   }
 
-  const errors = state.status === "error" ? state.fieldErrors ?? {} : {};
+  const set = (patch: Partial<Values>) => {
+    setValues((v) => ({ ...v, ...patch }));
+    setError(null);
+  };
+
+  const STEPS = [
+    {
+      key: "name",
+      question: "Comment vous appelez-vous ?",
+      hint: "Pour savoir qui vous répond.",
+      valid: () =>
+        values.firstName.trim() !== "" && values.lastName.trim() !== "",
+      invalidMsg: "Indiquez votre prénom et votre nom.",
+    },
+    {
+      key: "contact",
+      question: "Comment vous joindre ?",
+      hint: "Réponse sous 24 heures ouvrées.",
+      valid: () => EMAIL_RE.test(values.email.trim()),
+      invalidMsg: "Indiquez une adresse e-mail valide.",
+    },
+    {
+      key: "message",
+      question: "Dites-nous en plus.",
+      hint: "Votre projet en quelques mots — ou rien, on en parlera.",
+      valid: () => true,
+      invalidMsg: "",
+    },
+  ] as const;
+
+  const total = STEPS.length;
+  const current = STEPS[step];
+  const isLast = step === total - 1;
+
+  const goNext = () => {
+    if (!current.valid()) {
+      setError(current.invalidMsg);
+      return;
+    }
+    setError(null);
+    setStep((s) => Math.min(total - 1, s + 1));
+  };
+  const goBack = () => {
+    setError(null);
+    setStep((s) => Math.max(0, s - 1));
+  };
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !isLast) {
+      e.preventDefault();
+      goNext();
+    }
+  };
 
   return (
-    <div className="rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-10">
-      <div className="eyebrow">Écrivez-nous</div>
-      <h2 className="mt-4 font-serif text-3xl">{title}</h2>
-      <p className="mt-3 text-sm text-[var(--color-stone)]">{subtitle}</p>
-
-      {/* Contact immédiat — sans passer par le formulaire */}
-      <div className="mt-6 flex flex-col gap-3 rounded-[12px] border border-[var(--color-border)] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-4">
+      {/* Contact immédiat */}
+      <div className="flex flex-col gap-3 rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--color-charcoal)]">
           <span className="font-medium">Plus rapide&nbsp;?</span> Écrivez-nous
           directement.
@@ -85,13 +162,10 @@ export default function ContactForm({
         </div>
       </div>
 
-      {state.status === "error" && !state.fieldErrors && (
-        <div className="mt-6 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)]">
-          {state.message}
-        </div>
-      )}
-
-      <form action={action} className="mt-10 space-y-6">
+      <form
+        action={action}
+        className="rounded-[16px] border border-[var(--color-border)] bg-white p-8 shadow-[var(--shadow-card)] md:p-10"
+      >
         <input type="hidden" name="channel" value={channel} />
         {propertySlug && (
           <input type="hidden" name="propertySlug" value={propertySlug} />
@@ -99,54 +173,143 @@ export default function ContactForm({
         {sourcePage && (
           <input type="hidden" name="sourcePage" value={sourcePage} />
         )}
+        {/* Valeurs complètes portées en caché → FormData toujours complet */}
+        <input type="hidden" name="firstName" value={values.firstName} />
+        <input type="hidden" name="lastName" value={values.lastName} />
+        <input type="hidden" name="email" value={values.email} />
+        <input type="hidden" name="phone" value={values.phone} />
+        <input type="hidden" name="project" value={values.project} />
+        <input type="hidden" name="message" value={values.message} />
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Field label="Prénom" required error={errors.firstName?.[0]}>
-            <input type="text" name="firstName" className="field" required />
-          </Field>
-          <Field label="Nom" required error={errors.lastName?.[0]}>
-            <input type="text" name="lastName" className="field" required />
-          </Field>
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
+            Étape {step + 1} sur {total}
+          </span>
+          <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-accent)]">
+            Réponse sous 24h
+          </span>
+        </div>
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
+          <div
+            className="h-full rounded-full bg-[var(--color-accent)] transition-[width] duration-500 ease-out"
+            style={{ width: `${((step + 1) / total) * 100}%` }}
+          />
         </div>
 
-        <Field label="E-mail" required error={errors.email?.[0]}>
-          <input type="email" name="email" className="field" required />
-        </Field>
+        <div key={step} className="mt-8 animate-scale-in">
+          <h3 className="font-serif text-2xl leading-tight text-[var(--color-charcoal)]">
+            {current.question}
+          </h3>
+          <p className="mt-1.5 text-sm text-[var(--color-stone)]">{current.hint}</p>
 
-        <Field label="Téléphone" error={errors.phone?.[0]}>
-          <input
-            type="tel"
-            name="phone"
-            className="field"
-            placeholder="+33 ou +212"
-          />
-        </Field>
+          <div className="mt-6">
+            {current.key === "name" && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <input
+                  ref={firstInputRef}
+                  className="field"
+                  placeholder="Prénom"
+                  autoComplete="given-name"
+                  value={values.firstName}
+                  onChange={(e) => set({ firstName: e.target.value })}
+                  onKeyDown={onKeyDown}
+                />
+                <input
+                  className="field"
+                  placeholder="Nom"
+                  autoComplete="family-name"
+                  value={values.lastName}
+                  onChange={(e) => set({ lastName: e.target.value })}
+                  onKeyDown={onKeyDown}
+                />
+              </div>
+            )}
 
-        <Field label="Votre projet (facultatif)" error={errors.project?.[0]}>
-          <select
-            name="project"
-            className="field"
-            defaultValue={defaultProject ?? ""}
-          >
-            <option value="">— Je préfère en parler de vive voix —</option>
-            {PROJECT_OPTIONS.map((label) => (
-              <option key={label} value={label}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </Field>
+            {current.key === "contact" && (
+              <div className="space-y-4">
+                <input
+                  ref={firstInputRef}
+                  type="email"
+                  className="field"
+                  placeholder="E-mail *"
+                  autoComplete="email"
+                  value={values.email}
+                  onChange={(e) => set({ email: e.target.value })}
+                  onKeyDown={onKeyDown}
+                />
+                <input
+                  type="tel"
+                  className="field"
+                  placeholder="Téléphone (facultatif)"
+                  autoComplete="tel"
+                  value={values.phone}
+                  onChange={(e) => set({ phone: e.target.value })}
+                  onKeyDown={onKeyDown}
+                />
+              </div>
+            )}
 
-        <Field label="Votre message" error={errors.message?.[0]}>
-          <textarea name="message" rows={5} className="field resize-none" />
-        </Field>
+            {current.key === "message" && (
+              <div className="space-y-4">
+                <select
+                  className="field"
+                  value={values.project}
+                  onChange={(e) => set({ project: e.target.value })}
+                >
+                  <option value="">— Votre projet (facultatif) —</option>
+                  {PROJECT_OPTIONS.map((label) => (
+                    <option key={label} value={label}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+                <textarea
+                  rows={4}
+                  className="field resize-none"
+                  placeholder="Votre message (facultatif)…"
+                  value={values.message}
+                  onChange={(e) => set({ message: e.target.value })}
+                />
+              </div>
+            )}
+          </div>
 
-        <SubmitButton />
+          {error && (
+            <p className="mt-3 text-xs text-[var(--color-accent-deep)]">{error}</p>
+          )}
+          {state.status === "error" && !state.fieldErrors && (
+            <p className="mt-3 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-[var(--color-bg-alt)] px-4 py-2.5 text-sm text-[var(--color-charcoal)]">
+              {state.message}
+            </p>
+          )}
+        </div>
 
-        <p className="text-[11px] text-[var(--color-stone)]">
-          En envoyant ce formulaire, vous acceptez d&apos;être recontacté(e) par
-          l&apos;équipe Marrakech Realty. Vos données ne sont jamais transmises
-          à des tiers.
+        <div className="mt-8 flex items-center gap-3">
+          {step > 0 && (
+            <button type="button" onClick={goBack} className="btn-back">
+              <ArrowLeft size={12} />
+              Retour
+            </button>
+          )}
+          {!isLast ? (
+            <button type="button" onClick={goNext} className="btn-gold ml-auto">
+              Continuer
+              <ArrowRight size={14} />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={isPending}
+              className="btn-gold ml-auto disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isPending ? "Envoi…" : "Envoyer"}
+              {!isPending && <ArrowRight size={14} />}
+            </button>
+          )}
+        </div>
+
+        <p className="mt-6 text-center text-[11px] text-[var(--color-stone)]">
+          Vos données ne sont jamais transmises à des tiers.
         </p>
       </form>
     </div>
@@ -154,50 +317,7 @@ export default function ContactForm({
 }
 
 // ─────────────────────────────────────────────────────────────────────
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="btn-gold w-full justify-center disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {pending ? "Envoi en cours…" : "Envoyer ma demande"}
-    </button>
-  );
-}
-
-function Field({
-  label,
-  required,
-  error,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-        {label}
-        {required && <span className="text-[var(--color-accent)]"> *</span>}
-      </span>
-      <div className="mt-2">{children}</div>
-      {error && (
-        <div className="mt-1.5 text-[11px] text-[var(--color-accent-deep)]">
-          {error}
-        </div>
-      )}
-    </label>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────
-// État de succès — ce qu'on veut que le prospect ressente :
-// "Je sais qui est mon interlocuteur, comment le joindre, et quand."
+// État de succès — "Je sais qui est mon interlocuteur, comment le joindre."
 
 function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
   if (!advisor) {
@@ -278,10 +398,7 @@ function SuccessPanel({ advisor }: { advisor: Advisor | undefined }) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
               >
-                <MessageCircle
-                  size={14}
-                  className="text-[var(--color-accent)]"
-                />
+                <MessageCircle size={14} className="text-[var(--color-accent)]" />
                 WhatsApp direct
               </a>
             )}
