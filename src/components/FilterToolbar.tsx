@@ -214,7 +214,7 @@ export default function FilterToolbar({
               <SlidersHorizontal size={13} />
               Filtres
               {activeCount > 0 && (
-                <span className="ml-0.5 flex h-4 min-w-[16px] items-center justify-center bg-[var(--color-terracotta)] px-1 text-[9px] font-semibold text-white">
+                <span className="ml-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[var(--color-accent)] px-1 text-[9px] font-semibold text-white">
                   {activeCount}
                 </span>
               )}

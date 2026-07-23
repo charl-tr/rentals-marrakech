@@ -125,12 +125,12 @@ export default async function PropertyDetail({ property }: { property: Property 
           <div className="container-luxe">
             <div className="flex flex-wrap items-center gap-3 text-white/85">
               {property.status && property.status !== "available" && (
-                <span className="border border-white/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white">
+                <span className="rounded-full border border-white/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white">
                   {STATUS_LABELS[property.status]}
                 </span>
               )}
               {property.exclusivity && (
-                <span className="border border-white/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white">
+                <span className="rounded-full border border-white/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white">
                   Exclusivité agence
                 </span>
               )}

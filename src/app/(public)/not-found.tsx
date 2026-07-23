@@ -39,13 +39,13 @@ export default function NotFound() {
         <div className="mt-14 flex flex-col items-center gap-4 sm:flex-row">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 border border-white/60 bg-transparent px-8 py-4 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-white hover:text-[var(--color-charcoal)]"
+            className="inline-flex items-center gap-2 rounded-[10px] border border-white/60 bg-transparent px-8 py-4 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-white hover:text-[var(--color-charcoal)]"
           >
             Retour à l&apos;accueil
           </Link>
           <Link
             href="/acheter"
-            className="inline-flex items-center gap-2 bg-[var(--color-terracotta)] px-8 py-4 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-terracotta-deep)]"
+            className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-accent)] px-8 py-4 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-accent-deep)]"
           >
             <Compass size={14} />
             Parcourir les biens

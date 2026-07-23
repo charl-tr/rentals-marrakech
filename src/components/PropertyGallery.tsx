@@ -88,17 +88,17 @@ export default function PropertyGallery({
             </div>
             <div className="hidden items-center gap-3 text-[10px] text-white/50 md:flex">
               <span className="flex items-center gap-1">
-                <kbd className="inline-flex items-center border border-white/20 bg-white/5 px-1.5 py-px font-mono text-[9px]">
+                <kbd className="inline-flex items-center rounded-[4px] border border-white/20 bg-white/5 px-1.5 py-px font-mono text-[9px]">
                   ←
                 </kbd>
-                <kbd className="inline-flex items-center border border-white/20 bg-white/5 px-1.5 py-px font-mono text-[9px]">
+                <kbd className="inline-flex items-center rounded-[4px] border border-white/20 bg-white/5 px-1.5 py-px font-mono text-[9px]">
                   →
                 </kbd>
                 naviguer
               </span>
               <span>·</span>
               <span className="flex items-center gap-1">
-                <kbd className="inline-flex items-center border border-white/20 bg-white/5 px-1.5 py-px font-mono text-[9px]">
+                <kbd className="inline-flex items-center rounded-[4px] border border-white/20 bg-white/5 px-1.5 py-px font-mono text-[9px]">
                   Esc
                 </kbd>
                 fermer

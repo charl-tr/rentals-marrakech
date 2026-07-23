@@ -140,11 +140,11 @@ export default async function JournalPage() {
             <input
               type="email"
               placeholder="votre@email.com"
-              className="flex-1 border border-white/30 bg-transparent px-5 py-3 text-sm text-white placeholder-white/50 focus:border-[var(--color-terracotta-light)] focus:outline-none"
+              className="flex-1 rounded-[10px] border border-white/30 bg-white/5 px-5 py-3 text-sm text-white placeholder-white/50 focus:border-[var(--color-accent-light)] focus:outline-none"
             />
             <button
               type="submit"
-              className="bg-[var(--color-terracotta)] px-6 py-3 text-xs font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-terracotta-deep)]"
+              className="rounded-[10px] bg-[var(--color-accent)] px-6 py-3 text-xs font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-accent-deep)]"
             >
               S&apos;inscrire
             </button>

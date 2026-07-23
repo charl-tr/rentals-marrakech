@@ -209,7 +209,7 @@ export default async function EssaouiraPage({
  href="https://wa.me/212660629447"
  target="_blank"
  rel="noopener noreferrer"
- className="inline-flex items-center justify-center gap-2 bg-[var(--color-terracotta)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-terracotta-deep)]"
+ className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-accent-deep)]"
  >
  WhatsApp Essaouira
  </a>
