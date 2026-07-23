@@ -7,6 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import { useFavorites } from "@/hooks/useFavorites";
 import PropertyCard from "@/components/PropertyCard";
 import SectionHero from "@/components/SectionHero";
+import SaveSelectionBanner from "@/components/SaveSelectionBanner";
 import type { Property } from "@/data/properties";
 
 const supabase = createClient(
@@ -122,6 +123,8 @@ export default function FavorisPage() {
             <EmptyState />
           ) : (
             <>
+              <SaveSelectionBanner kind="favoris" slugs={favorites} />
+
               <div className="mb-8 flex items-center justify-between">
                 <div className="text-sm text-[var(--color-stone)]">
                   <span className="font-serif text-2xl text-[var(--color-charcoal)]">

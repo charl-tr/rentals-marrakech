@@ -390,4 +390,5 @@ const sourceLabels: Record<string, string> = {
   email: "email",
   phone: "téléphone",
   matching: "matching",
+  favorites_save: "sélection sauvegardée",
 };

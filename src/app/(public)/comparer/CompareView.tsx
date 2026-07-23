@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useCompareList } from "@/hooks/useCompareList";
 import { useCurrency, formatInCurrency } from "@/hooks/useCurrency";
 import { propertyTypeLabel, type Property } from "@/data/properties";
+import SaveSelectionBanner from "@/components/SaveSelectionBanner";
 
 // ════════════════════════════════════════════════════════════════════
 // CompareView — client-side compare. Reçoit les biens pré-chargés
@@ -69,6 +70,11 @@ export default function CompareView({
           </p>
         </div>
       </div>
+
+      <SaveSelectionBanner
+        kind="comparateur"
+        slugs={displayed.map((p) => p.slug)}
+      />
 
       <div className="overflow-x-auto">
         <div
