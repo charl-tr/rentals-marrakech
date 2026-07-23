@@ -15,6 +15,7 @@
 // (le lead est sauvegardé même si l'email échoue).
 // ════════════════════════════════════════════════════════════════════
 
+import { updateTag } from "next/cache";
 import { supabase } from "@/lib/supabase";
 import { getAdvisor, getPropertyBySlug } from "@/lib/db";
 import {
@@ -163,6 +164,14 @@ export async function submitLead(
       message:
         "Une erreur est survenue lors de l'envoi. Merci de réessayer ou de nous contacter directement par téléphone.",
     };
+  }
+
+  // Le lead est en base → on expire le cache court des listes admin pour
+  // qu'il apparaisse immédiatement dans /admin/leads (sinon jusqu'à 15s).
+  try {
+    updateTag("admin");
+  } catch {
+    // updateTag ne peut échouer que hors Server Action — ici on l'est.
   }
 
   // ── Emails transactionnels (non-bloquants) ───────────────────────

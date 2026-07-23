@@ -287,6 +287,29 @@ export default async function PropertyDetail({ property }: { property: Property 
         </div>
       </section>
 
+      {/* CONTACT — formulaire embarqué haut de page (conversion) */}
+      <section id="contact-bien" className="scroll-mt-24 bg-[var(--color-cream)] py-20 md:py-24">
+        <div className="container-luxe max-w-2xl">
+          <div className="text-center">
+            <div className="eyebrow">Ce bien vous intéresse ?</div>
+            <h2 className="mt-4 font-serif text-3xl md:text-4xl">Parlons-en.</h2>
+            <p className="mt-4 text-sm text-[var(--color-stone)]">
+              Réf. {property.reference} · {property.neighborhood}, {property.city} —
+              un conseiller vous répond sous 24&nbsp;heures.
+            </p>
+          </div>
+          <div className="mt-10">
+            <ContactForm
+              advisors={allAdvisors}
+              propertySlug={property.slug}
+              sourcePage={`/${isLocation ? "louer" : "acheter"}/${property.slug}`}
+              channel="property_form"
+              defaultProject={defaultProject}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* PRESTATIONS — liste éditoriale */}
       {property.features.length > 0 && (
         <section className="bg-[var(--color-bg-alt)] py-24 md:py-28">
@@ -492,29 +515,6 @@ export default async function PropertyDetail({ property }: { property: Property 
           </div>
         </section>
       )}
-
-      {/* CONTACT — formulaire embarqué, contexte du bien pré-rempli */}
-      <section id="contact-bien" className="scroll-mt-24 bg-white py-20 md:py-24">
-        <div className="container-luxe max-w-2xl">
-          <div className="text-center">
-            <div className="eyebrow">Ce bien vous intéresse ?</div>
-            <h2 className="mt-4 font-serif text-3xl md:text-4xl">Parlons-en.</h2>
-            <p className="mt-4 text-sm text-[var(--color-stone)]">
-              Réf. {property.reference} · {property.neighborhood}, {property.city} —
-              un conseiller vous répond sous 24&nbsp;heures.
-            </p>
-          </div>
-          <div className="mt-10">
-            <ContactForm
-              advisors={allAdvisors}
-              propertySlug={property.slug}
-              sourcePage={`/${isLocation ? "louer" : "acheter"}/${property.slug}`}
-              channel="property_form"
-              defaultProject={defaultProject}
-            />
-          </div>
-        </div>
-      </section>
 
       {/* CALCULETTE FRAIS — ventes uniquement */}
       {property.listing === "vente" && (

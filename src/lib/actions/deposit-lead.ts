@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { supabase } from "@/lib/supabase";
 import { computeSlaDueAt, computeSlaTier } from "@/lib/leads";
 import { z } from "zod";
@@ -89,6 +90,13 @@ export async function submitDepositLead(
       status: "error",
       message: "Une erreur est survenue. Réessayez ou appelez-nous directement.",
     };
+  }
+
+  // Expire le cache court des listes admin → visible immédiatement.
+  try {
+    updateTag("admin");
+  } catch {
+    // updateTag ne peut échouer que hors Server Action — ici on l'est.
   }
 
   return { status: "success" };
