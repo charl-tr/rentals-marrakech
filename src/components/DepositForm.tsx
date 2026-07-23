@@ -96,11 +96,12 @@ export default function DepositForm() {
     setStep((s) => Math.max(0, s - 1));
   };
 
-  // Entrée = avancer (sauf dernière étape, où le formulaire se soumet)
+  // Entrée = avancer. On bloque TOUJOURS la soumission native par Entrée :
+  // sur la dernière étape, l'envoi exige un clic délibéré sur le bouton.
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !isLast) {
+    if (e.key === "Enter") {
       e.preventDefault();
-      goNext();
+      if (!isLast) goNext();
     }
   };
 
