@@ -68,8 +68,13 @@ export const leadSubmitSchema = z.object({
     .optional()
     .transform((v) => (v === "" ? undefined : v)),
 
-  // Projet
-  project: z.string().trim().min(1, "Projet requis").max(120),
+  // Projet — facultatif (frictionless) : par défaut « Prise de contact ».
+  project: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => (v === "" ? undefined : v)),
   message: z
     .string()
     .trim()

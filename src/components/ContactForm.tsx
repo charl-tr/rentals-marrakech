@@ -31,6 +31,9 @@ const PROJECT_OPTIONS = [
 
 const initialState: LeadActionState = { status: "idle" };
 
+const PHONE = "+212660629444";
+const WHATSAPP = "https://wa.me/212660629444";
+
 export default function ContactForm({
   advisors,
   propertySlug,
@@ -52,9 +55,35 @@ export default function ContactForm({
 
   return (
     <div className="rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-10">
-      <div className="eyebrow">Formulaire</div>
+      <div className="eyebrow">Écrivez-nous</div>
       <h2 className="mt-4 font-serif text-3xl">{title}</h2>
       <p className="mt-3 text-sm text-[var(--color-stone)]">{subtitle}</p>
+
+      {/* Contact immédiat — sans passer par le formulaire */}
+      <div className="mt-6 flex flex-col gap-3 rounded-[12px] border border-[var(--color-border)] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-[var(--color-charcoal)]">
+          <span className="font-medium">Plus rapide&nbsp;?</span> Écrivez-nous
+          directement.
+        </p>
+        <div className="flex gap-2">
+          <a
+            href={WHATSAPP}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-success)] px-4 py-2.5 text-[12px] font-medium uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
+          >
+            <MessageCircle size={14} />
+            WhatsApp
+          </a>
+          <a
+            href={`tel:${PHONE}`}
+            className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-charcoal)] px-4 py-2.5 text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+          >
+            <Phone size={14} />
+            Appeler
+          </a>
+        </div>
+      </div>
 
       {state.status === "error" && !state.fieldErrors && (
         <div className="mt-6 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)]">
@@ -93,16 +122,13 @@ export default function ContactForm({
           />
         </Field>
 
-        <Field label="Votre projet" required error={errors.project?.[0]}>
+        <Field label="Votre projet (facultatif)" error={errors.project?.[0]}>
           <select
             name="project"
             className="field"
-            required
             defaultValue={defaultProject ?? ""}
           >
-            <option value="" disabled>
-              Choisir…
-            </option>
+            <option value="">— Je préfère en parler de vive voix —</option>
             {PROJECT_OPTIONS.map((label) => (
               <option key={label} value={label}>
                 {label}

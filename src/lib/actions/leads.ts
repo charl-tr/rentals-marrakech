@@ -101,10 +101,11 @@ export async function submitLead(
     ? await getPropertyBySlug(input.propertySlug)
     : null;
 
-  // 3. Intent canonique depuis le libellé "project"
+  // 3. Intent canonique depuis le libellé "project" (facultatif → défaut)
+  const project = input.project ?? "Prise de contact";
   const intent: LeadIntent =
-    INTENT_FROM_PROJECT_LABEL[input.project] ??
-    (input.project.toLowerCase().includes("vendre") ? "vendre" : "autre");
+    INTENT_FROM_PROJECT_LABEL[project] ??
+    (project.toLowerCase().includes("vendre") ? "vendre" : "autre");
 
   // 4. SLA
   const slaTier = computeSlaTier({
@@ -145,7 +146,7 @@ export async function submitLead(
     sla_due_at: slaDueAt.toISOString(),
     portal_token: portalToken,
     meta: {
-      project_label: input.project,
+      project_label: project,
     },
   });
 
@@ -173,7 +174,7 @@ export async function submitLead(
     clientEmail: input.email,
     clientPhone: input.phone ?? null,
     message: input.message ?? null,
-    project: input.project,
+    project,
     channel: input.channel,
     slaTier,
     advisorSlug,
