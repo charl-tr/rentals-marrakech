@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState, useEffect } from "react";
 import {
+  ArrowLeft,
   ArrowRight,
   Check,
-  ChevronDown,
   MessageCircle,
   Phone,
   ShieldCheck,
@@ -18,47 +18,93 @@ const PHONE = "+212660629444";
 const PHONE_DISPLAY = "+212 660 62 94 44";
 const WHATSAPP = "https://wa.me/212660629444";
 
-function Field({
-  label,
-  hint,
-  required,
-  error,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  required?: boolean;
-  error?: string[];
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="flex items-baseline gap-2 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-        {label}
-        {required && <span className="text-[var(--color-accent)]">*</span>}
-        {hint && (
-          <span className="tracking-normal normal-case text-[var(--color-ink-hint)]">
-            {hint}
-          </span>
-        )}
-      </span>
-      <div className="mt-2">{children}</div>
-      {error && error.length > 0 && (
-        <p className="mt-1 text-xs text-[var(--color-accent-deep)]">{error[0]}</p>
-      )}
-    </label>
-  );
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type Values = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+};
 
 export default function DepositForm() {
   const [state, formAction, isPending] = useActionState<
     DepositLeadState,
     FormData
   >(submitDepositLead, { status: "idle" });
-  const [showDetails, setShowDetails] = useState(false);
 
-  const errors = state.status === "error" ? state.fieldErrors : undefined;
+  const [step, setStep] = useState(0);
+  const [values, setValues] = useState<Values>({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+  });
+  const [error, setError] = useState<string | null>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
 
+  // Focus le premier champ à chaque changement d'étape
+  useEffect(() => {
+    firstInputRef.current?.focus();
+  }, [step]);
+
+  const set = (patch: Partial<Values>) => {
+    setValues((v) => ({ ...v, ...patch }));
+    setError(null);
+  };
+
+  // ── Définition des étapes ─────────────────────────────────────────
+  const STEPS = [
+    {
+      key: "name",
+      question: "Comment vous appelez-vous ?",
+      hint: "Pour savoir qui rappeler.",
+      valid: () => values.firstName.trim() !== "" && values.lastName.trim() !== "",
+      invalidMsg: "Indiquez votre prénom et votre nom.",
+    },
+    {
+      key: "phone",
+      question: "Votre numéro de téléphone ?",
+      hint: "Un conseiller vous rappelle dans la journée.",
+      valid: () => values.phone.trim().length >= 6,
+      invalidMsg: "Indiquez un numéro valide.",
+    },
+    {
+      key: "email",
+      question: "Et votre e-mail ?",
+      hint: "Pour vous envoyer l'estimation écrite.",
+      valid: () => EMAIL_RE.test(values.email.trim()),
+      invalidMsg: "Indiquez une adresse e-mail valide.",
+    },
+  ];
+
+  const total = STEPS.length;
+  const current = STEPS[step];
+  const isLast = step === total - 1;
+
+  const goNext = () => {
+    if (!current.valid()) {
+      setError(current.invalidMsg);
+      return;
+    }
+    setError(null);
+    setStep((s) => Math.min(total - 1, s + 1));
+  };
+
+  const goBack = () => {
+    setError(null);
+    setStep((s) => Math.max(0, s - 1));
+  };
+
+  // Entrée = avancer (sauf dernière étape, où le formulaire se soumet)
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !isLast) {
+      e.preventDefault();
+      goNext();
+    }
+  };
+
+  // ── Succès ────────────────────────────────────────────────────────
   if (state.status === "success") {
     return (
       <div className="rounded-[16px] border border-[var(--color-border)] bg-white p-10 text-center shadow-[var(--shadow-card)]">
@@ -97,7 +143,7 @@ export default function DepositForm() {
 
   return (
     <div className="space-y-4">
-      {/* Rappel immédiat — sans passer par le formulaire */}
+      {/* Contact immédiat — sans passer par le formulaire */}
       <div className="flex flex-col gap-3 rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--color-charcoal)]">
           <span className="font-medium">Pressé·e ?</span> Écrivez-nous, on
@@ -127,151 +173,125 @@ export default function DepositForm() {
         action={formAction}
         className="rounded-[16px] border border-[var(--color-border)] bg-white p-8 shadow-[var(--shadow-card)] md:p-10"
       >
-        <div>
-          <h3 className="font-serif text-2xl text-[var(--color-charcoal)]">
-            Être rappelé·e sous 24h.
-          </h3>
-          <p className="mt-2 text-sm text-[var(--color-stone)]">
-            Vos coordonnées suffisent pour démarrer — un conseiller vous rappelle
-            dans la journée.
-          </p>
-        </div>
+        {/* Valeurs complètes portées en caché → FormData toujours complet */}
+        <input type="hidden" name="firstName" value={values.firstName} />
+        <input type="hidden" name="lastName" value={values.lastName} />
+        <input type="hidden" name="phone" value={values.phone} />
+        <input type="hidden" name="email" value={values.email} />
 
-        {/* ── Essentiel ─────────────────────────────────────────── */}
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <Field label="Prénom" required error={errors?.firstName}>
-            <input name="firstName" className="field" autoComplete="given-name" required />
-          </Field>
-          <Field label="Nom" required error={errors?.lastName}>
-            <input name="lastName" className="field" autoComplete="family-name" required />
-          </Field>
-          <Field label="Téléphone" required error={errors?.phone}>
-            <input
-              type="tel"
-              name="phone"
-              className="field"
-              autoComplete="tel"
-              placeholder="+33 ou +212"
-              required
-            />
-          </Field>
-          <Field label="E-mail" required error={errors?.email}>
-            <input type="email" name="email" className="field" autoComplete="email" required />
-          </Field>
-        </div>
-
-        {/* ── Détails du bien — dépliant fluide, facultatif ──────── */}
-        <button
-          type="button"
-          onClick={() => setShowDetails((v) => !v)}
-          aria-expanded={showDetails}
-          className="mt-6 flex w-full items-center justify-between rounded-[10px] border border-dashed border-[var(--color-border-strong)] px-4 py-3 text-left text-[13px] text-[var(--color-ink-soft)] transition-colors hover:border-[var(--color-charcoal)]"
-        >
-          <span>
-            Ajouter des détails sur le bien{" "}
-            <span className="text-[var(--color-stone)]">
-              — facultatif, ça accélère l&apos;estimation
-            </span>
+        {/* Progression */}
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
+            Étape {step + 1} sur {total}
           </span>
-          <ChevronDown
-            size={16}
-            className={`flex-shrink-0 text-[var(--color-stone)] transition-transform duration-300 ${
-              showDetails ? "rotate-180" : ""
-            }`}
+          <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-accent)]">
+            Rappel sous 24h
+          </span>
+        </div>
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
+          <div
+            className="h-full rounded-full bg-[var(--color-accent)] transition-[width] duration-500 ease-out"
+            style={{ width: `${((step + 1) / total) * 100}%` }}
           />
-        </button>
-
-        <div
-          className={`grid transition-all duration-500 ease-out ${
-            showDetails
-              ? "mt-6 grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0"
-          }`}
-        >
-          <div className="overflow-hidden">
-            <div className="space-y-6">
-              <Field label="Type de bien" hint="(facultatif)">
-                <select name="type" className="field" defaultValue="">
-                  <option value="">— Indifférent —</option>
-                  <option value="riad-renove">Riad rénové</option>
-                  <option value="riad-a-renover">Riad à rénover</option>
-                  <option value="villa">Villa</option>
-                  <option value="appartement">Appartement</option>
-                  <option value="maison-hotes">
-                    Maison d&apos;hôtes en activité
-                  </option>
-                  <option value="terrain">Terrain</option>
-                  <option value="programme-neuf">Programme neuf</option>
-                </select>
-              </Field>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                <Field label="Ville" hint="(facultatif)">
-                  <select name="city" className="field" defaultValue="">
-                    <option value="">— Indifférent —</option>
-                    <option value="Marrakech">Marrakech</option>
-                    <option value="Essaouira">Essaouira</option>
-                    <option value="Autre">Autre</option>
-                  </select>
-                </Field>
-                <Field label="Quartier ou route" hint="(facultatif)">
-                  <input
-                    name="neighborhood"
-                    className="field"
-                    placeholder="Palmeraie, Médina, Diabat…"
-                  />
-                </Field>
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-3">
-                <Field label="Surface (m²)" hint="(facultatif)">
-                  <input type="number" name="surface" className="field" />
-                </Field>
-                <Field label="Terrain (m²)" hint="(facultatif)">
-                  <input type="number" name="landSurface" className="field" />
-                </Field>
-                <Field label="Chambres" hint="(facultatif)">
-                  <input type="number" name="bedrooms" className="field" />
-                </Field>
-              </div>
-
-              <Field label="Particularités" hint="(facultatif)">
-                <textarea
-                  name="description"
-                  rows={3}
-                  className="field resize-none"
-                  placeholder="Restauration récente, vue exceptionnelle, dossier juridique en règle…"
-                />
-              </Field>
-
-              <Field label="Calendrier envisagé" hint="(facultatif)">
-                <select name="timeline" className="field" defaultValue="">
-                  <option value="">Pas pressé·e</option>
-                  <option value="3-mois">Sous 3 mois</option>
-                  <option value="6-mois">Sous 6 mois</option>
-                  <option value="annee">Cette année</option>
-                </select>
-              </Field>
-            </div>
-          </div>
         </div>
 
-        {state.status === "error" && (
-          <p className="mt-6 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-[var(--color-bg-alt)] px-4 py-2.5 text-sm text-[var(--color-charcoal)]">
-            {state.message}
+        {/* Étape courante — ré-animée à chaque changement */}
+        <div key={step} className="mt-8 animate-scale-in">
+          <h3 className="font-serif text-2xl leading-tight text-[var(--color-charcoal)]">
+            {current.question}
+          </h3>
+          <p className="mt-1.5 text-sm text-[var(--color-stone)]">
+            {current.hint}
           </p>
-        )}
 
-        <button
-          type="submit"
-          disabled={isPending}
-          className="btn-gold mt-8 w-full justify-center disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isPending ? "Envoi…" : "Être rappelé·e"}
-          {!isPending && <ArrowRight size={14} />}
-        </button>
+          <div className="mt-6">
+            {current.key === "name" && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <input
+                  ref={firstInputRef}
+                  className="field"
+                  placeholder="Prénom"
+                  autoComplete="given-name"
+                  value={values.firstName}
+                  onChange={(e) => set({ firstName: e.target.value })}
+                  onKeyDown={onKeyDown}
+                />
+                <input
+                  className="field"
+                  placeholder="Nom"
+                  autoComplete="family-name"
+                  value={values.lastName}
+                  onChange={(e) => set({ lastName: e.target.value })}
+                  onKeyDown={onKeyDown}
+                />
+              </div>
+            )}
+            {current.key === "phone" && (
+              <input
+                ref={firstInputRef}
+                type="tel"
+                className="field"
+                placeholder="+33 ou +212…"
+                autoComplete="tel"
+                value={values.phone}
+                onChange={(e) => set({ phone: e.target.value })}
+                onKeyDown={onKeyDown}
+              />
+            )}
+            {current.key === "email" && (
+              <input
+                ref={firstInputRef}
+                type="email"
+                className="field"
+                placeholder="vous@exemple.com"
+                autoComplete="email"
+                value={values.email}
+                onChange={(e) => set({ email: e.target.value })}
+                onKeyDown={onKeyDown}
+              />
+            )}
+          </div>
 
-        <p className="mt-4 flex items-center justify-center gap-2 text-[11px] text-[var(--color-stone)]">
+          {error && (
+            <p className="mt-3 text-xs text-[var(--color-accent-deep)]">{error}</p>
+          )}
+          {state.status === "error" && (
+            <p className="mt-3 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-[var(--color-bg-alt)] px-4 py-2.5 text-sm text-[var(--color-charcoal)]">
+              {state.message}
+            </p>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="mt-8 flex items-center gap-3">
+          {step > 0 && (
+            <button type="button" onClick={goBack} className="btn-back">
+              <ArrowLeft size={12} />
+              Retour
+            </button>
+          )}
+          {!isLast ? (
+            <button
+              type="button"
+              onClick={goNext}
+              className="btn-gold ml-auto"
+            >
+              Continuer
+              <ArrowRight size={14} />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={isPending || !current.valid()}
+              className="btn-gold ml-auto disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isPending ? "Envoi…" : "Être rappelé·e"}
+              {!isPending && <ArrowRight size={14} />}
+            </button>
+          )}
+        </div>
+
+        <p className="mt-6 flex items-center justify-center gap-2 text-[11px] text-[var(--color-stone)]">
           <ShieldCheck size={13} className="text-[var(--color-stone)]" />
           Confidentiel. Aucun partage, aucun acquéreur contacté sans votre accord.
         </p>

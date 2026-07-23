@@ -71,8 +71,8 @@ export default function DeposerPage() {
                 Moins d&apos;une minute pour démarrer.
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-sm text-[var(--color-stone)]">
-                Vos coordonnées suffisent. Les détails du bien sont facultatifs —
-                un conseiller vous rappelle dans la journée.
+                Trois questions rapides — un conseiller vous rappelle dans la
+                journée. On parle du bien ensemble, au téléphone.
               </p>
             </div>
 
