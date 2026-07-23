@@ -964,6 +964,38 @@ export async function getLeadByPortalToken(token: string): Promise<AdminLead | n
   return rowToAdminLead(data as LeadRow);
 }
 
+/**
+ * Sélection auto-sauvegardée (favoris / comparateur) rattachée à un
+ * portal_token. Alimente /ma-selection/[token] : restaure la sélection sur
+ * un nouvel appareil, sans compte ni mot de passe.
+ *
+ * Retourne null si le token n'existe pas OU s'il ne porte pas de sélection
+ * (ex. un lead de contact classique) → empêche d'exposer un lead normal via
+ * la route de restauration.
+ */
+export async function getSavedSelectionByToken(token: string): Promise<
+  { kind: "favoris" | "comparateur"; slugs: string[] } | null
+> {
+  const { data, error } = await supabaseAdmin
+    .from("leads")
+    .select("meta")
+    .eq("portal_token", token)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+
+  const meta = (data.meta ?? {}) as Record<string, unknown>;
+  const slugs = Array.isArray(meta.saved_slugs)
+    ? (meta.saved_slugs as unknown[]).filter(
+        (s): s is string => typeof s === "string"
+      )
+    : [];
+  if (slugs.length === 0) return null;
+
+  const kind = meta.saved_kind === "comparateur" ? "comparateur" : "favoris";
+  return { kind, slugs };
+}
+
 interface ShortlistRow {
   id: string;
   lead_id: string;

@@ -10,6 +10,7 @@ Versionning : [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- Espace sans mot de passe (« Ma sélection ») : la capture email des favoris/comparateur renvoie désormais un lien magique (`/ma-selection/[token]`) envoyé par email, qui restaure la sélection sur n'importe quel appareil — sans compte. Réutilise le `portal_token` existant (aucune migration). Colmate la fuite « favoris perdus entre appareils ».
 - Documentation foundation : `README.md` refresh, `CONTRIBUTING.md`, `ROADMAP.md`, `CHANGELOG.md`.
 - ADR system : `docs/adr/0000-template.md`, `docs/adr/0001-vertical-slice-architecture.md`, `docs/adr/0002-saas-multi-tenant-pivot.md`.
 - Runbook system : `docs/runbooks/supabase-paused.md`.

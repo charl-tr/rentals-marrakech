@@ -44,12 +44,14 @@ export default function SaveSelectionBanner({
 
   if (state.status === "success") {
     return (
-      <div className="mb-8 flex items-center gap-3 rounded-[14px] border border-[var(--color-success)]/25 bg-[var(--color-success-soft)] px-5 py-4">
-        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-success)] text-white">
+      <div className="mb-8 flex items-start gap-3 rounded-[14px] border border-[var(--color-success)]/25 bg-[var(--color-success-soft)] px-5 py-4">
+        <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-success)] text-white">
           <Check size={15} strokeWidth={2.5} />
         </div>
-        <p className="text-sm text-[var(--color-charcoal)]">
-          C&apos;est noté — un conseiller pourra vous recontacter avec cette sélection.
+        <p className="text-sm leading-relaxed text-[var(--color-charcoal)]">
+          <span className="font-medium">Sélection sauvegardée.</span> On vient de
+          vous envoyer un lien par email pour la retrouver sur tous vos appareils —
+          et un conseiller peut vous la recontextualiser si besoin.
         </p>
       </div>
     );
