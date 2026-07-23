@@ -9,6 +9,9 @@ Versionning : [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- Formulaire de contact recentré sur le rappel : le téléphone devient **requis** (comme le formulaire vendeur) et passe en premier, l'étape est reformulée « Comment vous rappeler ? ». Aligne la donnée capturée sur la promesse « on vous rappelle » et rend le speed-to-lead réellement actionnable (fini les leads non-rappelables).
+
 ### Added
 - Anti-spam sans friction sur tous les formulaires publics (contact, dépôt vendeur, capture de sélection) : honeypot off-screen (nom hors autofill) + piège temporel + heuristique de contenu (`anti-spam.ts`, `FormGuard`). Un bot détecté reçoit un « succès » silencieux sans insertion → l'admin n'est plus pollué. Zéro captcha, zéro friction humaine. (Ne couvre pas un attaquant ciblé déterminé — tier suivant : rate-limit IP / captcha invisible.)
 - Espace sans mot de passe (« Ma sélection ») : la capture email des favoris/comparateur renvoie désormais un lien magique (`/ma-selection/[token]`) envoyé par email, qui restaure la sélection sur n'importe quel appareil — sans compte. Réutilise le `portal_token` existant (aucune migration). Colmate la fuite « favoris perdus entre appareils ».

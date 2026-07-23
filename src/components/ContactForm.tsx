@@ -155,10 +155,12 @@ export default function ContactForm({
     },
     {
       key: "contact",
-      question: "Comment vous joindre ?",
-      hint: "Réponse sous 24 heures ouvrées.",
-      valid: () => EMAIL_RE.test(values.email.trim()),
-      invalidMsg: "Indiquez une adresse e-mail valide.",
+      question: "Comment vous rappeler ?",
+      hint: "Un conseiller vous rappelle sous 24 h — le plus rapide pour avancer.",
+      valid: () =>
+        values.phone.replace(/\D/g, "").length >= 8 &&
+        EMAIL_RE.test(values.email.trim()),
+      invalidMsg: "Indiquez un téléphone et un e-mail valides.",
     },
     {
       key: "message",
@@ -288,18 +290,18 @@ export default function ContactForm({
 
             {current.key === "contact" && (
               <div className="space-y-4">
-                <EmailField
-                  ref={firstInputRef}
-                  value={values.email}
-                  onChange={(v) => set({ email: v })}
-                  onKeyDown={onKeyDown}
-                  placeholder="E-mail *"
-                />
                 <PhoneField
+                  ref={firstInputRef}
                   value={values.phone}
                   onChange={(v) => set({ phone: v })}
                   onKeyDown={onKeyDown}
-                  placeholder="Téléphone (facultatif)"
+                  placeholder="Téléphone — pour être rappelé·e"
+                />
+                <EmailField
+                  value={values.email}
+                  onChange={(v) => set({ email: v })}
+                  onKeyDown={onKeyDown}
+                  placeholder="E-mail — pour l'écrit et votre espace"
                 />
               </div>
             )}
