@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { ArrowRight, Check, Mail, RotateCcw } from "lucide-react";
+import { ArrowRight, Check, ExternalLink, Mail, RotateCcw } from "lucide-react";
 import { sendMagicLink, type LoginActionState } from "@/lib/actions/auth";
 
 const initialState: LoginActionState = { status: "idle" };
@@ -13,6 +13,38 @@ function maskEmail(email: string): string {
 
   const visible = localPart.slice(0, Math.min(2, localPart.length));
   return `${visible}${"•".repeat(Math.max(3, localPart.length - visible.length))}@${domain}`;
+}
+
+function getMailboxLink(email: string): { label: string; href: string } | null {
+  const domain = email.split("@")[1]?.toLowerCase();
+
+  if (domain === "gmail.com" || domain === "googlemail.com") {
+    return {
+      label: "Ouvrir Gmail",
+      href: "https://mail.google.com/mail/u/0/#inbox",
+    };
+  }
+
+  if (["outlook.com", "hotmail.com", "hotmail.fr", "live.com", "live.fr", "msn.com"].includes(domain)) {
+    return {
+      label: "Ouvrir Outlook",
+      href: "https://outlook.live.com/mail/0/inbox",
+    };
+  }
+
+  if (["icloud.com", "me.com", "mac.com"].includes(domain)) {
+    return { label: "Ouvrir iCloud Mail", href: "https://www.icloud.com/mail/" };
+  }
+
+  if (["yahoo.com", "yahoo.fr"].includes(domain)) {
+    return { label: "Ouvrir Yahoo Mail", href: "https://mail.yahoo.com/" };
+  }
+
+  if (["proton.me", "protonmail.com", "protonmail.ch"].includes(domain)) {
+    return { label: "Ouvrir Proton Mail", href: "https://mail.proton.me/u/0/inbox" };
+  }
+
+  return null;
 }
 
 export default function LoginForm({ next }: { next: string }) {
@@ -37,6 +69,8 @@ function LoginAttempt({
   const [state, action] = useActionState(sendMagicLink, initialState);
 
   if (state.status === "sent") {
+    const mailbox = getMailboxLink(state.email);
+
     return (
       <div className="mt-8" role="status" aria-live="polite">
         <div className="rounded-[14px] border border-[var(--color-success)]/25 bg-[var(--color-success-soft)] p-5 sm:p-6">
@@ -62,6 +96,18 @@ function LoginAttempt({
             Pensez à vérifier les courriers indésirables. Le lien est à usage
             unique : ouvrez-le dans le navigateur où vous souhaitez travailler.
           </div>
+
+          {mailbox && (
+            <a
+              href={mailbox.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-white px-4 text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-terracotta)]"
+            >
+              {mailbox.label}
+              <ExternalLink size={14} aria-hidden="true" />
+            </a>
+          )}
         </div>
 
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
