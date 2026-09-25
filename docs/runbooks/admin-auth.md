@@ -17,7 +17,7 @@ Ajouter un advisor à la table autorise donc le premier accès. Il n'est pas né
 
 ## Ordre de déploiement
 
-1. Appliquer `0011_restore_public_content_rls.sql` puis `0012_admin_identity_and_mfa.sql` dans Supabase.
+1. Appliquer `0011_restore_public_content_rls.sql`, `0012_admin_identity_and_mfa.sql`, puis `0013_sensitive_data_hardening.sql` dans Supabase.
 2. Vérifier que `public.advisor_auth` contient la liaison de l'utilisateur existant.
 3. Déployer le code applicatif.
 4. Tester le parcours dans une fenêtre privée avant de fermer la session Supabase Dashboard.

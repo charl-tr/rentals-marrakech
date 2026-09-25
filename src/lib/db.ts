@@ -47,10 +47,10 @@ interface PropertyRow {
   pool: boolean;
   featured: boolean;
   published: boolean;
-  owner_name: string | null;
-  owner_phone: string | null;
-  owner_email: string | null;
-  owner_notes: string | null;
+  owner_name?: string | null;
+  owner_phone?: string | null;
+  owner_email?: string | null;
+  owner_notes?: string | null;
   short_description: string | null;
   description: string | null;
   story: Property["story"] | null;
@@ -123,7 +123,15 @@ function rowToProperty(row: PropertyRow, neighborhoodLabel: string | null): Prop
 // Properties
 // ════════════════════════════════════════════════════════════════════
 
-const PROPERTY_SELECT = "*, neighborhood:neighborhoods(name)";
+const PROPERTY_PUBLIC_SELECT = `
+  slug, reference, title, tagline, type, listing, status, exclusivity,
+  city, neighborhood_slug, price_eur, price_mad, price_unit, bedrooms,
+  bathrooms, surface, land_surface, year_built, pool, featured, published,
+  short_description, description, story, features, images, walking_distances,
+  coordinates, advisor_slug, created_at, updated_at,
+  neighborhood:neighborhoods(name)
+`;
+const PROPERTY_ADMIN_SELECT = "*, neighborhood:neighborhoods(name)";
 
 type PropertyWithNeigh = PropertyRow & {
   neighborhood: { name: string } | null;
@@ -132,12 +140,12 @@ type PropertyWithNeigh = PropertyRow & {
 export const getAllProperties = cache(async (): Promise<Property[]> => {
   const { data, error } = await supabase
     .from("properties")
-    .select(PROPERTY_SELECT)
+    .select(PROPERTY_PUBLIC_SELECT)
     .eq("published", true)
     .order("featured", { ascending: false })
     .order("price_eur", { ascending: false });
   if (error) throw error;
-  return (data as PropertyWithNeigh[]).map((r) =>
+  return (data as unknown as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
 });
@@ -145,13 +153,13 @@ export const getAllProperties = cache(async (): Promise<Property[]> => {
 export const getFeaturedProperties = cache(async (limit = 3): Promise<Property[]> => {
   const { data, error } = await supabase
     .from("properties")
-    .select(PROPERTY_SELECT)
+    .select(PROPERTY_PUBLIC_SELECT)
     .eq("published", true)
     .eq("featured", true)
     .order("price_eur", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data as PropertyWithNeigh[]).map((r) =>
+  return (data as unknown as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
 });
@@ -159,13 +167,13 @@ export const getFeaturedProperties = cache(async (limit = 3): Promise<Property[]
 export const getPropertyBySlug = cache(async (slug: string): Promise<Property | null> => {
   const { data, error } = await supabase
     .from("properties")
-    .select(PROPERTY_SELECT)
+    .select(PROPERTY_PUBLIC_SELECT)
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
-  const row = data as PropertyWithNeigh;
+  const row = data as unknown as PropertyWithNeigh;
   return rowToProperty(row, row.neighborhood?.name ?? null);
 });
 
@@ -174,11 +182,11 @@ export async function getPropertiesBySlugs(slugs: string[]): Promise<Map<string,
   if (!slugs.length) return new Map();
   const { data, error } = await supabase
     .from("properties")
-    .select(PROPERTY_SELECT)
+    .select(PROPERTY_PUBLIC_SELECT)
     .in("slug", slugs);
   if (error) throw error;
   const map = new Map<string, Property>();
-  for (const row of (data as PropertyWithNeigh[])) {
+  for (const row of data as unknown as PropertyWithNeigh[]) {
     map.set(row.slug, rowToProperty(row, row.neighborhood?.name ?? null));
   }
   return map;
@@ -193,7 +201,7 @@ export const getAllPropertiesAdmin = cache(
     async (): Promise<Property[]> => {
       const { data, error } = await supabaseAdmin
         .from("properties")
-        .select(PROPERTY_SELECT)
+        .select(PROPERTY_ADMIN_SELECT)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data as PropertyWithNeigh[]).map((r) =>
@@ -248,7 +256,7 @@ export async function getAllPropertySlugs(): Promise<
 export async function getFirstEssaouiraProperty(): Promise<Property | null> {
   const { data, error } = await supabase
     .from("properties")
-    .select(PROPERTY_SELECT)
+    .select(PROPERTY_PUBLIC_SELECT)
     .eq("published", true)
     .eq("city", "Essaouira")
     .order("featured", { ascending: false })
@@ -257,7 +265,7 @@ export async function getFirstEssaouiraProperty(): Promise<Property | null> {
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
-  const row = data as PropertyWithNeigh;
+  const row = data as unknown as PropertyWithNeigh;
   return rowToProperty(row, row.neighborhood?.name ?? null);
 }
 
@@ -268,13 +276,13 @@ export const getSimilarProperties = cache(async (
   // Stratégie : même type OU même quartier, exclure le bien actuel
   const { data, error } = await supabase
     .from("properties")
-    .select(PROPERTY_SELECT)
+    .select(PROPERTY_PUBLIC_SELECT)
     .eq("published", true)
     .neq("slug", current.slug)
     .or(`type.eq.${current.type},neighborhood_slug.eq.${current.neighborhoodSlug}`)
     .limit(limit);
   if (error) throw error;
-  return (data as PropertyWithNeigh[]).map((r) =>
+  return (data as unknown as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
 });
@@ -794,7 +802,7 @@ export async function getPropertiesByAdvisor(
 ): Promise<Property[]> {
   const { data, error } = await supabaseAdmin
     .from("properties")
-    .select(PROPERTY_SELECT)
+    .select(PROPERTY_ADMIN_SELECT)
     .eq("advisor_slug", advisorSlug)
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -890,7 +898,7 @@ export async function getPropertyEvents(
 }
 
 // ════════════════════════════════════════════════════════════════════
-// Portail vendeur — lookup par owner_token (anon, pas d'auth)
+// Portail vendeur — lookup serveur par owner_token (service_role, jamais anon)
 // ════════════════════════════════════════════════════════════════════
 
 export interface SellerPortalData {
@@ -908,7 +916,7 @@ export async function getMandateByOwnerToken(
 ): Promise<SellerPortalData | null> {
   if (!UUID_RE.test(token)) return null;
 
-  const { data: mandateData, error: mandateErr } = await supabase
+  const { data: mandateData, error: mandateErr } = await supabaseAdmin
     .from("mandates")
     .select("*")
     .eq("owner_token", token)
@@ -920,12 +928,12 @@ export async function getMandateByOwnerToken(
 
   // Paralléliser les 4 fetches indépendants
   const [propResult, eventsResult, advisor, mStats] = await Promise.all([
-    supabase
+    supabaseAdmin
       .from("properties")
-      .select(PROPERTY_SELECT)
+      .select(PROPERTY_PUBLIC_SELECT)
       .eq("slug", mandate.propertySlug)
       .maybeSingle(),
-    supabase
+    supabaseAdmin
       .from("property_events")
       .select("*")
       .eq("property_slug", mandate.propertySlug)
@@ -940,7 +948,7 @@ export async function getMandateByOwnerToken(
   if (!propResult.data) return null;
   if (eventsResult.error) throw eventsResult.error;
 
-  const pw = propResult.data as PropertyWithNeigh;
+  const pw = propResult.data as unknown as PropertyWithNeigh;
   const property = rowToProperty(pw, pw.neighborhood?.name ?? null);
   const events = (eventsResult.data as PropertyEventRow[]).map(rowToPropertyEvent);
   const neighborhoodStats =
