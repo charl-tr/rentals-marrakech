@@ -145,7 +145,10 @@ export async function updateSavedSelection(
   // Garde-fou : on ne met à jour que les leads issus d'une sélection sauvegardée.
   if (data.channel !== "favorites_save") return { ok: false };
 
-  const meta = { ...((data.meta as Record<string, unknown>) ?? {}), saved_slugs: clean };
+  const meta: Record<string, unknown> = {
+    ...((data.meta as Record<string, unknown>) ?? {}),
+    saved_slugs: clean,
+  };
   const kindLabel =
     meta.saved_kind === "comparateur" ? "biens en comparateur" : "biens en favoris";
 

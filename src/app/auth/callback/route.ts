@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSafeAdminPath } from "@/lib/auth-urls";
 
 // ════════════════════════════════════════════════════════════════════
 // Callback post magic-link — échange le code contre une session cookie.
@@ -9,13 +11,31 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/admin";
+  const next = getSafeAdminPath(searchParams.get("next"));
 
   if (code) {
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const { data: advisor } = user?.email
+        ? await supabaseAdmin
+            .from("advisors")
+            .select("slug")
+            .ilike("email", user.email)
+            .eq("active", true)
+            .maybeSingle()
+        : { data: null };
+
+      if (advisor) {
+        return NextResponse.redirect(new URL(next, origin));
+      }
+
+      await supabase.auth.signOut();
+      return NextResponse.redirect(`${origin}/admin/login?error=access_denied`);
     }
     console.error("[auth/callback] exchange error:", error.message);
   }

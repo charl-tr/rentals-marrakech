@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, LockKeyhole, Mail, MapPin, Phone } from "lucide-react";
 
 const InstagramIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -155,6 +155,12 @@ export default function Footer() {
               <li><Link href="/politique-confidentialite" className="transition-colors hover:text-white">Confidentialité</Link></li>
               <li><Link href="/cookies" className="transition-colors hover:text-white">Cookies</Link></li>
               <li><Link href="/cgu" className="transition-colors hover:text-white">CGU</Link></li>
+              <li>
+                <Link href="/admin" className="inline-flex items-center gap-2 transition-colors hover:text-white">
+                  <LockKeyhole size={13} aria-hidden="true" />
+                  Espace équipe
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

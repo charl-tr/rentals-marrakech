@@ -66,6 +66,16 @@ npx tsx scripts/seed-leads.ts            # seed 50 leads démo
 
 ---
 
+## Accès à l'administration
+
+L'espace équipe est disponible sur `/admin`. L'authentification utilise un lien personnel envoyé par Supabase : pas de mot de passe à gérer.
+
+Un membre peut se connecter si son email existe dans `public.advisors` avec `active = true`. Son utilisateur Supabase Auth est créé automatiquement au premier accès, puis réutilisé pour les connexions suivantes.
+
+La configuration des Redirect URLs, des emails brandés et du SMTP est documentée dans [`docs/runbooks/admin-auth.md`](./docs/runbooks/admin-auth.md). Cette configuration dashboard est obligatoire en plus des variables Vercel.
+
+---
+
 ## Déploiement
 
 Vercel **redéploie automatiquement** à chaque push :

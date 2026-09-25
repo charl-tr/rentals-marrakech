@@ -31,7 +31,7 @@ export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
   const { data: advisor } = await supabaseAdmin
     .from("advisors")
     .select("slug, name, role, access_role, active")
-    .eq("email", user.email)
+    .ilike("email", user.email)
     .eq("active", true)
     .maybeSingle();
 

@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getAuthOrigin, getSafeAdminPath } from "@/lib/auth-urls";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -17,7 +18,7 @@ export async function sendMagicLink(
   const emailRaw = formData.get("email");
   const nextRaw = formData.get("next");
   const email = typeof emailRaw === "string" ? emailRaw.trim().toLowerCase() : "";
-  const next = typeof nextRaw === "string" && nextRaw.startsWith("/") ? nextRaw : "/admin";
+  const next = getSafeAdminPath(typeof nextRaw === "string" ? nextRaw : null);
 
   if (!email || !email.includes("@")) {
     return { status: "error", message: "Email invalide." };
@@ -27,7 +28,7 @@ export async function sendMagicLink(
   const { data: advisor } = await supabaseAdmin
     .from("advisors")
     .select("slug")
-    .eq("email", email)
+    .ilike("email", email)
     .eq("active", true)
     .maybeSingle();
 
@@ -42,9 +43,10 @@ export async function sendMagicLink(
 
   const supabase = await createSupabaseServerClient();
   const h = await headers();
-  const origin =
+  const requestOrigin =
     h.get("origin") ??
-    (h.get("host") ? `https://${h.get("host")}` : "http://localhost:3000");
+    (h.get("host") ? `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}` : null);
+  const origin = getAuthOrigin(requestOrigin);
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
@@ -56,7 +58,11 @@ export async function sendMagicLink(
 
   if (error) {
     console.error("[sendMagicLink] error:", error.message);
-    return { status: "error", message: "Échec de l'envoi du lien. Réessayez." };
+    return {
+      status: "error",
+      message:
+        "Le lien n'a pas pu être envoyé. Patientez un instant puis réessayez.",
+    };
   }
 
   return { status: "sent", email };
