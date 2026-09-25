@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getSafeAdminPath } from "@/lib/auth-urls";
+import { linkAdvisorIdentity } from "@/lib/auth";
 
 // ════════════════════════════════════════════════════════════════════
 // Callback post magic-link — échange le code contre une session cookie.
@@ -21,17 +21,15 @@ export async function GET(request: NextRequest) {
         data: { user },
       } = await supabase.auth.getUser();
 
-      const { data: advisor } = user?.email
-        ? await supabaseAdmin
-            .from("advisors")
-            .select("slug")
-            .ilike("email", user.email)
-            .eq("active", true)
-            .maybeSingle()
-        : { data: null };
+      const isLinked =
+        user?.id && user.email
+          ? await linkAdvisorIdentity(user.id, user.email)
+          : false;
 
-      if (advisor) {
-        return NextResponse.redirect(new URL(next, origin));
+      if (isLinked) {
+        const mfaUrl = new URL("/admin/mfa", origin);
+        mfaUrl.searchParams.set("next", next);
+        return NextResponse.redirect(mfaUrl);
       }
 
       await supabase.auth.signOut();

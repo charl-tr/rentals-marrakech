@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { LogOut } from "lucide-react";
+import Link from "next/link";
+import { LogOut, ShieldCheck } from "lucide-react";
 import { signOut } from "@/lib/actions/auth";
 
 export default function UserWidget({
@@ -71,9 +72,19 @@ export default function UserWidget({
               {role}
             </div>
           </div>
+          <Link
+            href="/admin/securite"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className="flex w-full items-center gap-2.5 border-b border-[var(--color-beige-warm)] px-4 py-3 text-sm text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-cream)] hover:text-[var(--color-terracotta)]"
+          >
+            <ShieldCheck size={14} />
+            Sécurité du compte
+          </Link>
           <form action={signOut}>
             <button
               type="submit"
+              role="menuitem"
               className="flex w-full items-center gap-2.5 px-4 py-3 text-sm text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-cream)] hover:text-[var(--color-terracotta)]"
             >
               <LogOut size={14} />

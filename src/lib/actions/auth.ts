@@ -33,12 +33,8 @@ export async function sendMagicLink(
     .maybeSingle();
 
   if (!advisor) {
-    // Message générique pour ne pas divulguer qui est admin
-    return {
-      status: "error",
-      message:
-        "Si cet email est autorisé, un lien de connexion va arriver. Vérifiez votre boîte.",
-    };
+    // Même résultat visuel qu'une adresse valide : aucune énumération d'emails.
+    return { status: "sent", email };
   }
 
   const supabase = await createSupabaseServerClient();
