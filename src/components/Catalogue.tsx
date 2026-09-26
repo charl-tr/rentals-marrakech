@@ -42,7 +42,9 @@ const BUDGET_LOCATION = [
   { key: "high", label: "Plus de 10 000 € / mois", min: 10000 },
 ] as const;
 
-const TYPES_VENTE: PropertyType[] = [
+// Ordre d'affichage stable. La présence d'une option est ensuite déduite des
+// biens réellement chargés, afin que le sélecteur reste aligné avec la DB.
+const TYPE_ORDER: PropertyType[] = [
   "riad-renove",
   "riad-a-renover",
   "villa",
@@ -50,13 +52,7 @@ const TYPES_VENTE: PropertyType[] = [
   "maison-hotes",
   "programme-neuf",
   "terrain",
-];
-
-const TYPES_LOCATION: PropertyType[] = [
-  "riad-renove",
-  "villa",
-  "appartement",
-  "maison-hotes",
+  "autre",
 ];
 
 export default async function Catalogue({
@@ -80,9 +76,9 @@ export default async function Catalogue({
 }: CatalogueProps) {
   const all = await getAllProperties();
   const buckets = filterMode === "location" ? BUDGET_LOCATION : BUDGET_VENTE;
-  const availableTypes = filterMode === "location" ? TYPES_LOCATION : TYPES_VENTE;
-
   const prefiltered = all.filter(prefilter);
+  const typesInCatalogue = new Set(prefiltered.map((property) => property.type));
+  const availableTypes = TYPE_ORDER.filter((type) => typesInCatalogue.has(type));
 
   return (
     <>

@@ -49,6 +49,7 @@ const nextConfig: NextConfig = {
       { source: "/vente-riad-a-renover", destination: "/acheter/riad-a-renover", permanent: true },
       { source: "/vente-appartement", destination: "/acheter/appartement", permanent: true },
       { source: "/vente-terrain", destination: "/acheter/terrain", permanent: true },
+      { source: "/vente-commerce", destination: "/acheter/autre", permanent: true },
       { source: "/programmes-neufs", destination: "/acheter/programmes-neufs", permanent: true },
 
       // ── Taxonomies location ────────────────────────────────────────

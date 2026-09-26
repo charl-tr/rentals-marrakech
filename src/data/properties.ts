@@ -91,7 +91,9 @@ const TYPE_LABELS: Record<PropertyType, string> = {
   "maison-hotes": "Maison d'hôtes",
   "programme-neuf": "Programme neuf",
   terrain: "Terrain",
-  autre: "Autre bien",
+  // Le WordPress source classe ces biens sous "Commerce" / "Commercial".
+  // On conserve le slug technique `autre` pour ne casser ni la DB ni les URLs.
+  autre: "Commerce",
 };
 
 export const propertyTypeLabel = (t: PropertyType) => TYPE_LABELS[t];

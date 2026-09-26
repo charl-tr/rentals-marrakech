@@ -69,7 +69,11 @@ function matches(p: Property, f: Filters, buckets: readonly Bucket[], mode: Filt
   if (f.budget) {
     const b = buckets.find((x) => x.key === f.budget);
     if (b) {
-      if (b.min !== undefined && p.price < b.min) return false;
+      // Un prix nul signifie "Prix sur demande" : il ne doit appartenir à
+      // aucune tranche. Les bornes basses sont exclusives pour éviter qu'un
+      // bien exactement à 300 k€, 600 k€, etc. apparaisse dans deux tranches.
+      if (p.price <= 0) return false;
+      if (b.min !== undefined && p.price <= b.min) return false;
       if (b.max !== undefined && p.price > b.max) return false;
     }
   }
@@ -143,13 +147,59 @@ export default function CatalogueBrowser({
     return out;
   }, [properties, filters, buckets, mode]);
 
-  const typeOpts = availableTypes.map((t) => ({ value: t, label: propertyTypeLabel(t) }));
-  const zoneOpts = NEIGHBORHOODS.map((n) => ({ value: n.slug, label: n.label }));
+  const typeOpts = useMemo(() => {
+    const candidates = properties.filter((property) =>
+      matches(property, { ...filters, type: undefined }, buckets, mode)
+    );
+    const present = new Set(candidates.map((property) => property.type));
+
+    return availableTypes
+      .filter((type) => present.has(type) || type === filters.type)
+      .map((type) => ({ value: type, label: propertyTypeLabel(type) }));
+  }, [availableTypes, buckets, filters, mode, properties]);
+
+  const zoneOpts = useMemo(() => {
+    const labels = new Map<string, string>(NEIGHBORHOODS.map((n) => [n.slug, n.label]));
+    const present = new Map<string, string>();
+    const candidates = properties.filter((property) =>
+      matches(property, { ...filters, quartier: undefined }, buckets, mode)
+    );
+
+    for (const property of candidates) {
+      if (!property.neighborhoodSlug) continue;
+      present.set(
+        property.neighborhoodSlug,
+        labels.get(property.neighborhoodSlug) || property.neighborhood || property.neighborhoodSlug
+      );
+    }
+
+    if (filters.quartier && !present.has(filters.quartier)) {
+      const selected = properties.find(
+        (property) => property.neighborhoodSlug === filters.quartier
+      );
+      present.set(
+        filters.quartier,
+        labels.get(filters.quartier) || selected?.neighborhood || filters.quartier
+      );
+    }
+
+    return [...present.entries()]
+      .map(([value, label]) => ({ value, label }))
+      .sort((a, b) => a.label.localeCompare(b.label, "fr"));
+  }, [buckets, filters, mode, properties]);
+
   const budgetOpts = buckets.map((b) => ({ value: b.key, label: b.label }));
-  const cityOpts = [
-    { value: "Marrakech", label: "Marrakech" },
-    { value: "Essaouira", label: "Essaouira" },
-  ];
+  const cityOpts = useMemo(() => {
+    const candidates = properties.filter((property) =>
+      matches(property, { ...filters, ville: undefined }, buckets, mode)
+    );
+    const present = new Set(candidates.map((property) => property.city).filter(Boolean));
+    if (filters.ville) present.add(filters.ville);
+
+    return [...present]
+        .sort((a, b) => a.localeCompare(b, "fr"))
+        .map((city) => ({ value: city, label: city }));
+  }, [buckets, filters, mode, properties]);
 
   const activeCount = [
     filters.type, filters.quartier, filters.ville, filters.budget,
@@ -183,7 +233,7 @@ export default function CatalogueBrowser({
               )}
               {visibleFilters.neighborhood && (
                 <Pill label="Quartier" value={filters.quartier}
-                  display={filters.quartier ? NEIGHBORHOODS.find((n) => n.slug === filters.quartier)?.label : undefined}
+                  display={filters.quartier ? zoneOpts.find((n) => n.value === filters.quartier)?.label : undefined}
                   options={zoneOpts} open={openKey === "quartier"}
                   onToggle={() => setOpenKey((k) => (k === "quartier" ? null : "quartier"))}
                   onSelect={(v) => set({ quartier: v })} onClose={() => setOpenKey(null)} allLabel="Tous les quartiers" />
