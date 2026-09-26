@@ -381,6 +381,8 @@ export const getSimilarProperties = cache(async (
     (p.type === current.type ? 100 : 0) +
     (p.neighborhoodSlug && p.neighborhoodSlug === current.neighborhoodSlug ? 25 : 0) +
     (p.price > 0 && current.price > 0 ? 20 / (1 + Math.abs(Math.log(p.price / current.price))) : 0) +
+    (p.bedrooms > 0 && current.bedrooms > 0 ? 15 / (1 + Math.abs(p.bedrooms - current.bedrooms)) : 0) +
+    (p.surface > 0 && current.surface > 0 ? 15 / (1 + Math.abs(Math.log(p.surface / current.surface))) : 0) +
     (p.featured ? 2 : 0);
   return catalogue
     .filter((p) => p.slug !== current.slug && p.listing === current.listing && p.city === current.city && p.status !== "reserved")
