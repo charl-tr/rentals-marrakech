@@ -9,7 +9,12 @@
  * Idempotent : skip les images déjà en Storage (par checksum sur le path).
  * Peut être interrompu et relancé.
  *
- * Run : npx tsx scripts/migrate-images.ts [--limit=20]
+ * Modes :
+ *   --strategy=all        migre toutes les images de tous les biens
+ *   --strategy=immersive  migre la couverture de chaque bien actif et la
+ *                         galerie complète d'un bien "hero" par catégorie
+ *
+ * Run : npx tsx scripts/migrate-images.ts --strategy=immersive [--limit=20]
  */
 import { createClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
@@ -31,6 +36,10 @@ const BUCKET = "properties";
 const LIMIT = Number(
   process.argv.find((a) => a.startsWith("--limit="))?.split("=")[1] ?? 0
 );
+const STRATEGY =
+  process.argv.find((a) => a.startsWith("--strategy="))?.split("=")[1] ??
+  "all";
+const ACTIVE_STATUSES = ["available", "new", "reserved"];
 
 // ──────────────────────────────────────────────────────────────────────
 // 1. Bucket creation
@@ -71,18 +80,34 @@ function extractContentType(ext: string): string {
   );
 }
 
+function storageSegment(slug: string): string {
+  let decoded = slug;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    // Un slug mal encodé reste exploitable après la normalisation ci-dessous.
+  }
+  return decoded
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9_-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+}
+
 async function uploadImage(
   slug: string,
   idx: number,
   remoteUrl: string
 ): Promise<string | null> {
   const ext = extractExt(remoteUrl);
-  const path = `${slug}/${idx}.${ext}`;
+  const folder = storageSegment(slug);
+  const path = `${folder}/${idx}.${ext}`;
 
   // Skip si déjà uploadé
   const { data: existing } = await supabase.storage
     .from(BUCKET)
-    .list(slug, { search: `${idx}.${ext}` });
+    .list(folder, { search: `${idx}.${ext}` });
   if (existing?.some((f) => f.name === `${idx}.${ext}`)) {
     return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
@@ -117,23 +142,77 @@ async function main() {
   console.log("\n═══ MIGRATE IMAGES → SUPABASE STORAGE ═══════════════════════\n");
   await ensureBucket();
 
-  const { data: props, error } = await supabase
+  let propertiesQuery = supabase
     .from("properties")
-    .select("slug, images")
+    .select("slug, images, type, listing, status, published, featured")
     .order("featured", { ascending: false });
+
+  if (STRATEGY === "immersive") {
+    propertiesQuery = propertiesQuery
+      .eq("published", true)
+      .in("status", ACTIVE_STATUSES);
+  }
+
+  const { data: props, error } = await propertiesQuery;
   if (error) throw error;
   if (!props) return;
 
-  // Skip les propriétés dont toutes les images sont déjà en Supabase
   const supabasePrefix = `${url}/storage/v1/object/public/${BUCKET}/`;
-  const needMigration = props.filter(
-    (p) =>
-      (p.images as string[])?.length > 0 &&
-      !(p.images as string[]).every((i) => i.startsWith(supabasePrefix))
+
+  // En mode immersif, le bien disposant de la galerie la plus riche dans
+  // chaque catégorie devient le "hero" de démonstration. En cas d'égalité,
+  // on conserve en priorité la galerie déjà migrée, puis l'ordre lexical :
+  // le choix reste ainsi stable entre deux exécutions.
+  const heroByType = new Map<string, (typeof props)[number]>();
+  if (STRATEGY === "immersive") {
+    for (const property of props) {
+      const current = heroByType.get(property.type);
+      const imageCount = (property.images as string[] | null)?.length ?? 0;
+      const currentImageCount =
+        (current?.images as string[] | null)?.length ?? 0;
+      const migratedCount = ((property.images as string[] | null) ?? []).filter(
+        (image) => image.startsWith(supabasePrefix)
+      ).length;
+      const currentMigratedCount = (
+        (current?.images as string[] | null) ?? []
+      ).filter((image) => image.startsWith(supabasePrefix)).length;
+      if (
+        !current ||
+        imageCount > currentImageCount ||
+        (imageCount === currentImageCount &&
+          (migratedCount > currentMigratedCount ||
+            (migratedCount === currentMigratedCount &&
+              property.slug.localeCompare(current.slug) < 0)))
+      ) {
+        heroByType.set(property.type, property);
+      }
+    }
+  }
+  const heroSlugs = new Set(
+    [...heroByType.values()].map((property) => property.slug)
   );
 
+  // Skip les propriétés dont les images ciblées sont déjà en Supabase.
+  const selectedIndexes = (property: (typeof props)[number]) => {
+    const images = (property.images as string[] | null) ?? [];
+    if (STRATEGY !== "immersive" || heroSlugs.has(property.slug)) {
+      return images.map((_, index) => index);
+    }
+    return images.length > 0 ? [0] : [];
+  };
+  const needMigration = props.filter((property) => {
+    const images = (property.images as string[] | null) ?? [];
+    return selectedIndexes(property).some(
+      (index) => !images[index]?.startsWith(supabasePrefix)
+    );
+  });
+
   console.log(
-    `\n${props.length} biens total, ${needMigration.length} à migrer\n`
+    `\nStratégie : ${STRATEGY}\n` +
+      `${props.length} biens ciblés, ${needMigration.length} à migrer\n` +
+      (STRATEGY === "immersive"
+        ? `${heroSlugs.size} galeries hero complètes : ${[...heroSlugs].join(", ")}\n`
+        : "")
   );
 
   const toProcess = LIMIT > 0 ? needMigration.slice(0, LIMIT) : needMigration;
@@ -148,20 +227,19 @@ async function main() {
       `[${i + 1}/${toProcess.length}] ${p.slug.slice(0, 70)} (${images.length} images)`
     );
 
-    const newUrls: string[] = [];
-    for (let idx = 0; idx < images.length; idx++) {
+    const newUrls = [...images];
+    const indexes = selectedIndexes(p);
+    for (const idx of indexes) {
       const src = images[idx];
       if (src.startsWith(supabasePrefix)) {
-        newUrls.push(src); // déjà migré
         continue;
       }
       const newUrl = await uploadImage(p.slug, idx, src);
       if (newUrl) {
-        newUrls.push(newUrl);
+        newUrls[idx] = newUrl;
         imgUploaded++;
       } else {
-        // Fallback : garder l'URL d'origine si le download a échoué
-        newUrls.push(src);
+        // Fallback : l'URL d'origine reste en place si le download échoue.
         failCount++;
       }
     }

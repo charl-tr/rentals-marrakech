@@ -262,12 +262,27 @@ export async function getLeadsForProperty(slug: string): Promise<AdminLead[]> {
 export async function getAllPropertySlugs(): Promise<
   { slug: string; listing: Listing; type: PropertyType; sourceModifiedAt?: string }[]
 > {
-  const { data, error } = await supabase
-    .from("properties")
-    .select("slug, listing, type, source_modified_at")
-    .eq("published", true);
-  if (error) throw error;
-  return (data ?? []).map((row) => ({
+  const pageSize = 1000;
+  const rows: {
+    slug: string;
+    listing: string;
+    type: string;
+    source_modified_at: string | null;
+  }[] = [];
+
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabase
+      .from("properties")
+      .select("slug, listing, type, source_modified_at")
+      .eq("published", true)
+      .order("slug", { ascending: true })
+      .range(from, from + pageSize - 1);
+    if (error) throw error;
+    rows.push(...(data ?? []));
+    if (!data || data.length < pageSize) break;
+  }
+
+  return rows.map((row) => ({
     slug: row.slug,
     listing: row.listing as Listing,
     type: row.type as PropertyType,
