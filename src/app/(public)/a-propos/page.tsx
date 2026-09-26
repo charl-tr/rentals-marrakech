@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight, Award, Building2, ShieldCheck } from "lucide-react";
@@ -149,20 +148,20 @@ export default function AProposPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[var(--color-charcoal)] py-20 text-white">
+      <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-20">
         <div className="container-luxe text-center">
-          <div className="eyebrow-light">
+          <div className="eyebrow">
             Commencer une conversation
           </div>
           <h2 className="mt-4 font-serif text-4xl md:text-5xl">
             Dites-nous ce que vous cherchez.
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-white/80">
+          <p className="mx-auto mt-6 max-w-2xl text-[var(--color-stone)]">
             Une première discussion informelle suffit à caler les bases. Nos
             conseillers vous recontactent sous 24 heures ouvrées.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link href="/equipe" className="btn-outline-light inline-flex">
+            <Link href="/equipe" className="btn-outline inline-flex">
               Rencontrer l&apos;équipe
             </Link>
             <Link href="/contact" className="btn-gold inline-flex">

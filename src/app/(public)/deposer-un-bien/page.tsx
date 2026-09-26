@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import {
   CheckCircle2,
@@ -114,14 +113,14 @@ export default function DeposerPage() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-charcoal)] py-16 text-white">
+      <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-16">
         <div className="container-luxe text-center">
-          <p className="text-sm text-white/70">
+          <p className="text-sm text-[var(--color-stone)]">
             Préférez-vous parler à un conseiller directement ?
           </p>
           <a
             href="tel:+212660629444"
-            className="mt-4 inline-flex items-center gap-2 font-serif text-3xl text-white hover:text-[var(--color-terracotta-light)]"
+            className="mt-4 inline-flex items-center gap-2 font-serif text-3xl text-[var(--color-charcoal)] hover:text-[var(--color-accent-deep)]"
           >
             +212 660 62 94 44
           </a>

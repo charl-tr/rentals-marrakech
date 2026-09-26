@@ -191,25 +191,25 @@ export default async function EssaouiraPage({
 
  {/* CTA conseiller */}
  {featured && (
- <section className="bg-[var(--color-charcoal)] py-20 text-white">
+ <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-20">
  <div className="container-luxe text-center">
  <div className="eyebrow">Conseil dédié</div>
  <h2 className="mt-4 font-serif text-4xl md:text-5xl">
  Hamza Bennouna est votre interlocuteur à Essaouira.
  </h2>
- <p className="mx-auto mt-6 max-w-2xl text-white/90">
+ <p className="mx-auto mt-6 max-w-2xl text-[var(--color-stone)]">
  Douze ans à composer les plus belles transactions de la cité des Alizés.
  Riads, villas pieds dans l&apos;eau, terrains à bâtir : un seul appel suffit.
  </p>
  <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
- <Link href="/equipe" className="btn-outline-light">
+ <Link href="/equipe" className="btn-outline">
  Le rencontrer
  </Link>
  <a
  href="https://wa.me/212660629447"
  target="_blank"
  rel="noopener noreferrer"
- className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-accent-deep)]"
+ className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent-deep)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-charcoal)]"
  >
  WhatsApp Essaouira
  </a>

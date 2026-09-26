@@ -142,9 +142,9 @@ export default function FAQPage() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-charcoal)] py-16 text-white">
+      <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-16">
         <div className="container-luxe text-center">
-          <div className="eyebrow-light">
+          <div className="eyebrow">
             Une question non couverte ?
           </div>
           <h2 className="mt-4 font-serif text-3xl md:text-4xl">

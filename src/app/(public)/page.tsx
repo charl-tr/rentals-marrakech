@@ -119,15 +119,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ STATS — section NOIRE (tempo) ═══ */}
-      <section className="bg-[var(--color-charcoal-deep)] text-white">
+      {/* ═══ STATS — sable, transition calme après le hero ═══ */}
+      <section className="border-b border-[var(--color-border)] bg-[var(--color-beige)]">
         <div className="container-luxe grid grid-cols-3 gap-6 py-14 md:gap-8 md:py-20">
           {STATS.map((stat) => (
             <div key={stat.label} className="text-center">
-              <div className="font-serif text-4xl text-[var(--color-terracotta-light)] md:text-6xl">
+              <div className="font-serif text-4xl text-[var(--color-accent-deep)] md:text-6xl">
                 {stat.value}
               </div>
-              <div className="mt-3 text-[10px] uppercase tracking-[0.28em] text-white/70">
+              <div className="mt-3 text-[10px] uppercase tracking-[0.28em] text-[var(--color-stone)]">
                 {stat.label}
               </div>
             </div>
@@ -181,37 +181,37 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ═══ SERVICES — NOIR, éditorial numéroté (zéro icône) ═══ */}
-      <section className="bg-[var(--color-charcoal-deep)] py-28 text-white md:py-32">
+      {/* ═══ SERVICES — éditorial clair numéroté ═══ */}
+      <section className="bg-[var(--color-beige)] py-28 md:py-32">
         <div className="container-luxe">
           <FadeInOnScroll as="div" className="max-w-2xl">
-            <div className="eyebrow-light">
+            <div className="eyebrow">
               Nos métiers
             </div>
-            <h2 className="mt-5 font-serif text-4xl leading-tight text-white md:text-5xl">
+            <h2 className="mt-5 font-serif text-4xl leading-tight text-[var(--color-charcoal)] md:text-5xl">
               Un accompagnement<br />sans compromis.
             </h2>
-            <p className="mt-6 max-w-lg text-white/60">
+            <p className="mt-6 max-w-lg text-[var(--color-stone)]">
               Depuis 2000, nous guidons investisseurs, expatriés et amoureux du Maroc —
               de la première visite au bail de gestion.
             </p>
           </FadeInOnScroll>
 
-          <div className="mt-16 grid gap-px bg-white/10 md:grid-cols-2">
+          <div className="mt-16 grid gap-px overflow-hidden rounded-[16px] bg-[var(--color-border)] md:grid-cols-2">
             {SERVICES.map((s) => (
               <div
                 key={s.n}
-                className="group bg-[var(--color-charcoal-deep)] p-8 transition-colors hover:bg-[var(--color-dark-soft)] md:p-10"
+                className="group bg-white/80 p-8 transition-colors hover:bg-white md:p-10"
               >
                 <div className="flex items-baseline gap-4">
-                  <span className="font-serif text-2xl text-[var(--color-terracotta-light)]">
+                  <span className="font-serif text-2xl text-[var(--color-accent)]">
                     {s.n}
                   </span>
-                  <h3 className="font-serif text-xl text-white md:text-2xl">
+                  <h3 className="font-serif text-xl text-[var(--color-charcoal)] md:text-2xl">
                     {s.title}
                   </h3>
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-white/60">
+                <p className="mt-4 text-sm leading-relaxed text-[var(--color-stone)]">
                   {s.description}
                 </p>
               </div>
@@ -219,7 +219,7 @@ export default async function Home() {
           </div>
 
           <div className="mt-14">
-            <Link href="/contact" className="btn-outline-light">
+            <Link href="/contact" className="btn-outline">
               Nous rencontrer
               <ArrowRight size={16} />
             </Link>
@@ -230,29 +230,29 @@ export default async function Home() {
       {/* ═══ PRESS — BLANC ═══ */}
       <PressMentions />
 
-      {/* ═══ ESSAOUIRA — NOIR éditorial, ZÉRO image ═══ */}
-      <section className="relative overflow-hidden bg-[var(--color-charcoal-deep)] py-28 text-white md:py-36">
+      {/* ═══ ESSAOUIRA — éditorial ivoire, zéro image ═══ */}
+      <section className="relative overflow-hidden bg-[var(--color-bg-alt)] py-28 md:py-36">
         <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-[var(--color-terracotta)] to-transparent opacity-40" />
         <div className="container-luxe">
           <div className="grid gap-12 md:grid-cols-[1fr_1fr] md:items-center md:gap-20">
             <FadeInOnScroll as="div">
-              <div className="eyebrow-light">
+              <div className="eyebrow">
                 Cap sur l&apos;océan
               </div>
-              <h2 className="mt-5 font-serif text-4xl leading-tight text-white md:text-6xl">
+              <h2 className="mt-5 font-serif text-4xl leading-tight text-[var(--color-charcoal)] md:text-6xl">
                 Essaouira,<br />
-                <span className="italic text-[var(--color-accent-light)]">
+                <span className="italic text-[var(--color-accent)]">
                   l&apos;autre Maroc.
                 </span>
               </h2>
             </FadeInOnScroll>
             <FadeInOnScroll as="div">
-              <p className="text-lg leading-relaxed text-white/70">
+              <p className="text-lg leading-relaxed text-[var(--color-stone)]">
                 À trois heures de Marrakech, la cité des Alizés conjugue médina UNESCO,
                 remparts battus par le vent et douceur de vivre. Riads à restaurer,
                 maisons d&apos;hôtes en activité, villas pieds dans l&apos;eau.
               </p>
-              <Link href="/essaouira" className="btn-outline-light mt-10">
+              <Link href="/essaouira" className="btn-outline mt-10">
                 Explorer Essaouira
                 <ArrowRight size={16} />
               </Link>
@@ -297,17 +297,17 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ DOUBLE CTA — deux blocs NOIRS, un seul accent (le bouton) ═══ */}
-      <section className="grid bg-[var(--color-charcoal-deep)] md:grid-cols-2">
+      {/* ═══ DOUBLE CTA — deux nuances sable, une seule couleur d'action ═══ */}
+      <section className="grid bg-[var(--color-beige)] md:grid-cols-2">
         {/* Vendre */}
-        <div className="flex flex-col items-start justify-center gap-6 p-12 py-20 text-white md:p-20">
-          <div className="eyebrow-light">
+        <div className="flex flex-col items-start justify-center gap-6 p-12 py-20 md:p-20">
+          <div className="eyebrow">
             Vous vendez ?
           </div>
-          <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
+          <h3 className="font-serif text-3xl leading-tight text-[var(--color-charcoal)] md:text-4xl">
             Estimation gratuite<br />sous 24 heures.
           </h3>
-          <p className="max-w-md text-white/60">
+          <p className="max-w-md text-[var(--color-stone)]">
             Un conseiller senior évalue votre bien et vous remet une estimation
             argumentée, appuyée sur les transactions comparables récentes.
           </p>
@@ -317,19 +317,19 @@ export default async function Home() {
           </Link>
         </div>
 
-        {/* Acheter — même fond noir, séparé par un filet */}
-        <div className="flex flex-col items-start justify-center gap-6 border-t border-white/10 p-12 py-20 text-white md:border-l md:border-t-0 md:p-20">
-          <div className="eyebrow-light">
+        {/* Acheter — nuance ivoire, séparée par un filet */}
+        <div className="flex flex-col items-start justify-center gap-6 border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] p-12 py-20 md:border-l md:border-t-0 md:p-20">
+          <div className="eyebrow">
             Vous recherchez ?
           </div>
-          <h3 className="font-serif text-3xl leading-tight text-white md:text-4xl">
+          <h3 className="font-serif text-3xl leading-tight text-[var(--color-charcoal)] md:text-4xl">
             Recherche<br />personnalisée.
           </h3>
-          <p className="max-w-md text-white/60">
+          <p className="max-w-md text-[var(--color-stone)]">
             Décrivez-nous votre projet : nous activons notre réseau et notre
             portefeuille confidentiel pour trouver le bien qui vous ressemble.
           </p>
-          <Link href="/acheter" className="btn-outline-light mt-2">
+          <Link href="/acheter" className="btn-outline mt-2">
             Explorer les biens
             <ArrowRight size={14} />
           </Link>

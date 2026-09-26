@@ -436,10 +436,10 @@ export default function CatalogueBrowser({
               <button
                 type="button"
                 onClick={() => set({ piscine: filters.piscine === "1" ? undefined : "1" })}
-                className={`whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
+                  className={`whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] font-medium transition-colors duration-200 ${
                   filters.piscine === "1"
-                    ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
-                    : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
+                    ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent-deep)]"
+                    : "border-[var(--color-border)] bg-white/45 text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
                 }`}
               >
                 Piscine
@@ -586,7 +586,7 @@ function Pagination({
                 aria-current={page === currentPage ? "page" : undefined}
                 className={`flex h-11 min-w-11 items-center justify-center rounded-[10px] px-3 text-sm transition-colors ${
                   page === currentPage
-                    ? "bg-[var(--color-charcoal)] text-white"
+                    ? "bg-[var(--color-accent-deep)] text-white"
                     : "border border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
                 }`}
               >
@@ -662,10 +662,10 @@ function Pill({
             ? `inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.24em] transition-colors ${
                 active ? "text-[var(--color-accent)]" : "text-[var(--color-charcoal)] hover:text-[var(--color-accent)]"
               }`
-            : `inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] transition-colors duration-200 ${
-                active
-                  ? "border-[var(--color-charcoal)] bg-[var(--color-charcoal)] text-white"
-                  : "border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
+            : `inline-flex items-center gap-2 whitespace-nowrap rounded-[10px] border px-4 py-2.5 text-[12px] font-medium transition-colors duration-200 ${
+                active || open
+                  ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent-deep)]"
+                  : "border-[var(--color-border)] bg-white/45 text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
               }`
         }
       >

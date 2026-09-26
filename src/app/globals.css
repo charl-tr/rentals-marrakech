@@ -116,12 +116,12 @@
 
   /* ── Boutons — angles doux, calmes ────────────────────────────*/
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-accent)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent-deep)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-charcoal)];
   }
 
   .btn-terracotta,
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-accent-deep)];
+    @apply inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent-deep)] px-8 py-4 text-[12px] font-medium uppercase tracking-[0.2em] text-white transition-colors duration-300 hover:bg-[var(--color-charcoal)];
   }
 
   .btn-outline {

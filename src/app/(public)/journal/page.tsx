@@ -128,9 +128,9 @@ export default async function JournalPage() {
         </section>
       )}
 
-      <section className="bg-[var(--color-charcoal)] py-16 text-white">
+      <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-16">
         <div className="container-luxe text-center">
-          <div className="eyebrow-light">
+          <div className="eyebrow">
             Recevoir le journal
           </div>
           <h2 className="mt-4 font-serif text-3xl md:text-4xl">
@@ -140,11 +140,11 @@ export default async function JournalPage() {
             <input
               type="email"
               placeholder="votre@email.com"
-              className="flex-1 rounded-[10px] border border-white/30 bg-white/5 px-5 py-3 text-sm text-white placeholder-white/50 focus:border-[var(--color-accent-light)] focus:outline-none"
+              className="field flex-1"
             />
             <button
               type="submit"
-              className="rounded-[10px] bg-[var(--color-accent)] px-6 py-3 text-xs font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-accent-deep)]"
+              className="rounded-[10px] bg-[var(--color-accent-deep)] px-6 py-3 text-xs font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-charcoal)]"
             >
               S&apos;inscrire
             </button>

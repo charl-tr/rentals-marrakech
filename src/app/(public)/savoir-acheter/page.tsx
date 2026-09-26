@@ -186,15 +186,15 @@ export default function SavoirAcheterPage() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-charcoal)] py-20 text-white">
+      <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-20">
         <div className="container-luxe text-center">
-          <div className="eyebrow-light">
+          <div className="eyebrow">
             Une question juridique ?
           </div>
           <h2 className="mt-4 font-serif text-4xl md:text-5xl">
             Notre cabinet partenaire vous répond.
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-white/80">
+          <p className="mx-auto mt-6 max-w-2xl text-[var(--color-stone)]">
             Étude Maître El Amine — Marrakech. Premier rendez-vous offert pour les
             clients de l&apos;agence.
           </p>

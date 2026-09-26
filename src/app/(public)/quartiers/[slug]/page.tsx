@@ -125,15 +125,15 @@ export default async function QuartierPage({
 
  {/* UN JOUR À — mini-guide expérientiel */}
  {day && (
- <section className="bg-[var(--color-charcoal)] py-28 text-white">
+ <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-28">
  <div className="container-luxe max-w-4xl">
- <div className="eyebrow-light">
+ <div className="eyebrow">
  Immersion
  </div>
  <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">
  Un jour à {q.name}.
  </h2>
- <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
+ <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--color-stone)]">
  {day.intro}
  </p>
 
@@ -141,20 +141,20 @@ export default async function QuartierPage({
  {day.schedule.map((s, i) => (
  <div
  key={i}
- className="grid gap-6 border-b border-white/10 pb-10 last:border-b-0 md:grid-cols-[140px_1fr]"
+ className="grid gap-6 border-b border-[var(--color-border)] pb-10 last:border-b-0 md:grid-cols-[140px_1fr]"
  >
- <div className="eyebrow-light">
+ <div className="eyebrow">
  {s.moment}
  </div>
  <div>
- <h3 className="font-serif text-xl leading-tight text-white md:text-2xl">
+ <h3 className="font-serif text-xl leading-tight text-[var(--color-charcoal)] md:text-2xl">
  {s.title}
  </h3>
- <p className="mt-3 text-sm leading-relaxed text-white/70 md:text-base">
+ <p className="mt-3 text-sm leading-relaxed text-[var(--color-stone)] md:text-base">
  {s.description}
  </p>
  {s.place && (
- <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-white/50">
+ <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
  <MapPin size={10} />
  {s.place}
  </div>
@@ -165,15 +165,15 @@ export default async function QuartierPage({
  </div>
 
  {/* Local tips */}
- <div className="mt-20 border-t border-white/10 pt-12">
- <div className="eyebrow-light">
+ <div className="mt-20 border-t border-[var(--color-border)] pt-12">
+ <div className="eyebrow">
  À savoir
  </div>
  <div className="mt-6 grid gap-8 md:grid-cols-3">
  {day.localTips.map((t, i) => (
  <div key={i}>
- <div className="font-serif text-base text-white">{t.label}</div>
- <p className="mt-2 text-xs leading-relaxed text-white/60">
+ <div className="font-serif text-base text-[var(--color-charcoal)]">{t.label}</div>
+ <p className="mt-2 text-xs leading-relaxed text-[var(--color-stone)]">
  {t.description}
  </p>
  </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <section className="relative min-h-[85vh] overflow-hidden bg-[var(--color-charcoal)]">
+    <section className="relative min-h-[85vh] overflow-hidden bg-[var(--color-beige)]">
       {/* motif discret */}
       <div
         aria-hidden
@@ -21,17 +21,17 @@ export default function NotFound() {
         }}
       />
 
-      <div className="container-luxe relative z-10 flex min-h-[85vh] flex-col items-center justify-center py-32 text-center text-white">
-        <div className="eyebrow-light">
+      <div className="container-luxe relative z-10 flex min-h-[85vh] flex-col items-center justify-center py-32 text-center text-[var(--color-charcoal)]">
+        <div className="eyebrow">
           Erreur 404
         </div>
 
         <h1 className="mt-8 font-serif text-7xl leading-[0.95] md:text-8xl lg:text-[140px]">
           Vous vous êtes<br />
-          <span className="italic text-[var(--color-accent-light)]">perdu·e</span>.
+          <span className="italic text-[var(--color-accent)]">perdu·e</span>.
         </h1>
 
-        <p className="mx-auto mt-10 max-w-xl text-lg leading-relaxed text-white/75">
+        <p className="mx-auto mt-10 max-w-xl text-lg leading-relaxed text-[var(--color-stone)]">
           La page que vous cherchez n&apos;existe pas — ou plus. Notre portefeuille évolue
           chaque semaine ; ce bien a peut-être été vendu, retiré ou renommé.
         </p>
@@ -39,13 +39,13 @@ export default function NotFound() {
         <div className="mt-14 flex flex-col items-center gap-4 sm:flex-row">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-[10px] border border-white/60 bg-transparent px-8 py-4 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-white hover:text-[var(--color-charcoal)]"
+            className="btn-outline"
           >
             Retour à l&apos;accueil
           </Link>
           <Link
             href="/acheter"
-            className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-accent)] px-8 py-4 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-accent-deep)]"
+            className="btn-primary"
           >
             <Compass size={14} />
             Parcourir les biens
@@ -53,7 +53,7 @@ export default function NotFound() {
           </Link>
         </div>
 
-        <div className="mt-20 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs uppercase tracking-[0.22em] text-white/60">
+        <div className="mt-20 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs uppercase tracking-[0.22em] text-[var(--color-stone)]">
           <Link href="/acheter" className="hover:text-[var(--color-terracotta-light)]">
             Acheter
           </Link>
