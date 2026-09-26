@@ -13,7 +13,19 @@ import { getCatalogueProperties } from "@/lib/db";
 
 export const revalidate = 300;
 
-const DESTINATION_SLUGS = ["medina", "palmeraie", "hivernage", "amelkis", "gueliz"] as const;
+const DESTINATIONS = [
+  { slug: "medina", label: "Médina" },
+  { slug: "palmeraie", label: "Palmeraie" },
+  {
+    slug: "hivernage",
+    label: "Hivernage",
+    imageSlug: "appartements-duplex-et-riads-avec-bassin-prive-a-vendre-a-lhivernage",
+  },
+  { slug: "amelkis", label: "Amelkis" },
+  { slug: "gueliz", label: "Guéliz" },
+] as const;
+
+const ESSAOUIRA_IMAGE_SLUG = "villa-neuve-avec-vue-mer-a-vendre-a-essaouira-cap-sim";
 
 function editorialScore(property: PropertySummary) {
   return (
@@ -73,22 +85,28 @@ export default async function Home() {
   const zoneOptions = [...zoneLabels.entries()]
     .map(([value, label]) => ({ value, label }))
     .sort((a, b) => a.label.localeCompare(b.label, "fr"));
-  const destinationCards = DESTINATION_SLUGS.map((slug) => {
-    const property = catalogue.find(
-      (candidate) => candidate.neighborhoodSlug === slug && candidate.images[0]
+  const destinationCards = DESTINATIONS.map((destination) => {
+    const properties = catalogue.filter(
+      (candidate) => candidate.neighborhoodSlug === destination.slug
     );
+    const property =
+      ("imageSlug" in destination
+        ? properties.find((candidate) => candidate.slug === destination.imageSlug)
+        : null) ?? properties.find((candidate) => candidate.images[0]);
     return property
       ? {
-          slug,
-          name: property.neighborhood,
+          slug: destination.slug,
+          name: destination.label,
           city: property.city,
           imageHero: property.images[0],
+          count: properties.length,
         }
       : null;
   }).filter(Boolean);
-  const essaouiraProperty = catalogue.find(
-    (property) => property.city === "Essaouira" && property.images[0]
-  );
+  const essaouiraProperties = catalogue.filter((property) => property.city === "Essaouira");
+  const essaouiraProperty =
+    essaouiraProperties.find((property) => property.slug === ESSAOUIRA_IMAGE_SLUG) ??
+    essaouiraProperties.find((property) => property.images[0]);
 
   const shortcuts = [
     {
@@ -251,7 +269,7 @@ export default async function Home() {
                     <span>
                       <span className="block font-serif text-2xl">{destination.name}</span>
                       <span className="mt-1 block text-[10px] uppercase tracking-[0.22em] text-white/75">
-                        {destination.city}
+                        {destination.city} · {destination.count} biens
                       </span>
                     </span>
                     <span className="grid size-9 place-items-center rounded-full border border-white/50 bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white group-hover:text-[var(--color-charcoal)]">
@@ -279,7 +297,7 @@ export default async function Home() {
                   <span>
                     <span className="block font-serif text-2xl">Essaouira</span>
                     <span className="mt-1 block text-[10px] uppercase tracking-[0.22em] text-white/75">
-                      Cité des Alizés
+                      Cité des Alizés · {essaouiraProperties.length} biens
                     </span>
                   </span>
                   <span className="grid size-9 place-items-center rounded-full border border-white/50 bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white group-hover:text-[var(--color-charcoal)]">
