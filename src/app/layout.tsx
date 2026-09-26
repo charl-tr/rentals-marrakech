@@ -15,7 +15,10 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-playfair",
-  display: "swap",
+  // Évite qu'un swap tardif de la police ne repousse artificiellement le
+  // LCP du grand titre sur les connexions lentes. Le fallback serif reste
+  // immédiatement lisible si la fonte n'arrive pas dans le court délai.
+  display: "optional",
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.marrakechrealty.com";
