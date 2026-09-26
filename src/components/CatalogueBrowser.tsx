@@ -100,6 +100,63 @@ const SORT_OPTIONS = [
   { value: "surface-desc", label: "Plus grandes surfaces" },
 ];
 
+const EDITORIAL_TYPE_WEIGHT: Partial<Record<PropertyType, number>> = {
+  villa: 720,
+  "riad-renove": 700,
+  "maison-hotes": 620,
+  appartement: 520,
+  "riad-a-renover": 470,
+  "programme-neuf": 400,
+  terrain: 90,
+  autre: 50,
+};
+
+const LEAD_SEQUENCE: PropertyType[] = [
+  "villa",
+  "riad-renove",
+  "villa",
+  "maison-hotes",
+  "appartement",
+  "villa",
+  "riad-renove",
+  "programme-neuf",
+  "villa",
+  "appartement",
+  "maison-hotes",
+  "riad-renove",
+];
+
+function editorialScore(property: PropertySummary) {
+  return (
+    (property.featured ? 2_000 : 0) +
+    (property.exclusivity ? 500 : 0) +
+    (EDITORIAL_TYPE_WEIGHT[property.type] ?? 0) +
+    (property.pool ? 180 : 0) +
+    Math.min(property.bedrooms, 6) * 25 +
+    Math.min(property.surface ?? 0, 1_000) / 10 +
+    Math.min(property.imageCount ?? 0, 12) * 12 +
+    (property.status === "new" ? 90 : 0) +
+    (property.price > 0 ? 40 : 0)
+  );
+}
+
+function editorialOrder(properties: PropertySummary[], diversify: boolean) {
+  const ranked = [...properties].sort((a, b) => {
+    const difference = editorialScore(b) - editorialScore(a);
+    return difference || a.slug.localeCompare(b.slug, "fr");
+  });
+
+  if (!diversify) return ranked;
+
+  const remaining = [...ranked];
+  const lead = LEAD_SEQUENCE.flatMap((type) => {
+    const index = remaining.findIndex((property) => property.type === type);
+    return index === -1 ? [] : remaining.splice(index, 1);
+  });
+
+  return [...lead, ...remaining];
+}
+
 function matches(p: PropertySummary, f: Filters, buckets: readonly Bucket[], mode: FilterMode) {
   if (f.type && p.type !== f.type) return false;
   if (f.quartier && p.neighborhoodSlug !== f.quartier) return false;
@@ -195,8 +252,9 @@ export default function CatalogueBrowser({
     else if (filters.tri === "price-desc") out = [...out].sort((a, b) => b.price - a.price);
     else if (filters.tri === "surface-desc")
       out = [...out].sort((a, b) => (b.surface ?? 0) - (a.surface ?? 0));
+    else out = editorialOrder(out, !filters.type && baseHref === "/acheter");
     return out;
-  }, [properties, filters, buckets, mode]);
+  }, [properties, filters, buckets, mode, baseHref]);
 
   const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
   const effectivePage = Math.min(currentPage, totalPages);
@@ -278,7 +336,7 @@ export default function CatalogueBrowser({
   return (
     <>
       {/* ═══ BARRE — filtres en ligne, instantanés ═══ */}
-      <div ref={catalogueTopRef} className="sticky top-14 z-40 border-b border-[var(--color-border)] bg-white/95 backdrop-blur-xl lg:top-16">
+      <div ref={catalogueTopRef} className="sticky top-14 z-40 border-y border-[var(--color-border)] bg-[var(--color-cream)]/95 backdrop-blur-xl lg:top-16">
         <div className="container-luxe py-3 md:py-4">
           <div className="flex items-center justify-between gap-4 md:hidden">
             <div className="flex items-baseline gap-2">
@@ -428,8 +486,26 @@ export default function CatalogueBrowser({
           <MapClientWrapper pins={items.map(toPin)} />
         </div>
       ) : (
-        <section className="bg-white py-8 md:py-20">
+        <section className="min-h-[60vh] bg-[var(--color-cream)] py-8 md:py-16">
           <div className="container-luxe">
+            {baseHref === "/acheter" && activeCount === 0 && (
+              <div className="mb-7 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] pb-5 md:mb-10">
+                <div>
+                  <div className="eyebrow">La sélection</div>
+                  <p className="mt-1 text-sm text-[var(--color-stone)]">
+                    Les propriétés les plus remarquables du portefeuille.
+                  </p>
+                </div>
+                <div className="flex items-center gap-5 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-charcoal)]">
+                  <Link href="/acheter/terrain" className="transition-colors hover:text-[var(--color-accent)]">
+                    Terrains
+                  </Link>
+                  <Link href="/acheter/autre" className="transition-colors hover:text-[var(--color-accent)]">
+                    Commerces
+                  </Link>
+                </div>
+              </div>
+            )}
             {items.length === 0 ? (
               <div className="mx-auto max-w-lg py-20 text-center">
                 <div className="eyebrow">Aucun résultat</div>

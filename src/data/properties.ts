@@ -107,7 +107,10 @@ export type PropertySummary = Pick<
   | "featured"
   | "images"
   | "coordinates"
->;
+> & {
+  /** Used to rank the default catalogue without sending the full gallery. */
+  imageCount?: number;
+};
 
 const TYPE_LABELS: Record<PropertyType, string> = {
   "riad-renove": "Riad rénové",

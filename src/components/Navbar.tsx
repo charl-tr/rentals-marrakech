@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronRight, Heart } from "lucide-react";
 import FavoriteCounter from "@/components/FavoriteCounter";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 
@@ -232,19 +232,40 @@ export default function Navbar() {
 
       {mobileOpen && (
         <div className="max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] lg:hidden">
-          <div className="container-luxe py-6">
-            <MobileSection heading="Acheter" links={ACHETER_MEGA.flatMap((c) => c.links)} />
-            <MobileSection heading="Louer" links={LOUER_LINKS} />
-            <MobileSection heading="Essaouira" links={ESSAOUIRA_LINKS} />
-            <MobileSection heading="Vendre" links={VENDRE_LINKS} />
+          <div className="container-luxe py-7">
+            <nav aria-label="Navigation mobile" className="space-y-1">
+              {[
+                ["/acheter", "Acheter"],
+                ["/louer", "Louer"],
+                ["/essaouira", "Essaouira"],
+                ["/deposer-un-bien", "Vendre"],
+                ["/journal", "Journal"],
+              ].map(([href, label]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="group flex items-center justify-between border-b border-[var(--color-border)] py-4 font-serif text-[1.65rem] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
+                >
+                  {label}
+                  <ChevronRight size={17} strokeWidth={1.4} className="transition-transform group-hover:translate-x-1" />
+                </Link>
+              ))}
+            </nav>
 
-            <div className="mt-6 flex flex-col gap-3 border-t border-[var(--color-border)] pt-6">
-              <Link href="/journal" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-accent)]">Journal</Link>
-              <Link href="/contact" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-accent)]">Contact</Link>
-              <Link href="/carte" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-accent)]">Vue carte</Link>
-              <Link href="/marche" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-accent)]">Rapport marché</Link>
-              <Link href="/favoris" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-accent)]">Mes favoris</Link>
-              <Link href="/a-propos" className="font-serif text-xl text-[var(--color-charcoal)] hover:text-[var(--color-accent)]">À propos</Link>
+            <div className="mt-7 grid gap-3">
+              <Link href="/contact" className="btn-primary w-full">
+                Parler à un conseiller
+              </Link>
+              <Link href="/estimer" className="btn-outline w-full">
+                Estimer mon bien
+              </Link>
+            </div>
+
+            <div className="mt-7 flex items-center justify-between border-t border-[var(--color-border)] pt-5 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-stone)]">
+              <Link href="/favoris" className="inline-flex items-center gap-2 transition-colors hover:text-[var(--color-accent)]">
+                <Heart size={15} strokeWidth={1.5} /> Mes favoris
+              </Link>
+              <Link href="/contact" className="transition-colors hover:text-[var(--color-accent)]">Contact</Link>
             </div>
           </div>
         </div>
@@ -410,33 +431,6 @@ function SimplePanel({
         {footerLabel}
         <ChevronRight size={12} />
       </Link>
-    </div>
-  );
-}
-
-function MobileSection({
-  heading,
-  links,
-}: {
-  heading: string;
-  links: { href: string; label: string }[];
-}) {
-  return (
-    <div className="mb-6 border-t border-[var(--color-border)] pt-6 first:border-t-0 first:pt-0">
-      <div className="mb-3 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-accent)]">
-        {heading}
-      </div>
-      <div className="flex flex-col gap-2.5">
-        {links.map((l) => (
-          <Link
-            key={l.href}
-            href={l.href}
-            className="font-serif text-base text-[var(--color-charcoal)] hover:text-[var(--color-accent)]"
-          >
-            {l.label}
-          </Link>
-        ))}
-      </div>
     </div>
   );
 }

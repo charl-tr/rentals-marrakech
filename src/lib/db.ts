@@ -210,6 +210,7 @@ export const getCatalogueProperties = cache(
         landSurface: row.land_surface ?? undefined,
         pool: row.pool,
         featured: row.featured,
+        imageCount: row.images?.length ?? 0,
         // Une seule image suffit dans les listes. La galerie complète reste
         // chargée uniquement sur la fiche du bien.
         images: [row.images?.[0] ?? "/hero-home.jpg"],
@@ -219,7 +220,7 @@ export const getCatalogueProperties = cache(
           { lat: 31.6295, lng: -7.9811 },
       }));
     },
-    ["public-property-catalogue-v1"],
+    ["public-property-catalogue-v2"],
     { tags: ["public-properties"], revalidate: 300 }
   )
 );

@@ -82,27 +82,29 @@ export default async function Catalogue({
 
   return (
     <>
-      {/* HEADER — éditorial, bandeau noir, zéro image stock */}
-      <section className="bg-[var(--color-charcoal-deep)] text-white">
-        <div className="container-luxe pb-8 pt-20 md:pb-16 md:pt-32">
+      {/* HEADER — page éditoriale claire et continue. Le rail sombre ne sert qu'à
+          préserver la lisibilité de la navigation transparente au sommet. */}
+      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_84%_18%,rgba(156,114,86,0.13),transparent_34%),linear-gradient(145deg,#f7f5f0_0%,#efeae1_100%)]">
+        <div aria-hidden className="absolute inset-x-0 top-0 h-14 bg-[var(--color-charcoal-deep)] lg:h-16" />
+        <div className="container-luxe relative pb-10 pt-20 md:pb-16 md:pt-24">
           {(breadcrumbs || backFallbackHref) && (
             <div className="mb-5 flex items-center gap-8 md:mb-8">
-              <BackToList fallbackHref={backFallbackHref} variant="dark" compactOnMobile />
+              <BackToList fallbackHref={backFallbackHref} variant="light" compactOnMobile />
               {breadcrumbs && breadcrumbs.length > 0 && (
                 <div className="hidden sm:block">
-                  <Breadcrumbs variant="dark" items={breadcrumbs} />
+                  <Breadcrumbs variant="light" items={breadcrumbs} />
                 </div>
               )}
             </div>
           )}
-          <div className="eyebrow-light">
+          <div className="eyebrow">
             {eyebrow}
           </div>
-          <h1 className="mt-3 max-w-3xl font-serif text-[2.15rem] leading-[1.04] text-white md:mt-4 md:text-5xl lg:text-6xl">
+          <h1 className="mt-3 max-w-3xl font-serif text-[2.15rem] leading-[1.04] text-[var(--color-charcoal)] md:mt-4 md:text-5xl lg:text-[3.55rem]">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/65 md:mt-5 md:text-lg">
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-stone)] md:mt-5 md:text-lg">
               {subtitle}
             </p>
           )}
