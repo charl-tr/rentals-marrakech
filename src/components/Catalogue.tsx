@@ -85,7 +85,7 @@ export default async function Catalogue({
       {/* HEADER — page éditoriale claire et continue. Le rail sombre ne sert qu'à
           préserver la lisibilité de la navigation transparente au sommet. */}
       <section className="relative overflow-hidden bg-[radial-gradient(circle_at_84%_18%,rgba(156,114,86,0.13),transparent_34%),linear-gradient(145deg,#f7f5f0_0%,#efeae1_100%)]">
-        <div aria-hidden className="absolute inset-x-0 top-0 h-14 bg-[var(--color-charcoal-deep)] lg:h-16" />
+        <div aria-hidden className="absolute inset-x-0 top-0 h-14 bg-[linear-gradient(90deg,#80634f_0%,#9c7256_52%,#b3927a_100%)] lg:h-16" />
         <div className="container-luxe relative pb-10 pt-20 md:pb-16 md:pt-24">
           {(breadcrumbs || backFallbackHref) && (
             <div className="mb-5 flex items-center gap-8 md:mb-8">

@@ -103,19 +103,19 @@ function makeClusterBadge(count: number) {
       ">
         <div style="
           position:absolute;inset:0;
-          border-radius:50%;
-          background:rgba(28,24,21,0.12);
+          border-radius:16px;
+          background:rgba(156,114,86,0.18);
           animation:pulse 2s ease-in-out infinite;
         "></div>
         <div style="
           position:relative;
           width:${inner}px;height:${inner}px;
-          border-radius:50%;
-          background:#17140f;
+          border-radius:12px;
+          background:#80634f;
           color:#fff;
           display:flex;align-items:center;justify-content:center;
           font-size:${fontSize}px;font-weight:600;
-          font-family:-apple-system,sans-serif;
+          font-family:var(--font-inter),system-ui,sans-serif;
           box-shadow:0 3px 16px rgba(0,0,0,0.28);
           cursor:pointer;
         ">${count}</div>
@@ -136,7 +136,9 @@ function makeClusterBadge(count: number) {
 function makeBadge(pin: PropertyPin, state: "default" | "hover" | "active") {
   const isVente = pin.listing === "vente" || pin.type === "programme-neuf";
   const price =
-    pin.price >= 1_000_000
+    pin.price <= 0
+      ? "Sur demande"
+      : pin.price >= 1_000_000
       ? `${(pin.price / 1_000_000).toFixed(pin.price % 1_000_000 === 0 ? 0 : 1)}M`
       : pin.price >= 1_000
       ? `${Math.round(pin.price / 1_000)}k`
@@ -169,14 +171,14 @@ function makeBadge(pin: PropertyPin, state: "default" | "hover" | "active") {
     html: `<span style="
       position:relative;display:inline-block;
       background:${bg};color:#fff;
-      padding:4px 7px;
-      font:600 10px/1 -apple-system,sans-serif;
+      padding:6px 9px;
+      font:600 10px/1 var(--font-inter),system-ui,sans-serif;
       letter-spacing:.03em;white-space:nowrap;
-      border-radius:2px;
+      border-radius:10px;
       transform:scale(${scale});transform-origin:center bottom;
       transition:transform .18s cubic-bezier(.34,1.56,.64,1),background .14s,box-shadow .14s;
       box-shadow:${shadow};cursor:pointer;
-    ">${price}€${pin.priceUnit ? `<span style="font-size:8px;opacity:.65">/${pin.priceUnit}</span>` : ""}${tip}</span>`,
+    ">${price}${pin.price > 0 ? "€" : ""}${pin.priceUnit && pin.price > 0 ? `<span style="font-size:8px;opacity:.65">/${pin.priceUnit}</span>` : ""}${tip}</span>`,
     className: "",
     iconSize: undefined as unknown as L.PointExpression,
     iconAnchor: [0, 0],
@@ -311,7 +313,7 @@ function CustomZoomControl() {
             type="button"
             onClick={fn}
             aria-label={label === "+" ? "Zoomer" : "Dézoomer"}
-            className="flex h-9 w-9 items-center justify-center border border-[var(--color-beige-warm)] bg-white font-serif text-lg leading-none text-[var(--color-charcoal)] shadow-md transition-colors hover:bg-[var(--color-cream)]"
+            className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[var(--color-border-strong)] bg-[rgba(255,255,255,0.92)] font-serif text-lg leading-none text-[var(--color-charcoal)] shadow-[var(--shadow-card)] backdrop-blur transition-colors hover:bg-[var(--color-cream)]"
             style={{ outline: "none" }}
           >
             {label}
@@ -339,14 +341,13 @@ export default function MapView({
     <MapContainer
       center={[31.63, -7.99]}
       zoom={12}
-      className="h-full w-full"
+      className="marrakech-map h-full w-full"
       zoomControl={false}
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={20}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        maxZoom={19}
       />
       <FitBounds pins={pins} filterKey={filterKey} />
       <FlyToActive pins={pins} activeSlug={activeSlug} />

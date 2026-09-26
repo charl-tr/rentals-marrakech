@@ -68,9 +68,9 @@ function FilterTabs({
           key={f.value}
           type="button"
           onClick={() => onChange(f.value)}
-          className={`px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] transition-colors ${
+          className={`rounded-[10px] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-colors ${
             filter === f.value
-              ? "bg-[var(--color-charcoal)] text-white"
+              ? "bg-[var(--color-accent-deep)] text-white shadow-[var(--shadow-soft)]"
               : "text-[var(--color-stone)] hover:text-[var(--color-charcoal)]"
           }`}
         >
@@ -113,19 +113,19 @@ function PropertyCard({
       onClick={onClick}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      className={`group relative flex cursor-pointer gap-3 border-b border-[var(--color-beige-warm)] p-3 transition-colors sm:p-4 ${
+      className={`group relative m-2 flex cursor-pointer gap-3 rounded-[14px] border border-transparent p-3 transition-[background-color,border-color,box-shadow] sm:p-4 ${
         active
-          ? "bg-[var(--color-cream)]"
+          ? "border-[var(--color-border-strong)] bg-[var(--color-accent-soft)] shadow-[var(--shadow-card)]"
           : hovered
-          ? "bg-[var(--color-cream)]/60"
-          : "bg-white hover:bg-[var(--color-cream)]/40"
+          ? "border-[var(--color-border)] bg-[var(--color-cream)]"
+          : "bg-white hover:border-[var(--color-border)] hover:bg-[var(--color-cream)]/70"
       }`}
     >
       {active && (
-        <div className="absolute left-0 top-0 h-full w-0.5 bg-[var(--color-terracotta)]" />
+        <div className="absolute bottom-3 left-0 top-3 w-0.5 rounded-full bg-[var(--color-terracotta)]" />
       )}
       {/* Image */}
-      <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden bg-[var(--color-beige-warm)] sm:h-20 sm:w-24">
+      <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded-[10px] bg-[var(--color-beige-warm)] sm:h-20 sm:w-24">
         {pin.image ? (
           <Image
             src={pin.image}
@@ -139,7 +139,7 @@ function PropertyCard({
           <div className="h-full w-full" />
         )}
         <div
-          className={`absolute left-0 top-0 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-white ${
+          className={`absolute left-1.5 top-1.5 rounded-[6px] px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-[0.18em] text-white ${
             isVente(pin) ? "bg-[var(--color-accent)]" : "bg-[var(--color-success)]"
           }`}
         >
@@ -169,10 +169,10 @@ function PropertyCard({
           </div>
           <Link
             href={href}
-            className="ml-2 shrink-0 border border-[var(--color-charcoal)] px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
+            className="ml-2 inline-flex shrink-0 items-center gap-1 rounded-[10px] border border-[var(--color-border-strong)] px-2.5 py-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-white"
             onClick={(e) => e.stopPropagation()}
           >
-            Voir
+            Découvrir <ChevronRight size={11} />
           </Link>
         </div>
       </div>
@@ -190,9 +190,9 @@ function MobileActiveCard({
 }) {
   const href = `/${isVente(pin) ? "acheter" : "louer"}/${pin.slug}`;
   return (
-    <div className="absolute bottom-[76px] left-3 right-3 z-[450] flex animate-fade-in items-center gap-3 bg-white p-3 shadow-[0_8px_32px_rgba(0,0,0,0.18)]">
+    <div className="absolute bottom-[84px] left-3 right-3 z-[450] flex animate-fade-in items-center gap-3 rounded-[14px] border border-[var(--color-border)] bg-white p-3 shadow-[var(--shadow-luxe)]">
       {/* Image */}
-      <div className="h-16 w-20 flex-shrink-0 overflow-hidden bg-[var(--color-beige-warm)]">
+      <div className="h-16 w-20 flex-shrink-0 overflow-hidden rounded-[10px] bg-[var(--color-beige-warm)]">
         {pin.image ? (
           <Image
             src={pin.image}
@@ -232,9 +232,9 @@ function MobileActiveCard({
         </button>
         <Link
           href={href}
-          className="bg-[var(--color-charcoal)] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-white"
+          className="inline-flex items-center gap-1 rounded-[10px] bg-[var(--color-accent-deep)] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-white"
         >
-          Voir
+          Découvrir <ChevronRight size={11} />
         </Link>
       </div>
     </div>
@@ -375,7 +375,7 @@ function DesktopPanel({
 }) {
   return (
     <div
-      className={`relative flex flex-col border-r border-[var(--color-beige-warm)] bg-white transition-[width] duration-300 ease-in-out ${
+      className={`relative flex flex-col overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)] transition-[width] duration-300 ease-in-out ${
         open ? "w-[340px] xl:w-[380px]" : "w-0 overflow-hidden"
       }`}
     >
@@ -478,8 +478,10 @@ export default function MapClientWrapper({ pins }: { pins: PropertyPin[] }) {
 
   if (!isDesktop) {
     return (
-      <div className="relative h-full overflow-hidden">
-        <MapView {...mapProps} />
+      <div className="relative h-full overflow-hidden bg-[var(--color-cream)] p-2">
+        <div className="h-full overflow-hidden rounded-[16px] border border-[var(--color-border)]">
+          <MapView {...mapProps} />
+        </div>
         <MobileSheet
           pins={visible}
           filter={filter}
@@ -494,7 +496,7 @@ export default function MapClientWrapper({ pins }: { pins: PropertyPin[] }) {
   }
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full gap-3 bg-[var(--color-cream)] p-3">
       <DesktopPanel
         pins={visible}
         filter={filter}
@@ -507,12 +509,12 @@ export default function MapClientWrapper({ pins }: { pins: PropertyPin[] }) {
         onClose={() => setPanelOpen(false)}
       />
 
-      <div className="relative flex-1">
+      <div className="relative flex-1 overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] shadow-[var(--shadow-card)]">
         {!panelOpen && (
           <button
             type="button"
             onClick={() => setPanelOpen(true)}
-            className="absolute left-4 top-1/2 z-[500] -translate-y-1/2 flex items-center gap-1.5 border border-[var(--color-beige-warm)] bg-white px-3 py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-charcoal)] shadow-md transition-colors hover:bg-[var(--color-cream)]"
+            className="absolute left-4 top-1/2 z-[500] -translate-y-1/2 flex items-center gap-1.5 rounded-[10px] border border-[var(--color-border-strong)] bg-white px-3 py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-charcoal)] shadow-[var(--shadow-card)] transition-colors hover:bg-[var(--color-cream)]"
             aria-label="Afficher la liste"
           >
             <ChevronRight size={14} />

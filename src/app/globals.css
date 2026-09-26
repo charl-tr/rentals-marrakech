@@ -280,6 +280,22 @@
 [data-fade-in][data-delay="3"] { transition-delay: 0.3s; }
 [data-fade-in][data-delay="4"] { transition-delay: 0.4s; }
 
+/* Carte publique : palette chaude et discrète, alignée avec le reste du site. */
+.marrakech-map .leaflet-tile-pane {
+  filter: sepia(0.2) saturate(0.72) contrast(0.92) brightness(1.03);
+}
+.marrakech-map .leaflet-control-attribution {
+  border-radius: 8px 0 0 0;
+  background: rgba(247, 245, 240, 0.88);
+  color: var(--color-ink-muted);
+  font-family: var(--font-sans);
+  font-size: 9px;
+  backdrop-filter: blur(8px);
+}
+.marrakech-map .leaflet-control-attribution a {
+  color: var(--color-accent-deep);
+}
+
 @keyframes slow-pulse {
   0%, 100% { opacity: 0.4; }
   50%      { opacity: 0.85; }
