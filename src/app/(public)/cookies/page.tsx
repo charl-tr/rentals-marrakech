@@ -78,6 +78,7 @@ export default function CookiesPage() {
                 pas anonyme : si vous envoyez un formulaire, votre session peut
                 être rapprochée de votre demande et de son avancement commercial.
                 Aucun nom, email ou téléphone n’est envoyé dans les événements de navigation.
+                Une purge quotidienne est prévue pour retirer les événements et liens de session de plus de 90 jours, sans supprimer votre dossier de contact.
               </p>
             </div>
 

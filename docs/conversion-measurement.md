@@ -1,7 +1,7 @@
 # Conversion v1 — mise en service
 
 - Appliquer `supabase/migrations/0015_conversion_events.sql` avant le déploiement.
-- Programmer chaque jour `select public.purge_conversion_events();` pour supprimer les événements et liens de session de plus de 90 jours. Vérifier l’exécution du scheduler avant d’annoncer cette durée comme effective.
+- Appliquer `0016_conversion_retention.sql` pour programmer la purge quotidienne à 03:15 UTC : événements et liens de session de plus de 90 jours. Contrôler les exécutions dans `cron.job_run_details` ; le premier passage reste à vérifier après activation.
 - Ajouter une limitation distribuée/edge sur POST `/api/conversion`. La protection en mémoire du serveur est seulement un filet local.
 - Tableau direction : `/admin/conversion`, authentification MFA et rôle director requis.
 - Contrôler consentement refusé = aucune requête de mesure ; accepté = vue unique par session et bien, ajout favori unique. Une session expire après 30 minutes, sans suivi inter-appareils.
