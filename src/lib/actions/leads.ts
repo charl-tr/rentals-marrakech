@@ -46,7 +46,7 @@ export type LeadActionState =
 // v1 : assignation par spécialité quartier si connue, sinon round-robin.
 // Sera remplacée par les règles territoriales du directeur en Sprint 2.5.
 async function pickAdvisor(params: {
-  propertyCity?: "Marrakech" | "Essaouira" | null;
+  propertyCity?: string | null;
   propertyNeighborhoodSlug?: string | null;
   propertyType?: string | null;
 }): Promise<string | null> {

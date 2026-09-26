@@ -165,7 +165,7 @@ export interface LeadEvent {
 // Seuils : Marrakech > 1 M€ = urgent, Essaouira > 800 k€ = urgent, sinon standard.
 export function computeSlaTier(params: {
   propertyPrice?: number | null;
-  propertyCity?: "Marrakech" | "Essaouira" | null;
+  propertyCity?: string | null;
 }): SlaTier {
   const { propertyPrice, propertyCity } = params;
   if (!propertyPrice) return "standard";

@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-09-26T13:27:22.044Z",
+  "source": "https://www.marrakechrealty.com",
+  "declaredTotals": {
+    "vente": 686,
+    "location": 320,
+    "programme": 35
+  },
+  "fetched": 1041,
+  "parsed": 1041,
+  "failures": [
+    {
+      "id": 6635,
+      "slug": "villa-4-chambres",
+      "url": "https://www.marrakechrealty.com/vente/villa-4-chambres/",
+      "error": "Error: 404 https://www.marrakechrealty.com/vente/villa-4-chambres/"
+    },
+    {
+      "id": 6748,
+      "slug": "maison-dhotes-2",
+      "url": "https://www.marrakechrealty.com/vente/maison-dhotes-2/",
+      "error": "Error: 404 https://www.marrakechrealty.com/vente/maison-dhotes-2/"
+    },
+    {
+      "id": 3962,
+      "slug": "villa-in-quiet-palms-area",
+      "url": "https://www.marrakechrealty.com/vente/villa-in-quiet-palms-area/",
+      "error": "Error: 404 https://www.marrakechrealty.com/vente/villa-in-quiet-palms-area/"
+    }
+  ],
+  "slugCollisions": [
+    {
+      "sourceSlug": "studios-et-appartements-a-vendre-en-cours-de-construction",
+      "resolution": [
+        {
+          "sourceId": 99361,
+          "slug": "studios-et-appartements-a-vendre-en-cours-de-construction"
+        },
+        {
+          "sourceId": 99705,
+          "slug": "studios-et-appartements-a-vendre-en-cours-de-construction-programme-neuf"
+        }
+      ]
+    }
+  ],
+  "missing": {
+    "reference": 5,
+    "sourceTypeLabel": 3,
+    "images": 5,
+    "price": 405,
+    "city": 0
+  },
+  "normalizedTypes": {
+    "appartement": 309,
+    "autre": 38,
+    "maison-hotes": 80,
+    "programme-neuf": 35,
+    "riad-a-renover": 1,
+    "riad-renove": 143,
+    "terrain": 93,
+    "villa": 342
+  }
+}

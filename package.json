@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "catalog:audit": "node scripts/audit-listing-parity.mjs",
+    "catalog:sync": "node scripts/sync-wordpress-properties.mjs",
+    "catalog:sync:write": "node scripts/sync-wordpress-properties.mjs --write"
   },
   "dependencies": {
     "@sentry/nextjs": "^10.49.0",

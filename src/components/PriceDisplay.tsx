@@ -23,6 +23,11 @@ export default function PriceDisplay({
   showOriginal?: boolean;
 }) {
   const { currency, hydrated } = useCurrency();
+
+  if (!priceEur || priceEur <= 0) {
+    return <span className={className}>Prix sur demande</span>;
+  }
+
   const effective = hydrated ? currency : "EUR";
   const amount = formatInCurrency(priceEur, effective);
   const suffix =

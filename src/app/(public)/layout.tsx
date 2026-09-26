@@ -15,7 +15,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 // quitté ce groupe pour (portal) — chrome privé dédié + temps réel.
 export const revalidate = 300;
 
-const SITE_URL = "https://marrakechrealty.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.marrakechrealty.com";
 
 const organizationLd = {
   "@context": "https://schema.org",

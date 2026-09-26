@@ -4,7 +4,7 @@ import { ArrowRight, Map as MapIcon, MapPin, Phone } from "lucide-react";
 import {
   formatMad,
   formatPrice,
-  propertyTypeLabel,
+  displayPropertyType,
   STATUS_LABELS,
   type Property,
 } from "@/data/properties";
@@ -45,18 +45,17 @@ export default async function PropertyDetail({ property }: { property: Property 
     ? "Acheter un riad"
     : "Autre";
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.marrakechrealty.com";
   const ldjson = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
     name: property.title,
     description: property.shortDescription,
     image: property.images,
-    url: `https://marrakechrealty.com/${isLocation ? "louer" : "acheter"}/${property.slug}`,
-    offers: {
-      "@type": "Offer",
-      price: property.price,
-      priceCurrency: property.currency,
-    },
+    url: `${siteUrl}/${isLocation ? "louer" : "acheter"}/${property.slug}`,
+    ...(property.price > 0
+      ? { offers: { "@type": "Offer", price: property.price, priceCurrency: property.currency } }
+      : {}),
     address: {
       "@type": "PostalAddress",
       addressLocality: property.city,
@@ -131,7 +130,7 @@ export default async function PropertyDetail({ property }: { property: Property 
                 { label: "Accueil", href: "/" },
                 { label: isLocation ? "Louer" : "Acheter", href: backHref },
                 {
-                  label: propertyTypeLabel(property.type),
+                  label: displayPropertyType(property),
                   href: isLocation ? backHref : `/acheter/${property.type}`,
                 },
                 { label: property.neighborhood },
@@ -154,7 +153,7 @@ export default async function PropertyDetail({ property }: { property: Property 
                 </span>
               )}
               <span className="text-[11px] font-medium uppercase tracking-[0.28em]">
-                {propertyTypeLabel(property.type)} · {property.neighborhood}, {property.city}
+                {displayPropertyType(property)} · {property.sourceLocationLabel || property.neighborhood}, {property.city}
               </span>
               <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-white/55">
                 Réf. {property.reference}

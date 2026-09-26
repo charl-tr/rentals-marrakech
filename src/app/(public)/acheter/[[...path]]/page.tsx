@@ -90,11 +90,11 @@ export async function generateMetadata({
   if (route.kind === "fiche") {
     const p = route.property;
     return {
-      title: `${p.title} — Marrakech Realty`,
-      description: p.shortDescription,
+      title: p.seoTitle || `${p.title} — Marrakech Realty`,
+      description: p.seoDescription || p.shortDescription,
       openGraph: {
         title: p.title,
-        description: p.shortDescription,
+        description: p.seoDescription || p.shortDescription,
         images: [p.images[0]],
         type: "website",
       },

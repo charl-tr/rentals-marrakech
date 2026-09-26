@@ -14,7 +14,8 @@ export type PropertyType =
   | "appartement"
   | "maison-hotes"
   | "programme-neuf"
-  | "terrain";
+  | "terrain"
+  | "autre";
 
 export type Listing = "vente" | "location" | "location-saisonniere";
 
@@ -47,9 +48,15 @@ export interface Property {
   listing: Listing;
   status: PropertyStatus;
   exclusivity?: boolean;
-  city: "Marrakech" | "Essaouira";
+  city: string;
   neighborhood: string;
   neighborhoodSlug: string;
+  sourceTypeLabel?: string;
+  sourceLocationLabel?: string;
+  sourceUrl?: string;
+  sourceModifiedAt?: string;
+  seoTitle?: string;
+  seoDescription?: string;
   price: number;
   currency: "EUR";
   priceMad?: number;          // prix en dirhams marocains, affiché à côté de l'EUR
@@ -84,9 +91,12 @@ const TYPE_LABELS: Record<PropertyType, string> = {
   "maison-hotes": "Maison d'hôtes",
   "programme-neuf": "Programme neuf",
   terrain: "Terrain",
+  autre: "Autre bien",
 };
 
 export const propertyTypeLabel = (t: PropertyType) => TYPE_LABELS[t];
+export const displayPropertyType = (property: Pick<Property, "type" | "sourceTypeLabel">) =>
+  property.sourceTypeLabel || propertyTypeLabel(property.type);
 export const ALL_TYPES = Object.keys(TYPE_LABELS) as PropertyType[];
 
 const NEIGHBORHOODS_DATA = [
@@ -130,6 +140,7 @@ export const formatPrice = (
   currency: "EUR" = "EUR",
   priceUnit: "semaine" | "mois" = "semaine"
 ) => {
+  if (!price || price <= 0) return "Prix sur demande";
   const formatted = new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency,

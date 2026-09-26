@@ -18,7 +18,7 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const SITE_URL = "https://marrakechrealty.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.marrakechrealty.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

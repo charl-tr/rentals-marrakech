@@ -6,7 +6,7 @@ import {
   getAllPropertySlugs,
 } from "@/lib/db";
 
-const SITE_URL = "https://marrakechrealty.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.marrakechrealty.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -58,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fiches biens — /acheter/<slug> (vente + programmes-neufs) et /louer/<slug>
   const propertyPages: MetadataRoute.Sitemap = propertiesList.map((p) => ({
     url: `${SITE_URL}/${p.listing === "vente" || p.type === "programme-neuf" ? "acheter" : "louer"}/${p.slug}`,
-    lastModified: now,
+    lastModified: p.sourceModifiedAt ? new Date(p.sourceModifiedAt) : now,
     changeFrequency: "weekly",
     priority: 0.9,
   }));

@@ -34,8 +34,14 @@ interface PropertyRow {
   listing: Listing;
   status: import("@/data/properties").PropertyStatus | null;
   exclusivity: boolean;
-  city: "Marrakech" | "Essaouira";
+  city: string;
   neighborhood_slug: string | null;
+  source_type_label: string | null;
+  source_location_label: string | null;
+  source_url: string | null;
+  source_modified_at: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
   price_eur: number;
   price_mad: number | null;
   price_unit: "semaine" | "mois" | null;
@@ -63,7 +69,7 @@ interface PropertyRow {
 interface NeighborhoodRow {
   slug: string;
   name: string;
-  city: "Marrakech" | "Essaouira";
+  city: string;
   tagline: string | null;
   paragraphs: string[];
   highlights: { label: string; description: string }[];
@@ -71,7 +77,7 @@ interface NeighborhoodRow {
 }
 
 // Coordonnées par défaut (centre ville) quand le bien n'a pas de coords précises
-const CITY_DEFAULT_COORDS = {
+const CITY_DEFAULT_COORDS: Record<string, { lat: number; lng: number }> = {
   Marrakech: { lat: 31.6295, lng: -7.9811 },
   Essaouira: { lat: 31.5085, lng: -9.7595 },
 };
@@ -87,8 +93,14 @@ function rowToProperty(row: PropertyRow, neighborhoodLabel: string | null): Prop
     status: row.status ?? "available",
     exclusivity: row.exclusivity,
     city: row.city,
-    neighborhood: neighborhoodLabel ?? row.neighborhood_slug ?? "",
+    neighborhood: row.source_location_label ?? neighborhoodLabel ?? row.neighborhood_slug ?? "",
     neighborhoodSlug: row.neighborhood_slug ?? "",
+    sourceTypeLabel: row.source_type_label ?? undefined,
+    sourceLocationLabel: row.source_location_label ?? undefined,
+    sourceUrl: row.source_url ?? undefined,
+    sourceModifiedAt: row.source_modified_at ?? undefined,
+    seoTitle: row.seo_title ?? undefined,
+    seoDescription: row.seo_description ?? undefined,
     price: row.price_eur,
     currency: "EUR",
     priceMad: row.price_mad ?? undefined,
@@ -109,7 +121,7 @@ function rowToProperty(row: PropertyRow, neighborhoodLabel: string | null): Prop
     story: row.story ?? { eyebrow: "", title: "", paragraphs: [] },
     description: row.description ?? "",
     features: row.features ?? [],
-    images: row.images ?? [],
+    images: row.images?.length ? row.images : ["/hero-home.jpg"],
     walkingDistances: row.walking_distances ?? [],
     coordinates:
       (row.neighborhood_slug ? NEIGHBORHOOD_COORDS[row.neighborhood_slug] : null)
@@ -126,12 +138,15 @@ function rowToProperty(row: PropertyRow, neighborhoodLabel: string | null): Prop
 const PROPERTY_PUBLIC_SELECT = `
   slug, reference, title, tagline, type, listing, status, exclusivity,
   city, neighborhood_slug, price_eur, price_mad, price_unit, bedrooms,
+  source_type_label, source_location_label, source_url, source_modified_at,
+  seo_title, seo_description,
   bathrooms, surface, land_surface, year_built, pool, featured, published,
   short_description, description, story, features, images, walking_distances,
   coordinates, advisor_slug, created_at, updated_at,
   neighborhood:neighborhoods(name)
 `;
 const PROPERTY_ADMIN_SELECT = "*, neighborhood:neighborhoods(name)";
+const ACTIVE_PROPERTY_STATUSES = ["available", "new", "reserved"] as const;
 
 type PropertyWithNeigh = PropertyRow & {
   neighborhood: { name: string } | null;
@@ -142,6 +157,7 @@ export const getAllProperties = cache(async (): Promise<Property[]> => {
     .from("properties")
     .select(PROPERTY_PUBLIC_SELECT)
     .eq("published", true)
+    .in("status", ACTIVE_PROPERTY_STATUSES)
     .order("featured", { ascending: false })
     .order("price_eur", { ascending: false });
   if (error) throw error;
@@ -156,6 +172,7 @@ export const getFeaturedProperties = cache(async (limit = 3): Promise<Property[]
     .select(PROPERTY_PUBLIC_SELECT)
     .eq("published", true)
     .eq("featured", true)
+    .in("status", ACTIVE_PROPERTY_STATUSES)
     .order("price_eur", { ascending: false })
     .limit(limit);
   if (error) throw error;
@@ -243,14 +260,19 @@ export async function getLeadsForProperty(slug: string): Promise<AdminLead[]> {
 }
 
 export async function getAllPropertySlugs(): Promise<
-  { slug: string; listing: Listing; type: PropertyType }[]
+  { slug: string; listing: Listing; type: PropertyType; sourceModifiedAt?: string }[]
 > {
   const { data, error } = await supabase
     .from("properties")
-    .select("slug, listing, type")
+    .select("slug, listing, type, source_modified_at")
     .eq("published", true);
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []).map((row) => ({
+    slug: row.slug,
+    listing: row.listing as Listing,
+    type: row.type as PropertyType,
+    sourceModifiedAt: row.source_modified_at ?? undefined,
+  }));
 }
 
 export async function getFirstEssaouiraProperty(): Promise<Property | null> {
@@ -279,6 +301,7 @@ export const getSimilarProperties = cache(async (
     .select(PROPERTY_PUBLIC_SELECT)
     .eq("published", true)
     .neq("slug", current.slug)
+    .in("status", ACTIVE_PROPERTY_STATUSES)
     .or(`type.eq.${current.type},neighborhood_slug.eq.${current.neighborhoodSlug}`)
     .limit(limit);
   if (error) throw error;
@@ -357,7 +380,7 @@ export async function getAdvisor(slug: string): Promise<Advisor | null> {
 export interface NeighborhoodPage {
   slug: string;
   name: string;
-  city: "Marrakech" | "Essaouira";
+  city: string;
   tagline: string;
   paragraphs: string[];
   highlights: { label: string; description: string }[];
@@ -1074,12 +1097,13 @@ export async function getPropertyPins(): Promise<PropertyPin[]> {
       "slug,title,price_eur,price_unit,listing,type,neighborhood_slug,city,images,bedrooms,surface"
     )
     .eq("published", true)
+    .in("status", ACTIVE_PROPERTY_STATUSES)
     .order("featured", { ascending: false });
   if (error) throw error;
   return (data as {
     slug: string; title: string; price_eur: number; price_unit: "semaine" | "mois" | null;
     listing: Listing; type: PropertyType; neighborhood_slug: string | null;
-    city: "Marrakech" | "Essaouira"; images: string[]; bedrooms: number | null; surface: number | null;
+    city: string; images: string[]; bedrooms: number | null; surface: number | null;
   }[]).map((r) => ({
     slug: r.slug,
     title: r.title,

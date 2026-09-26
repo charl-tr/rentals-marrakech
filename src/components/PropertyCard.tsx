@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, BedDouble, Bath, Maximize, Trees } from "lucide-react";
 import {
   formatMad,
-  propertyTypeLabel,
+  displayPropertyType,
   STATUS_LABELS,
   type Property,
 } from "@/data/properties";
@@ -98,7 +98,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
             {property.neighborhood} · {property.city}
           </span>
           <span className="shrink-0 text-[var(--color-accent)]">
-            {propertyTypeLabel(property.type)}
+            {displayPropertyType(property)}
           </span>
         </div>
 
