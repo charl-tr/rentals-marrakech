@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
 import { useFavorites } from "@/hooks/useFavorites";
+import { trackProperty } from "@/lib/conversion-client";
 
 export default function FavoriteButton({
   slug,
@@ -27,11 +28,12 @@ export default function FavoriteButton({
     toggle(slug);
 
     if (!wasActive) {
+      trackProperty("favorite_add", slug);
       setBurst(true);
       window.setTimeout(() => setBurst(false), 550);
       toast("Ajouté à vos favoris.", {
-        description: "Retrouvez-le à tout moment dans votre sélection.",
-        action: { label: "Voir", onClick: () => router.push("/favoris") },
+        description: "Votre sélection reste sur cet appareil. Retrouvez-la aussi par email.",
+        action: { label: "Ma sélection", onClick: () => router.push("/favoris") },
       });
     } else {
       toast("Retiré de vos favoris.");

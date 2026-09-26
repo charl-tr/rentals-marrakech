@@ -16,6 +16,7 @@
 // ════════════════════════════════════════════════════════════════════
 
 import { updateTag } from "next/cache";
+import { z } from "zod";
 import { supabase } from "@/lib/supabase";
 import { getAdvisor, getPropertyBySlug } from "@/lib/db";
 import {
@@ -159,6 +160,8 @@ export async function submitLead(
     portal_token: portalToken,
     meta: {
       project_label: project,
+      funnel_version: "conversion-v1",
+      ...(z.uuid().safeParse(formData.get("measurementSession")).success ? { funnel_session_id: formData.get("measurementSession") } : {}),
     },
   });
 

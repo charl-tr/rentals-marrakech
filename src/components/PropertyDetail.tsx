@@ -20,6 +20,7 @@ import ShareButton from "@/components/ShareButton";
 import StickyContactBar from "@/components/StickyContactBar";
 import PriceDisplay from "@/components/PriceDisplay";
 import MoroccoFeesCalculator from "@/components/MoroccoFeesCalculator";
+import PropertyMeasurement from "@/components/PropertyMeasurement";
 
 export default async function PropertyDetail({ property }: { property: Property }) {
   const [advisor, similar, allAdvisors] = await Promise.all([
@@ -29,6 +30,7 @@ export default async function PropertyDetail({ property }: { property: Property 
   ]);
   const hero = property.images[0];
   const isLocation = property.listing !== "vente";
+  const unavailable = property.status === "sold" || property.status === "rented";
 
   // Projet pré-rempli pour le formulaire embarqué (mappé sur les options).
   const defaultProject = isLocation
@@ -54,7 +56,7 @@ export default async function PropertyDetail({ property }: { property: Property 
     image: property.images,
     url: `${siteUrl}/${isLocation ? "louer" : "acheter"}/${property.slug}`,
     ...(property.price > 0
-      ? { offers: { "@type": "Offer", price: property.price, priceCurrency: property.currency } }
+      ? { offers: { "@type": "Offer", price: property.price, priceCurrency: property.currency, availability: unavailable ? "https://schema.org/SoldOut" : "https://schema.org/InStock" } }
       : {}),
     address: {
       "@type": "PostalAddress",
@@ -73,7 +75,7 @@ export default async function PropertyDetail({ property }: { property: Property 
 
   const backHref = isLocation ? "/louer" : "/acheter";
   const backLabel = isLocation ? "Retour aux biens à louer" : "Retour aux biens à vendre";
-  const priceLabel = !isLocation
+  const priceLabel = unavailable ? "Dernier prix affiché — hors transaction" : !isLocation
     ? "Prix de vente"
     : property.priceUnit === "mois"
     ? "Loyer mensuel"
@@ -101,13 +103,14 @@ export default async function PropertyDetail({ property }: { property: Property 
 
   return (
     <article className="bg-white">
-      <StickyContactBar
+      <PropertyMeasurement slug={property.slug} />
+      {!unavailable && <StickyContactBar
         propertyTitle={property.title}
         propertyReference={property.reference}
         priceLabel={formattedPrice}
         advisor={advisor}
         demanderHref={demanderHref}
-      />
+      />}
 
       {/* HERO */}
       <section className="relative h-[76svh] min-h-[560px] w-full overflow-hidden bg-[var(--color-charcoal-deep)] md:h-[88vh] md:min-h-[640px]">
@@ -202,6 +205,8 @@ export default async function PropertyDetail({ property }: { property: Property 
         </div>
       </section>
 
+      {unavailable && <section className="bg-[var(--color-cream)] py-8"><div className="container-luxe flex flex-wrap items-center justify-between gap-5"><div><h2 className="font-serif text-2xl">Ce bien est {property.status === "sold" ? "vendu" : "loué"}.</h2><p className="mt-2 text-sm">Cette fiche est conservée à titre d’archive. Découvrez les biens encore disponibles.</p></div><Link className="btn-primary" href={similar.length ? "#biens-similaires" : backHref}>Voir les alternatives</Link></div></section>}
+
       {/* GALLERY */}
       {property.images.length > 1 && (
         <section className="bg-[var(--color-cream)] py-16 md:py-20">
@@ -292,7 +297,7 @@ export default async function PropertyDetail({ property }: { property: Property 
       <section id="contact-bien" className="scroll-mt-24 bg-[var(--color-cream)] py-20 md:py-24">
         <div className="container-luxe max-w-2xl">
           <div className="text-center">
-            <div className="eyebrow">Ce bien vous intéresse ?</div>
+            <div className="eyebrow">{unavailable ? "Vous recherchez un bien comme celui-ci ?" : "Ce bien vous intéresse ?"}</div>
             <h2 className="mt-4 font-serif text-3xl md:text-4xl">Parlons-en.</h2>
             <p className="mt-4 text-sm text-[var(--color-stone)]">
               Réf. {property.reference} · {property.neighborhood}, {property.city} —
@@ -506,7 +511,7 @@ export default async function PropertyDetail({ property }: { property: Property 
 
                   <div className="mt-10">
                     <Link href={demanderHref} className="btn-primary">
-                      Organiser une visite privée
+                      {unavailable ? "Trouver un bien similaire" : "Organiser une visite privée"}
                       <ArrowRight size={14} />
                     </Link>
                   </div>
@@ -518,7 +523,7 @@ export default async function PropertyDetail({ property }: { property: Property 
       )}
 
       {/* CALCULETTE FRAIS — ventes uniquement */}
-      {property.listing === "vente" && (
+      {property.listing === "vente" && !unavailable && (
         <section className="bg-white py-24">
           <div className="container-luxe max-w-3xl">
             <MoroccoFeesCalculator initialPrice={property.price} compact />
@@ -528,11 +533,12 @@ export default async function PropertyDetail({ property }: { property: Property 
 
       {/* SIMILAIRES */}
       {similar.length > 0 && (
-        <section className="bg-[var(--color-cream)] py-24 md:py-28">
+        <section id="biens-similaires" className="scroll-mt-24 bg-[var(--color-cream)] py-16 md:py-20">
           <div className="container-luxe">
             <div className="text-center">
               <div className="eyebrow">À découvrir aussi</div>
-              <h2 className="mt-4 font-serif text-3xl md:text-4xl">Biens similaires.</h2>
+              <h2 className="mt-4 font-serif text-3xl md:text-4xl">À découvrir à {property.city}.</h2>
+              <p className="mt-3 text-sm text-[var(--color-stone)]">Des biens disponibles, classés selon leur proximité avec votre recherche.</p>
               <div className="gold-rule" />
             </div>
             <div className="mt-14 grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">

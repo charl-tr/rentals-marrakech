@@ -20,7 +20,9 @@ function subscribe(onStoreChange: () => void) {
 }
 
 function getConsentSnapshot(): Consent {
-  return window.localStorage.getItem(STORAGE_KEY) as Consent;
+  const choice = window.localStorage.getItem(STORAGE_KEY) as Consent;
+  // Re-ask when the measurement purpose changes; do not reuse old anonymous consent.
+  return choice === "accepted" && localStorage.getItem("mr:measurement-consent") !== "v1" ? null : choice;
 }
 
 export default function CookieBanner() {
@@ -28,6 +30,8 @@ export default function CookieBanner() {
 
   const accept = (value: "accepted" | "essential-only") => {
     window.localStorage.setItem(STORAGE_KEY, value);
+    if (value === "accepted") localStorage.setItem("mr:measurement-consent", "v1");
+    else localStorage.removeItem("mr:measurement-consent");
     window.dispatchEvent(new Event(CONSENT_EVENT));
   };
 
@@ -60,8 +64,8 @@ export default function CookieBanner() {
               </div>
               <p className="mt-2 text-xs leading-relaxed text-[var(--color-charcoal)] md:mt-3 md:text-sm">
                 Des cookies <strong>essentiels</strong> font fonctionner le site.
-                Avec votre accord, une <strong>mesure anonyme</strong> nous aide à
-                l&apos;améliorer. Aucun cookie publicitaire tiers.{" "}
+                Avec votre accord, une <strong>mesure du parcours</strong> nous aide à
+                relier vos consultations à vos demandes et améliorer le service. Aucun cookie publicitaire tiers.{" "}
                 <Link
                   href="/cookies"
                   className="text-[var(--color-terracotta)] underline-offset-2 hover:underline"

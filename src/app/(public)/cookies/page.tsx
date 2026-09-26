@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import SectionHero from "@/components/SectionHero";
+import ResetMeasurementConsent from "@/components/ResetMeasurementConsent";
 
 export const metadata: Metadata = {
   title: "Cookies — Marrakech Realty",
@@ -35,7 +36,7 @@ export default function CookiesPage() {
                 Un cookie est un petit fichier texte déposé sur votre appareil
                 lorsque vous visitez un site. Le stockage local
                 (<code>localStorage</code>) fonctionne sur un principe similaire,
-                avec l&apos;avantage de ne jamais être transmis à nos serveurs.
+                pour conserver certaines préférences sur votre appareil.
               </p>
             </div>
 
@@ -53,6 +54,7 @@ export default function CookiesPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--color-beige-warm)]">
+                    <tr><td className="px-4 py-3 font-mono text-xs">mr:measurement-session</td><td className="px-4 py-3">Avec votre accord uniquement : relier les fiches consultées, ajouts aux favoris et demandes. Identifiant aléatoire valable 30 minutes au maximum.</td><td className="px-4 py-3">sessionStorage</td></tr>
                     <tr>
                       <td className="px-4 py-3 font-mono text-xs">mr:favorites</td>
                       <td className="px-4 py-3 text-[var(--color-stone)]">
@@ -72,10 +74,10 @@ export default function CookiesPage() {
               </div>
               <p className="mt-6 text-sm text-[var(--color-stone)]">
                 <strong>Aucun cookie publicitaire tiers</strong> n&apos;est
-                actuellement installé. Si nous ajoutons à l&apos;avenir un
-                outil de mesure d&apos;audience (Plausible, Vercel Analytics),
-                il sera documenté ici et soumis à votre consentement explicite
-                via la bannière.
+                actuellement installé. La mesure du parcours est pseudonymisée,
+                pas anonyme : si vous envoyez un formulaire, votre session peut
+                être rapprochée de votre demande et de son avancement commercial.
+                Aucun nom, email ou téléphone n’est envoyé dans les événements de navigation.
               </p>
             </div>
 
@@ -83,6 +85,7 @@ export default function CookiesPage() {
               <h2 className="font-serif text-3xl text-[var(--color-charcoal)]">
                 Désactiver
               </h2>
+              <ResetMeasurementConsent />
               <p className="mt-4">
                 Vous pouvez à tout moment effacer les données stockées
                 localement via les préférences de votre navigateur (Préférences

@@ -51,7 +51,7 @@ export default function SaveSelectionBanner({
 
   // Montée : lire le flag "dismiss" + le lien existant sur ce navigateur
   useEffect(() => {
-    setDismissed(window.localStorage.getItem(DISMISS_KEY_PREFIX + kind) === "1");
+    setDismissed(window.sessionStorage.getItem(DISMISS_KEY_PREFIX + kind) === "1");
     setLink(getSelectionLink(kind));
     setChecked(true);
   }, [kind]);
@@ -72,7 +72,7 @@ export default function SaveSelectionBanner({
   }, [state]);
 
   const dismissForever = () => {
-    window.localStorage.setItem(DISMISS_KEY_PREFIX + kind, "1");
+    window.sessionStorage.setItem(DISMISS_KEY_PREFIX + kind, "1");
     setDismissed(true);
   };
 
@@ -163,7 +163,7 @@ export default function SaveSelectionBanner({
   }
 
   // ── État 1 : pas encore lié — formulaire de première capture ─────────
-  if (dismissed || slugs.length < 2) return null;
+  if (dismissed || slugs.length < 1) return null;
 
   return (
     <div className="relative mb-8 rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-5">
@@ -183,8 +183,8 @@ export default function SaveSelectionBanner({
             Recevez votre sélection par email.
           </div>
           <p className="mt-1 text-xs text-[var(--color-stone)]">
-            Retrouvez-la sur tous vos appareils, et laissez un conseiller vous la
-            recontextualiser si besoin.
+            Gardez les biens qui vous plaisent et retrouvez-les sur un autre
+            appareil. Aucun compte à créer.
           </p>
         </div>
 

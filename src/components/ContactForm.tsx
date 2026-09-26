@@ -21,6 +21,7 @@ import {
 import PhoneField from "@/components/PhoneField";
 import EmailField from "@/components/EmailField";
 import FormGuard from "@/components/FormGuard";
+import MeasurementField from "@/components/MeasurementField";
 
 interface ContactFormProps {
   advisors: Advisor[];
@@ -79,6 +80,7 @@ export default function ContactForm({
   });
   const [error, setError] = useState<string | null>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
+  const previousStepRef = useRef(step);
 
   // Mémoire locale : "cette demande a déjà été envoyée depuis ce navigateur".
   // Clé par contexte (bien précis, ou formulaire générique) → au refresh on
@@ -89,7 +91,11 @@ export default function ContactForm({
   const [forceForm, setForceForm] = useState(false);
 
   useEffect(() => {
-    firstInputRef.current?.focus();
+    // Focus only after the visitor changes form steps, never on page entry.
+    if (previousStepRef.current !== step) {
+      firstInputRef.current?.focus({ preventScroll: true });
+    }
+    previousStepRef.current = step;
   }, [step]);
 
   useEffect(() => {
@@ -229,6 +235,7 @@ export default function ContactForm({
         className="rounded-[16px] border border-[var(--color-border)] bg-white p-8 shadow-[var(--shadow-card)] md:p-10"
       >
         <FormGuard />
+        <MeasurementField />
         <input type="hidden" name="channel" value={channel} />
         {propertySlug && (
           <input type="hidden" name="propertySlug" value={propertySlug} />

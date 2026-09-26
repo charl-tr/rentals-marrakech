@@ -1,5 +1,6 @@
 import Breadcrumbs, { type Crumb } from "@/components/Breadcrumbs";
 import BackToList from "@/components/BackToList";
+import Link from "next/link";
 import CatalogueBrowser from "@/components/CatalogueBrowser";
 import { type PropertySummary, type PropertyType } from "@/data/properties";
 import { getCatalogueProperties } from "@/lib/db";
@@ -7,6 +8,7 @@ import { getCatalogueProperties } from "@/lib/db";
 export type FilterMode = "vente" | "location";
 
 export interface CatalogueProps {
+  inventory?: "active" | "sold";
   eyebrow: string;
   title: string;
   subtitle?: string;
@@ -56,6 +58,7 @@ const TYPE_ORDER: PropertyType[] = [
 ];
 
 export default async function Catalogue({
+  inventory = "active",
   eyebrow,
   title,
   subtitle,
@@ -74,7 +77,7 @@ export default async function Catalogue({
   backFallbackHref = "/",
   selectedFilters = {},
 }: CatalogueProps) {
-  const all = await getCatalogueProperties();
+  const all = await getCatalogueProperties(inventory);
   const buckets = filterMode === "location" ? BUDGET_LOCATION : BUDGET_VENTE;
   const prefiltered = all.filter(prefilter);
   const typesInCatalogue = new Set(prefiltered.map((property) => property.type));
@@ -97,6 +100,7 @@ export default async function Catalogue({
               )}
             </div>
           )}
+          {filterMode === "vente" && <nav aria-label="Disponibilité des biens" className="mb-5 flex gap-4 text-sm"><Link href="/acheter" aria-current={inventory === "active" ? "page" : undefined} className="underline underline-offset-4">À vendre</Link><Link href="/biens-vendus" aria-current={inventory === "sold" ? "page" : undefined} className="underline underline-offset-4">Biens vendus</Link></nav>}
           <div className="eyebrow">
             {eyebrow}
           </div>

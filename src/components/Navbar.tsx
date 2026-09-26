@@ -45,6 +45,7 @@ const ACHETER_MEGA: MegaColumn[] = [
   {
     heading: "Outils",
     links: [
+      { href: "/biens-vendus", label: "Biens vendus" },
       { href: "/carte", label: "Vue carte" },
       { href: "/marche", label: "Rapport marché" },
       { href: "/estimer", label: "Estimation gratuite" },
@@ -236,6 +237,7 @@ export default function Navbar() {
             <nav aria-label="Navigation mobile" className="space-y-1">
               {[
                 ["/acheter", "Acheter"],
+                ["/biens-vendus", "Biens vendus"],
                 ["/louer", "Louer"],
                 ["/essaouira", "Essaouira"],
                 ["/deposer-un-bien", "Vendre"],

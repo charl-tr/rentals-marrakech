@@ -45,6 +45,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <h4 className="font-serif text-lg text-white">Acheter</h4>
             <ul className="mt-3 space-y-2 text-sm text-white/65">
+              <li><Link href="/biens-vendus" className="transition-colors hover:text-white">Biens vendus</Link></li>
               <li><Link href="/acheter/riad-renove" className="transition-colors hover:text-white">Riads rénovés</Link></li>
               <li><Link href="/acheter/riad-a-renover" className="transition-colors hover:text-white">Riads à rénover</Link></li>
               <li><Link href="/acheter/villa" className="transition-colors hover:text-white">Villas</Link></li>

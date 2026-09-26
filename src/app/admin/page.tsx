@@ -60,6 +60,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* BODY — streams in as DB resolves */}
+      {session?.role === "director" && <Link href="/admin/conversion" className="btn-outline my-6">Voir le parcours de conversion →</Link>}
       <Suspense fallback={<DashboardSkeleton />}>
         <DashboardBody session={session} now={now} />
       </Suspense>

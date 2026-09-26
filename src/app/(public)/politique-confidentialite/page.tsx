@@ -28,6 +28,7 @@ export default function ConfidentialitePage() {
       <section className="bg-white py-20">
         <div className="container-luxe">
           <div className="mx-auto max-w-3xl space-y-12 leading-relaxed text-[var(--color-ink)]">
+            <div><h2 className="font-serif text-3xl">Mesure du parcours, avec votre accord</h2><p className="mt-4">Si vous acceptez cette mesure, un identifiant de session aléatoire relie vos consultations de biens et ajouts aux favoris. Lors d’une demande, il peut être associé à votre dossier et à son avancement (visite, signature). Cette mesure est pseudonymisée, et non anonyme. Elle ne conditionne jamais l’accès au catalogue ou aux formulaires.</p><p className="mt-4">Vous pouvez désactiver cette mesure depuis la <Link href="/cookies" className="underline">page Cookies</Link>. Ce choix arrête les nouvelles mesures ; pour supprimer les données déjà rattachées à votre dossier, contactez l’agence.</p></div>
             <div>
               <h2 className="font-serif text-3xl text-[var(--color-charcoal)]">
                 Visite anonyme par défaut

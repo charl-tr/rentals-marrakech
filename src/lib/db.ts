@@ -179,17 +179,24 @@ export const getAllProperties = cache(async (): Promise<Property[]> => {
  */
 export const getCatalogueProperties = cache(
   unstable_cache(
-    async (): Promise<PropertySummary[]> => {
+    async (inventory: "active" | "sold" = "active"): Promise<PropertySummary[]> => {
+      const rows: PropertyWithNeigh[] = [];
+      for (let offset = 0; ; offset += 500) {
       const { data, error } = await supabase
         .from("properties")
         .select(PROPERTY_SUMMARY_SELECT)
         .eq("published", true)
-        .in("status", ACTIVE_PROPERTY_STATUSES)
+        .in("status", inventory === "sold" ? ["sold"] : ACTIVE_PROPERTY_STATUSES)
         .order("featured", { ascending: false })
-        .order("price_eur", { ascending: false });
+        .order("price_eur", { ascending: false })
+        .order("slug")
+        .range(offset, offset + 499);
       if (error) throw error;
+      rows.push(...(data as unknown as PropertyWithNeigh[]));
+      if (data.length < 500) break;
+      }
 
-      return (data as unknown as PropertyWithNeigh[]).map((row) => ({
+      return rows.map((row) => ({
         slug: row.slug,
         title: row.title,
         type: row.type,
@@ -220,7 +227,7 @@ export const getCatalogueProperties = cache(
           { lat: 31.6295, lng: -7.9811 },
       }));
     },
-    ["public-property-catalogue-v2"],
+    ["public-property-catalogue-v3"],
     { tags: ["public-properties"], revalidate: 300 }
   )
 );
@@ -368,20 +375,17 @@ export async function getFirstEssaouiraProperty(): Promise<Property | null> {
 export const getSimilarProperties = cache(async (
   current: Property,
   limit = 3
-): Promise<Property[]> => {
-  // Stratégie : même type OU même quartier, exclure le bien actuel
-  const { data, error } = await supabase
-    .from("properties")
-    .select(PROPERTY_PUBLIC_SELECT)
-    .eq("published", true)
-    .neq("slug", current.slug)
-    .in("status", ACTIVE_PROPERTY_STATUSES)
-    .or(`type.eq.${current.type},neighborhood_slug.eq.${current.neighborhoodSlug}`)
-    .limit(limit);
-  if (error) throw error;
-  return (data as unknown as PropertyWithNeigh[]).map((r) =>
-    rowToProperty(r, r.neighborhood?.name ?? null)
-  );
+): Promise<PropertySummary[]> => {
+  const catalogue = await getCatalogueProperties();
+  const score = (p: PropertySummary) =>
+    (p.type === current.type ? 100 : 0) +
+    (p.neighborhoodSlug && p.neighborhoodSlug === current.neighborhoodSlug ? 25 : 0) +
+    (p.price > 0 && current.price > 0 ? 20 / (1 + Math.abs(Math.log(p.price / current.price))) : 0) +
+    (p.featured ? 2 : 0);
+  return catalogue
+    .filter((p) => p.slug !== current.slug && p.listing === current.listing && p.city === current.city && p.status !== "reserved")
+    .sort((a, b) => score(b) - score(a) || a.slug.localeCompare(b.slug))
+    .slice(0, limit);
 });
 
 // ════════════════════════════════════════════════════════════════════
