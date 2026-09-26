@@ -5,10 +5,10 @@ import { ArrowRight } from "lucide-react";
 import Catalogue from "@/components/Catalogue";
 import PropertyCard from "@/components/PropertyCard";
 import SectionHero from "@/components/SectionHero";
-import { type Property } from "@/data/properties";
-import { getAllProperties, getFirstEssaouiraProperty } from "@/lib/db";
+import { type PropertySummary } from "@/data/properties";
+import { getCatalogueProperties, getFirstEssaouiraProperty } from "@/lib/db";
 
-const ESSAOUIRA_BASE = (p: Property) => p.city === "Essaouira";
+const ESSAOUIRA_BASE = (p: PropertySummary) => p.city === "Essaouira";
 
 const SUB_TYPES = {
  "vente-villa": {
@@ -16,14 +16,14 @@ const SUB_TYPES = {
  title: "Villas à vendre — Essaouira & bord de mer.",
  subtitle:
  "Villas contemporaines, riads-villas et maisons pieds dans l'eau à Diabat, Sidi Kaouki, Ghazoua et la médina d'Essaouira.",
- filter: (p: Property) => ESSAOUIRA_BASE(p) && p.type === "villa" && p.listing === "vente",
+ filter: (p: PropertySummary) => ESSAOUIRA_BASE(p) && p.type === "villa" && p.listing === "vente",
  },
  "vente-riad": {
  eyebrow: "Essaouira · Vente riad",
  title: "Riads à vendre dans la médina d'Essaouira.",
  subtitle:
  "Riads rénovés et maisons d'hôtes, derrière les remparts de la médina UNESCO.",
- filter: (p: Property) =>
+ filter: (p: PropertySummary) =>
  ESSAOUIRA_BASE(p) &&
  (p.type === "riad-renove" || p.type === "riad-a-renover") &&
  p.listing === "vente",
@@ -33,14 +33,14 @@ const SUB_TYPES = {
  title: "Terrains constructibles — Essaouira.",
  subtitle:
  "Parcelles à bâtir à Diabat, Ghazoua et alentours d'Essaouira, sous titres fonciers garantis.",
- filter: (p: Property) => ESSAOUIRA_BASE(p) && p.type === "terrain" && p.listing === "vente",
+ filter: (p: PropertySummary) => ESSAOUIRA_BASE(p) && p.type === "terrain" && p.listing === "vente",
  },
  "location-villa": {
  eyebrow: "Essaouira · Location villa",
  title: "Villas en location — Essaouira.",
  subtitle:
  "Locations longue durée meublées et locations saisonnières en bord de mer.",
- filter: (p: Property) => ESSAOUIRA_BASE(p) && p.type === "villa" && p.listing !== "vente",
+ filter: (p: PropertySummary) => ESSAOUIRA_BASE(p) && p.type === "villa" && p.listing !== "vente",
  },
 } as const;
 
@@ -109,7 +109,7 @@ export default async function EssaouiraPage({
  if (path.length > 0) notFound();
 
  // Hub Essaouira
- const allProperties = await getAllProperties();
+ const allProperties = await getCatalogueProperties();
  const essaouiraProperties = allProperties.filter(ESSAOUIRA_BASE);
  const featured = essaouiraProperties.find((p) => p.featured) ?? essaouiraProperties[0];
  const heroSource = featured ?? (await getFirstEssaouiraProperty());

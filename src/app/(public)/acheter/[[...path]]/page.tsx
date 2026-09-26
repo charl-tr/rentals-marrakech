@@ -7,11 +7,12 @@ import {
   NEIGHBORHOODS,
   propertyTypeLabel,
   type Property,
+  type PropertySummary,
   type PropertyType,
 } from "@/data/properties";
 import { getPropertyBySlug } from "@/lib/db";
 
-const VENTE_BASE = (p: Property) =>
+const VENTE_BASE = (p: PropertySummary) =>
   p.listing === "vente" || p.type === "programme-neuf";
 
 type ResolvedRoute =

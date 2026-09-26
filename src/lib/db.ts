@@ -17,6 +17,7 @@ import type {
   Advisor,
   Listing,
   Property,
+  PropertySummary,
   PropertyType,
 } from "@/data/properties";
 import { NEIGHBORHOOD_COORDS } from "@/data/properties";
@@ -146,6 +147,12 @@ const PROPERTY_PUBLIC_SELECT = `
   neighborhood:neighborhoods(name)
 `;
 const PROPERTY_ADMIN_SELECT = "*, neighborhood:neighborhoods(name)";
+const PROPERTY_SUMMARY_SELECT = `
+  slug, title, type, listing, status, exclusivity, city, neighborhood_slug,
+  source_type_label, source_location_label, price_eur, price_mad, price_unit,
+  bedrooms, bathrooms, surface, land_surface, pool, images, featured,
+  neighborhood:neighborhoods(name)
+`;
 const ACTIVE_PROPERTY_STATUSES = ["available", "new", "reserved"] as const;
 
 type PropertyWithNeigh = PropertyRow & {
@@ -165,6 +172,57 @@ export const getAllProperties = cache(async (): Promise<Property[]> => {
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
 });
+
+/**
+ * Catalogue public allégé et mis en cache : aucune description, story,
+ * feature ou galerie complète n'est sérialisée vers le navigateur.
+ */
+export const getCatalogueProperties = cache(
+  unstable_cache(
+    async (): Promise<PropertySummary[]> => {
+      const { data, error } = await supabase
+        .from("properties")
+        .select(PROPERTY_SUMMARY_SELECT)
+        .eq("published", true)
+        .in("status", ACTIVE_PROPERTY_STATUSES)
+        .order("featured", { ascending: false })
+        .order("price_eur", { ascending: false });
+      if (error) throw error;
+
+      return (data as unknown as PropertyWithNeigh[]).map((row) => ({
+        slug: row.slug,
+        title: row.title,
+        type: row.type,
+        listing: row.listing,
+        status: row.status ?? "available",
+        exclusivity: row.exclusivity,
+        city: row.city,
+        neighborhood:
+          row.source_location_label ?? row.neighborhood?.name ?? row.neighborhood_slug ?? "",
+        neighborhoodSlug: row.neighborhood_slug ?? "",
+        sourceTypeLabel: row.source_type_label ?? undefined,
+        price: row.price_eur,
+        priceMad: row.price_mad ?? undefined,
+        priceUnit: row.price_unit ?? undefined,
+        bedrooms: row.bedrooms ?? 0,
+        bathrooms: row.bathrooms ?? 0,
+        surface: row.surface ?? 0,
+        landSurface: row.land_surface ?? undefined,
+        pool: row.pool,
+        featured: row.featured,
+        // Une seule image suffit dans les listes. La galerie complète reste
+        // chargée uniquement sur la fiche du bien.
+        images: [row.images?.[0] ?? "/hero-home.jpg"],
+        coordinates:
+          (row.neighborhood_slug ? NEIGHBORHOOD_COORDS[row.neighborhood_slug] : null) ??
+          CITY_DEFAULT_COORDS[row.city] ??
+          { lat: 31.6295, lng: -7.9811 },
+      }));
+    },
+    ["public-property-catalogue-v1"],
+    { tags: ["public-properties"], revalidate: 300 }
+  )
+);
 
 export const getFeaturedProperties = cache(async (limit = 3): Promise<Property[]> => {
   const { data, error } = await supabase

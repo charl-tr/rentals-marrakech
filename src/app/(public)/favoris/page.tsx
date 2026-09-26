@@ -8,7 +8,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import PropertyCard from "@/components/PropertyCard";
 import SectionHero from "@/components/SectionHero";
 import SaveSelectionBanner from "@/components/SaveSelectionBanner";
-import type { Property } from "@/data/properties";
+import type { PropertySummary } from "@/data/properties";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,13 +22,34 @@ const CITY_DEFAULT_COORDS = {
   Essaouira: { lat: 31.5085, lng: -9.7595 },
 } as const;
 
-function rowToProperty(row: any): Property {
-  const neighborhood = row.neighborhood as { name: string } | null;
+interface FavoriteRow {
+  slug: string;
+  title: string;
+  type: PropertySummary["type"];
+  listing: PropertySummary["listing"];
+  status: PropertySummary["status"] | null;
+  exclusivity: boolean;
+  city: string;
+  neighborhood_slug: string | null;
+  source_type_label: string | null;
+  price_eur: number;
+  price_mad: number | null;
+  price_unit: PropertySummary["priceUnit"] | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  surface: number | null;
+  land_surface: number | null;
+  pool: boolean;
+  featured?: boolean;
+  images: string[] | null;
+  neighborhood: { name: string } | null;
+}
+
+function rowToProperty(row: FavoriteRow): PropertySummary {
+  const neighborhood = row.neighborhood;
   return {
     slug: row.slug,
-    reference: row.reference,
     title: row.title,
-    tagline: row.tagline ?? "",
     type: row.type,
     listing: row.listing,
     status: row.status ?? "available",
@@ -36,40 +57,31 @@ function rowToProperty(row: any): Property {
     city: row.city,
     neighborhood: neighborhood?.name ?? row.neighborhood_slug ?? "",
     neighborhoodSlug: row.neighborhood_slug ?? "",
+    sourceTypeLabel: row.source_type_label ?? undefined,
     price: row.price_eur,
-    currency: "EUR",
     priceMad: row.price_mad ?? undefined,
     priceUnit: row.price_unit ?? undefined,
     bedrooms: row.bedrooms ?? 0,
     bathrooms: row.bathrooms ?? 0,
     surface: row.surface ?? 0,
     landSurface: row.land_surface ?? undefined,
-    yearBuilt: row.year_built ?? undefined,
     pool: row.pool,
     featured: row.featured,
-    shortDescription: row.short_description ?? "",
-    story: row.story ?? { eyebrow: "", title: "", paragraphs: [] },
-    description: row.description ?? "",
-    features: row.features ?? [],
-    images: row.images ?? [],
-    walkingDistances: row.walking_distances ?? [],
+    images: [row.images?.[0] ?? "/hero-home.jpg"],
     coordinates:
       CITY_DEFAULT_COORDS[row.city as keyof typeof CITY_DEFAULT_COORDS] ??
       CITY_DEFAULT_COORDS.Marrakech,
-    advisorSlug: row.advisor_slug ?? "",
   };
 }
 
 export default function FavorisPage() {
   const { favorites, hydrated, count } = useFavorites();
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [properties, setProperties] = useState<PropertySummary[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!hydrated) return;
     if (favorites.length === 0) {
-      setProperties([]);
-      setLoading(false);
       return;
     }
     let cancelled = false;
@@ -77,15 +89,20 @@ export default function FavorisPage() {
       setLoading(true);
       const { data } = await supabase
         .from("properties")
-        .select("*, neighborhood:neighborhoods(name)")
+        .select(`
+          slug,title,type,listing,status,exclusivity,city,neighborhood_slug,
+          source_type_label,price_eur,price_mad,price_unit,bedrooms,bathrooms,
+          surface,land_surface,pool,images,neighborhood:neighborhoods(name)
+        `)
         .in("slug", favorites)
         .eq("published", true);
       if (cancelled) return;
       // Respecter l'ordre d'ajout (favoris[0] en premier)
-      const byslug = new Map((data ?? []).map((r: any) => [r.slug, r]));
+      const rows = (data ?? []) as unknown as FavoriteRow[];
+      const byslug = new Map(rows.map((row) => [row.slug, row]));
       const ordered = favorites
         .map((s) => byslug.get(s))
-        .filter(Boolean)
+        .filter((row): row is FavoriteRow => Boolean(row))
         .map(rowToProperty);
       setProperties(ordered);
       setLoading(false);
@@ -115,7 +132,7 @@ export default function FavorisPage() {
 
       <section className="bg-[var(--color-cream)] py-16">
         <div className="container-luxe">
-          {!hydrated || loading ? (
+          {!hydrated || (loading && favorites.length > 0) ? (
             <div className="py-20 text-center text-sm text-[var(--color-stone)]">
               Chargement…
             </div>

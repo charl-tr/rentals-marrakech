@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Catalogue from "@/components/Catalogue";
 import PropertyDetail from "@/components/PropertyDetail";
-import { type Property } from "@/data/properties";
+import { type Property, type PropertySummary } from "@/data/properties";
 import { getPropertyBySlug } from "@/lib/db";
 
-const LOUER_BASE = (p: Property) =>
+const LOUER_BASE = (p: PropertySummary) =>
   p.listing === "location" || p.listing === "location-saisonniere";
 
 type Route =

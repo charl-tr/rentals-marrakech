@@ -1,8 +1,8 @@
 import Breadcrumbs, { type Crumb } from "@/components/Breadcrumbs";
 import BackToList from "@/components/BackToList";
 import CatalogueBrowser from "@/components/CatalogueBrowser";
-import { type Property, type PropertyType } from "@/data/properties";
-import { getAllProperties } from "@/lib/db";
+import { type PropertySummary, type PropertyType } from "@/data/properties";
+import { getCatalogueProperties } from "@/lib/db";
 
 export type FilterMode = "vente" | "location";
 
@@ -11,7 +11,7 @@ export interface CatalogueProps {
   title: string;
   subtitle?: string;
   breadcrumbs?: Crumb[];
-  prefilter: (p: Property) => boolean;
+  prefilter: (p: PropertySummary) => boolean;
   filterMode?: FilterMode;
   visibleFilters?: {
     type?: boolean;
@@ -74,7 +74,7 @@ export default async function Catalogue({
   backFallbackHref = "/",
   selectedFilters = {},
 }: CatalogueProps) {
-  const all = await getAllProperties();
+  const all = await getCatalogueProperties();
   const buckets = filterMode === "location" ? BUDGET_LOCATION : BUDGET_VENTE;
   const prefiltered = all.filter(prefilter);
   const typesInCatalogue = new Set(prefiltered.map((property) => property.type));

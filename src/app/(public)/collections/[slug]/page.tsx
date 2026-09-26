@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
 import SectionHero from "@/components/SectionHero";
 import PropertyCard from "@/components/PropertyCard";
-import { getAllProperties } from "@/lib/db";
+import { getCatalogueProperties } from "@/lib/db";
 import { COLLECTIONS, findCollection } from "@/data/collections";
 
 export async function generateMetadata({
@@ -35,7 +35,7 @@ export default async function CollectionPage({
   const col = findCollection(slug);
   if (!col) notFound();
 
-  const properties = await getAllProperties();
+  const properties = await getCatalogueProperties();
   let matches = properties.filter(col.filter);
   if (col.sort) {
     matches = [...matches].sort(col.sort);
@@ -86,7 +86,7 @@ export default async function CollectionPage({
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {matches.map((p, i) => (
-                <PropertyCard key={p.slug} property={p} priority={i < 3} />
+                <PropertyCard key={p.slug} property={p} priority={i === 0} />
               ))}
             </div>
           )}

@@ -6,7 +6,7 @@ import { ArrowRight, MapPin } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import {
- getAllProperties,
+ getCatalogueProperties,
  getEditorializedNeighborhoods,
  getNeighborhood,
 } from "@/lib/db";
@@ -42,7 +42,7 @@ export default async function QuartierPage({
  const q = await getNeighborhood(slug);
  if (!q || q.paragraphs.length === 0) notFound();
 
- const allProperties = await getAllProperties();
+ const allProperties = await getCatalogueProperties();
  const propertiesInQuartier = allProperties.filter(
  (p) => p.neighborhoodSlug === q.slug
  );
@@ -56,7 +56,7 @@ export default async function QuartierPage({
  src={q.imageHero}
  alt={q.name}
  fill
- priority
+ preload
  sizes="100vw"
  className="object-cover"
  />

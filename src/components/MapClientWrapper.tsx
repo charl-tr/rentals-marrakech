@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ChevronRight, X } from "lucide-react";
 import type { PropertyPin } from "@/lib/db";
 import { formatPrice, propertyTypeLabel } from "@/data/properties";
@@ -20,15 +21,15 @@ const MapView = dynamic(() => import("./MapView"), {
 
 // ── Viewport hook ─────────────────────────────────────────────────────────────
 function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(true); // SSR-safe default
-  useEffect(() => {
+  return useSyncExternalStore(
+    (onChange) => {
     const mq = window.matchMedia("(min-width: 1024px)");
-    setIsDesktop(mq.matches);
-    const fn = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mq.addEventListener("change", fn);
-    return () => mq.removeEventListener("change", fn);
-  }, []);
-  return isDesktop;
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia("(min-width: 1024px)").matches,
+    () => true
+  );
 }
 
 type Filter = "all" | "vente" | "location";
@@ -126,10 +127,12 @@ function PropertyCard({
       {/* Image */}
       <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden bg-[var(--color-beige-warm)] sm:h-20 sm:w-24">
         {pin.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={pin.image}
             alt={pin.title}
+            fill
+            sizes="96px"
+            quality={50}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
@@ -191,8 +194,14 @@ function MobileActiveCard({
       {/* Image */}
       <div className="h-16 w-20 flex-shrink-0 overflow-hidden bg-[var(--color-beige-warm)]">
         {pin.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={pin.image} alt={pin.title} className="h-full w-full object-cover" />
+          <Image
+            src={pin.image}
+            alt={pin.title}
+            width={80}
+            height={64}
+            quality={50}
+            className="h-full w-full object-cover"
+          />
         ) : (
           <div className="h-full w-full" />
         )}

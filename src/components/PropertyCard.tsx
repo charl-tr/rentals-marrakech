@@ -5,14 +5,14 @@ import {
   formatMad,
   displayPropertyType,
   STATUS_LABELS,
-  type Property,
+  type PropertySummary,
 } from "@/data/properties";
 import FavoriteButton from "@/components/FavoriteButton";
 import CompareToggleButton from "@/components/CompareToggleButton";
 import PriceDisplay from "@/components/PriceDisplay";
 
 interface Props {
-  property: Property;
+  property: PropertySummary;
   priority?: boolean;
 }
 
@@ -57,7 +57,8 @@ export default function PropertyCard({ property, priority = false }: Props) {
           src={property.images[0]}
           alt={property.title}
           fill
-          priority={priority}
+          preload={priority}
+          quality={55}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className={`object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.045] ${
             isUnavailable ? "grayscale-[40%]" : ""

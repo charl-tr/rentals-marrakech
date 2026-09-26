@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
     // dépasser le timeout de l'optimiseur et renvoyer des 500 sur /_next/image.
     // On garde le WebP par défaut (fiable). Cache long conservé.
     minimumCacheTTL: 2678400,
+    // Vignettes plus légères, galeries plus qualitatives. Next 16 exige
+    // une allow-list explicite et ramenait sinon toutes les demandes à 75.
+    qualities: [50, 55, 68, 75],
     remotePatterns: [
       // Photos MR (Wayback-scraped, hébergées sur WP)
       { protocol: "https", hostname: "www.marrakechrealty.com" },

@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import SectionHero from "@/components/SectionHero";
-import { getAllProperties } from "@/lib/db";
+import { getCatalogueProperties } from "@/lib/db";
 import { COLLECTIONS } from "@/data/collections";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CollectionsIndexPage() {
-  const properties = await getAllProperties();
+  const properties = await getCatalogueProperties();
 
   return (
     <>

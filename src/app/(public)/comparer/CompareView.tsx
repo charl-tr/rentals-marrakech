@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Bath, BedDouble, Maximize, MapPin, Trees, Waves, X } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useCompareList } from "@/hooks/useCompareList";
 import { useCurrency, formatInCurrency } from "@/hooks/useCurrency";
 import { propertyTypeLabel, type Property } from "@/data/properties";
@@ -16,21 +15,40 @@ import SaveSelectionBanner from "@/components/SaveSelectionBanner";
 // se synchronise (mais le server render initial reste juste la baseline).
 // ════════════════════════════════════════════════════════════════════
 
+export type ComparisonProperty = Pick<
+  Property,
+  | "slug"
+  | "reference"
+  | "title"
+  | "type"
+  | "listing"
+  | "city"
+  | "neighborhood"
+  | "price"
+  | "bedrooms"
+  | "bathrooms"
+  | "surface"
+  | "landSurface"
+  | "yearBuilt"
+  | "pool"
+  | "exclusivity"
+  | "images"
+>;
+
 export default function CompareView({
   properties,
 }: {
-  properties: Property[];
+  properties: ComparisonProperty[];
 }) {
   const { items, remove, hydrated } = useCompareList();
   const { currency, hydrated: currencyHydrated } = useCurrency();
   const effective = currencyHydrated ? currency : "EUR";
 
-  // Synchroniser — si localStorage a changé, ne montrer que les biens présents dans items
-  const [displayed, setDisplayed] = useState<Property[]>(properties);
-  useEffect(() => {
-    if (!hydrated) return;
-    setDisplayed(properties.filter((p) => items.includes(p.slug)));
-  }, [items, hydrated, properties]);
+  // Dérivé directement de localStorage : aucun rendu intermédiaire ni effet
+  // de synchronisation supplémentaire.
+  const displayed = hydrated
+    ? properties.filter((property) => items.includes(property.slug))
+    : properties;
 
   if (displayed.length === 0) {
     return (

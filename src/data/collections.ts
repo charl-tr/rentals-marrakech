@@ -4,7 +4,7 @@
 // table `collections` quand on voudra les éditer depuis l'admin.
 // ════════════════════════════════════════════════════════════════════
 
-import type { Property } from "./properties";
+import type { PropertySummary } from "./properties";
 
 export interface Collection {
   slug: string;
@@ -12,9 +12,9 @@ export interface Collection {
   eyebrow: string;
   subtitle: string;
   heroImage?: string; // à fetch depuis un bien featured si absent
-  filter: (property: Property) => boolean;
+  filter: (property: PropertySummary) => boolean;
   /** Tri optionnel — par défaut featured puis prix desc */
-  sort?: (a: Property, b: Property) => number;
+  sort?: (a: PropertySummary, b: PropertySummary) => number;
 }
 
 export const COLLECTIONS: Collection[] = [

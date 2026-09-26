@@ -83,6 +83,32 @@ export interface Property {
   advisorSlug: string;
 }
 
+/** Données strictement nécessaires aux cartes et filtres du catalogue. */
+export type PropertySummary = Pick<
+  Property,
+  | "slug"
+  | "title"
+  | "type"
+  | "listing"
+  | "status"
+  | "exclusivity"
+  | "city"
+  | "neighborhood"
+  | "neighborhoodSlug"
+  | "sourceTypeLabel"
+  | "price"
+  | "priceMad"
+  | "priceUnit"
+  | "bedrooms"
+  | "bathrooms"
+  | "surface"
+  | "landSurface"
+  | "pool"
+  | "featured"
+  | "images"
+  | "coordinates"
+>;
+
 const TYPE_LABELS: Record<PropertyType, string> = {
   "riad-renove": "Riad rénové",
   "riad-a-renover": "Riad à rénover",

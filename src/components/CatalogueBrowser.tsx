@@ -1,23 +1,33 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronDown, LayoutGrid, Map as MapIcon } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
-import MapClientWrapper from "@/components/MapClientWrapper";
 import {
   NEIGHBORHOODS,
   propertyTypeLabel,
-  type Property,
+  type PropertySummary,
   type PropertyType,
 } from "@/data/properties";
 import type { PropertyPin } from "@/lib/db";
 import type { FilterMode } from "@/components/Catalogue";
 
 type Bucket = { key: string; label: string; min?: number; max?: number };
+const PAGE_SIZE = 24;
+
+const MapClientWrapper = dynamic(() => import("@/components/MapClientWrapper"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center bg-[var(--color-cream)] text-[11px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
+      Chargement de la carte…
+    </div>
+  ),
+});
 
 interface Props {
-  properties: Property[];
+  properties: PropertySummary[];
   mode: FilterMode;
   baseHref: string;
   visibleFilters: {
@@ -62,7 +72,7 @@ const SORT_OPTIONS = [
   { value: "surface-desc", label: "Plus grandes surfaces" },
 ];
 
-function matches(p: Property, f: Filters, buckets: readonly Bucket[], mode: FilterMode) {
+function matches(p: PropertySummary, f: Filters, buckets: readonly Bucket[], mode: FilterMode) {
   if (f.type && p.type !== f.type) return false;
   if (f.quartier && p.neighborhoodSlug !== f.quartier) return false;
   if (f.ville && p.city !== f.ville) return false;
@@ -89,7 +99,7 @@ function matches(p: Property, f: Filters, buckets: readonly Bucket[], mode: Filt
   return true;
 }
 
-function toPin(p: Property): PropertyPin {
+function toPin(p: PropertySummary): PropertyPin {
   return {
     slug: p.slug,
     title: p.title,
@@ -117,6 +127,8 @@ export default function CatalogueBrowser({
 }: Props) {
   const [filters, setFilters] = useState<Filters>(initial);
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const isMap = filters.vue === "carte";
 
   useEffect(() => {
@@ -130,11 +142,13 @@ export default function CatalogueBrowser({
 
   const set = useCallback((patch: Partial<Filters>) => {
     setFilters((f) => ({ ...f, ...patch }));
+    setVisibleCount(PAGE_SIZE);
     setOpenKey(null);
   }, []);
 
   const clearAll = useCallback(() => {
     setFilters((f) => ({ tri: f.tri, vue: f.vue }));
+    setVisibleCount(PAGE_SIZE);
     setOpenKey(null);
   }, []);
 
@@ -146,6 +160,26 @@ export default function CatalogueBrowser({
       out = [...out].sort((a, b) => (b.surface ?? 0) - (a.surface ?? 0));
     return out;
   }, [properties, filters, buckets, mode]);
+
+  const visibleItems = useMemo(
+    () => items.slice(0, visibleCount),
+    [items, visibleCount]
+  );
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target || visibleCount >= items.length) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCount((count) => Math.min(count + PAGE_SIZE, items.length));
+        }
+      },
+      { rootMargin: "500px 0px" }
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [items.length, visibleCount]);
 
   const typeOpts = useMemo(() => {
     const candidates = properties.filter((property) =>
@@ -342,9 +376,26 @@ export default function CatalogueBrowser({
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-20">
-                {items.map((p, i) => (
-                  <PropertyCard key={p.slug} property={p} priority={i < 3} />
+                {visibleItems.map((p, i) => (
+                  <PropertyCard key={p.slug} property={p} priority={i === 0} />
                 ))}
+              </div>
+            )}
+
+            {!isMap && visibleCount < items.length && (
+              <div ref={loadMoreRef} className="mt-16 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setVisibleCount((count) => Math.min(count + PAGE_SIZE, items.length))
+                  }
+                  className="btn-outline"
+                >
+                  Afficher plus
+                  <span className="text-[var(--color-stone)]">
+                    {Math.min(PAGE_SIZE, items.length - visibleCount)}
+                  </span>
+                </button>
               </div>
             )}
           </div>

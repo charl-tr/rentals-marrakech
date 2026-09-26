@@ -57,6 +57,7 @@ export default function PropertyGallery({
               alt={`${title} — vue ${i + 1}`}
               fill
               sizes="700px"
+              quality={68}
               className="object-cover transition-transform duration-[900ms] group-hover:scale-[1.02]"
             />
             {/* Hover overlay — fullscreen hint */}
@@ -121,8 +122,9 @@ export default function PropertyGallery({
               src={images[openIndex]}
               alt={`${title} — vue ${openIndex + 1}`}
               fill
-              priority
+              preload
               sizes="100vw"
+              quality={75}
               className="animate-fade-in object-contain"
             />
 
@@ -170,6 +172,7 @@ export default function PropertyGallery({
                       alt=""
                       fill
                       sizes="80px"
+                      quality={50}
                       className="object-cover"
                     />
                   </button>

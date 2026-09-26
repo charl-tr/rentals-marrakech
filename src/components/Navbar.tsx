@@ -36,8 +36,10 @@ const ACHETER_MEGA: MegaColumn[] = [
     heading: "Autres",
     links: [
       { href: "/acheter/appartement", label: "Appartements" },
+      { href: "/acheter/maison-hotes", label: "Maisons d'hôtes" },
       { href: "/acheter/programmes-neufs", label: "Programmes neufs" },
       { href: "/acheter/terrain", label: "Terrains" },
+      { href: "/acheter/autre", label: "Commerces" },
     ],
   },
   {
@@ -113,8 +115,11 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setMobileOpen(false);
-    setOpenMenu(null);
+    const closeTimer = window.setTimeout(() => {
+      setMobileOpen(false);
+      setOpenMenu(null);
+    }, 0);
+    return () => window.clearTimeout(closeTimer);
   }, [pathname]);
 
   const textColor = solid
