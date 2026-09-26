@@ -4,6 +4,7 @@ import CookieBanner from "@/components/CookieBanner";
 import CompareFloatingDock from "@/components/CompareFloatingDock";
 import FloatingContact from "@/components/FloatingContact";
 import ScrollToTop from "@/components/ScrollToTop";
+import BackToTopButton from "@/components/BackToTopButton";
 
 // ── Cache ISR par défaut sur tout le groupe public ────────────────────
 // Les pages de contenu (accueil, catalogue, marché, quartiers, fiches…)
@@ -65,6 +66,7 @@ export default function PublicLayout({
       <CookieBanner />
       <CompareFloatingDock />
       <FloatingContact />
+      <BackToTopButton />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}

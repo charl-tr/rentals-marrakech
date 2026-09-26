@@ -51,7 +51,7 @@ export default async function QuartierPage({
  return (
  <article>
  {/* HERO */}
- <section className="relative h-[88vh] min-h-[640px] w-full overflow-hidden bg-[var(--color-charcoal)]">
+ <section className="relative h-[62svh] min-h-[460px] w-full overflow-hidden bg-[var(--color-charcoal)] md:h-[88vh] md:min-h-[640px]">
  <Image
  src={q.imageHero}
  alt={q.name}
@@ -61,7 +61,8 @@ export default async function QuartierPage({
  className="object-cover"
  />
  <div className="absolute inset-0 hero-overlay-bottom" />
- <div className="container-luxe relative z-10 flex h-full flex-col justify-between pb-20 pt-[112px]">
+ <div className="container-luxe relative z-10 flex h-full flex-col justify-between pb-10 pt-20 md:pb-20 md:pt-[112px]">
+ <div className="hidden sm:block">
  <Breadcrumbs
  variant="dark"
  items={[
@@ -70,14 +71,15 @@ export default async function QuartierPage({
  { label: q.name },
  ]}
  />
+ </div>
  <div>
  <div className="hero-text-soft eyebrow-light">
  {q.city} — Quartier
  </div>
- <h1 className="hero-text mt-5 font-serif text-6xl leading-[1.05] text-white md:text-7xl lg:text-[88px]">
+ <h1 className="hero-text mt-3 font-serif text-[2.75rem] leading-[1.04] text-white md:mt-5 md:text-7xl lg:text-[88px]">
  {q.name}.
  </h1>
- <p className="hero-text-soft mt-8 max-w-2xl text-xl leading-relaxed text-white/90">
+ <p className="hero-text-soft mt-4 max-w-2xl text-sm leading-relaxed text-white/90 md:mt-8 md:text-xl">
  {q.tagline}
  </p>
  </div>

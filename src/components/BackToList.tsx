@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
 /**
@@ -12,21 +11,17 @@ export default function BackToList({
   fallbackHref,
   fallbackLabel = "Retour aux biens",
   variant = "dark",
+  compactOnMobile = false,
 }: {
   fallbackHref: string;
   fallbackLabel?: string;
   variant?: "light" | "dark";
+  compactOnMobile?: boolean;
 }) {
   const router = useRouter();
-  const [hasHistory, setHasHistory] = useState(false);
-
-  useEffect(() => {
-    // window.history.length > 2 = on a une page précédente dans cet onglet
-    setHasHistory(typeof window !== "undefined" && window.history.length > 2);
-  }, []);
 
   const handleClick = (e: React.MouseEvent) => {
-    if (hasHistory) {
+    if (window.history.length > 2) {
       e.preventDefault();
       router.back();
     }
@@ -37,10 +32,19 @@ export default function BackToList({
     <a
       href={fallbackHref}
       onClick={handleClick}
-      className={variant === "dark" ? "btn-back-dark" : "btn-back"}
+      className={`${variant === "dark" ? "btn-back-dark" : "btn-back"} ${
+        compactOnMobile ? "max-sm:border-0 max-sm:p-0 max-sm:backdrop-blur-none" : ""
+      }`}
     >
       <ArrowLeft size={12} />
-      {hasHistory ? "Retour" : fallbackLabel}
+      {compactOnMobile ? (
+        <>
+          <span className="sm:hidden">Retour</span>
+          <span className="hidden sm:inline">{fallbackLabel}</span>
+        </>
+      ) : (
+        fallbackLabel
+      )}
     </a>
   );
 }

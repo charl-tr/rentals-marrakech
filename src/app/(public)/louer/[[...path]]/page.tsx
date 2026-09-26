@@ -76,7 +76,7 @@ export default async function LouerPage({
   const sp = await searchParams;
 
   const selected: Record<string, string | undefined> = {};
-  ["type", "quartier", "ville", "budget", "chambres", "piscine", "duree", "tri", "vue"].forEach(
+  ["type", "quartier", "ville", "budget", "chambres", "piscine", "duree", "tri", "vue", "page"].forEach(
     (k) => {
       const v = sp[k];
       if (typeof v === "string") selected[k] = v;

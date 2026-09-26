@@ -89,7 +89,7 @@ export default async function EssaouiraPage({
  if (path.length === 1 && isSubKey(path[0])) {
  const sub = SUB_TYPES[path[0]];
  const selected: Record<string, string | undefined> = {};
- ["budget", "chambres", "piscine", "tri", "quartier"].forEach((k) => {
+ ["budget", "chambres", "piscine", "tri", "quartier", "page"].forEach((k) => {
  const v = sp[k];
  if (typeof v === "string") selected[k] = v;
  });

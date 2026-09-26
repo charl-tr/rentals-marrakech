@@ -5,7 +5,8 @@ import PropertyCard from "@/components/PropertyCard";
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import PressMentions from "@/components/PressMentions";
 import HeroSearch from "@/components/HeroSearch";
-import { getFeaturedProperties } from "@/lib/db";
+import { ALL_TYPES, propertyTypeLabel } from "@/data/properties";
+import { getCatalogueProperties, getFeaturedProperties } from "@/lib/db";
 
 // ISR — home en cache, revalidée toutes les 5 min. Navigation quasi instantanée.
 export const revalidate = 300;
@@ -65,12 +66,31 @@ const TESTIMONIALS = [
 ];
 
 export default async function Home() {
-  const featuredProperties = await getFeaturedProperties(12);
+  const [featuredProperties, catalogue] = await Promise.all([
+    getFeaturedProperties(12),
+    getCatalogueProperties(),
+  ]);
+  const presentTypes = new Set(catalogue.map((property) => property.type));
+  const saleCount = catalogue.filter(
+    (property) => property.listing === "vente" || property.type === "programme-neuf"
+  ).length;
+  const typeOptions = ALL_TYPES
+    .filter((type) => presentTypes.has(type))
+    .map((type) => ({ value: type, label: propertyTypeLabel(type) }));
+  const zoneLabels = new Map<string, string>();
+  for (const property of catalogue) {
+    if (property.neighborhoodSlug) {
+      zoneLabels.set(property.neighborhoodSlug, property.neighborhood);
+    }
+  }
+  const zoneOptions = [...zoneLabels.entries()]
+    .map(([value, label]) => ({ value, label }))
+    .sort((a, b) => a.label.localeCompare(b.label, "fr"));
 
   return (
     <>
       {/* ═══ HERO — image Marrakech (la seule image "hero" du site) ═══ */}
-      <section className="relative flex h-[100dvh] min-h-[600px] items-end overflow-hidden pb-14 md:min-h-[720px] md:pb-20">
+      <section className="relative flex h-[100dvh] min-h-[600px] items-end overflow-hidden pb-44 md:min-h-[720px] md:pb-20">
         <Image
           src="/hero-home.jpg"
           alt="Villa avec piscine à Marrakech — murs ocre et palmiers"
@@ -91,7 +111,11 @@ export default async function Home() {
               </span>
             </h1>
           </div>
-          <HeroSearch />
+          <HeroSearch
+            typeOptions={typeOptions}
+            zoneOptions={zoneOptions}
+            resultCount={saleCount}
+          />
         </div>
       </section>
 

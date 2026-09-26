@@ -126,7 +126,7 @@ export default async function AcheterPage({
 
   // Convert searchParams to flat record
   const selected: Record<string, string | undefined> = {};
-  ["type", "quartier", "ville", "budget", "chambres", "piscine", "tri", "vue"].forEach(
+  ["type", "quartier", "ville", "budget", "chambres", "piscine", "tri", "vue", "page"].forEach(
     (k) => {
       const v = sp[k];
       if (typeof v === "string") selected[k] = v;

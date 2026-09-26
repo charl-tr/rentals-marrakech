@@ -9,31 +9,9 @@ import { Search, ChevronDown, Check } from "lucide-react";
 // Dropdowns qui s'ouvrent VERS LE HAUT (jamais tronqués), angles doux.
 // ════════════════════════════════════════════════════════════════════
 
-type Opt = { value: string; label: string };
+export type HeroSearchOption = { value: string; label: string };
 
-const TYPES: Opt[] = [
-  { value: "", label: "Tous les biens" },
-  { value: "riad-renove", label: "Riad rénové" },
-  { value: "riad-a-renover", label: "Riad à rénover" },
-  { value: "villa", label: "Villa" },
-  { value: "appartement", label: "Appartement" },
-  { value: "programme-neuf", label: "Programme neuf" },
-  { value: "terrain", label: "Terrain" },
-];
-
-const ZONES: Opt[] = [
-  { value: "", label: "Toutes les zones" },
-  { value: "medina", label: "Médina" },
-  { value: "palmeraie", label: "Palmeraie" },
-  { value: "hivernage", label: "Hivernage" },
-  { value: "gueliz", label: "Guéliz" },
-  { value: "targa", label: "Targa" },
-  { value: "amelkis", label: "Amelkis" },
-  { value: "ourika", label: "Route de l'Ourika" },
-  { value: "diabat", label: "Diabat (Essaouira)" },
-];
-
-const BUDGETS: Opt[] = [
+const BUDGETS: HeroSearchOption[] = [
   { value: "", label: "Tous budgets" },
   { value: "300", label: "Jusqu'à 300 000 €" },
   { value: "600", label: "300 000 € – 600 000 €" },
@@ -42,7 +20,15 @@ const BUDGETS: Opt[] = [
   { value: "high", label: "Plus de 2 M€" },
 ];
 
-export default function HeroSearch() {
+export default function HeroSearch({
+  typeOptions,
+  zoneOptions,
+  resultCount,
+}: {
+  typeOptions: HeroSearchOption[];
+  zoneOptions: HeroSearchOption[];
+  resultCount: number;
+}) {
   const router = useRouter();
   const [type, setType] = useState("");
   const [zone, setZone] = useState("");
@@ -59,12 +45,29 @@ export default function HeroSearch() {
   }
 
   return (
-    <div className="max-w-4xl animate-fade-up overflow-hidden rounded-[16px] border border-white/15 bg-[rgba(23,20,15,0.42)] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
-      <div className="grid grid-cols-1 gap-0 md:grid-cols-[1fr_1fr_1fr_auto]">
+    <div className="relative z-20 max-w-4xl animate-fade-up overflow-visible rounded-[16px] border border-white/15 bg-[rgba(23,20,15,0.42)] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+      <button
+        type="button"
+        onClick={submit}
+        className="flex w-full items-center justify-between rounded-[10px] bg-white px-5 py-4 text-left text-[var(--color-charcoal)] md:hidden"
+      >
+        <span>
+          <span className="block text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-accent)]">
+            Notre sélection
+          </span>
+          <span className="mt-1 block text-sm font-medium">
+            Explorer {resultCount} bien{resultCount > 1 ? "s" : ""}
+          </span>
+        </span>
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-charcoal)] text-white">
+          <Search size={16} />
+        </span>
+      </button>
+
+      <div className="hidden grid-cols-[1fr_1fr_1fr_auto] md:grid">
         <Field
-          id="type"
           label="Type de bien"
-          options={TYPES}
+          options={[{ value: "", label: "Tous les biens" }, ...typeOptions]}
           value={type}
           onChange={setType}
           open={openKey === "type"}
@@ -73,9 +76,8 @@ export default function HeroSearch() {
           className="border-b border-white/10 md:border-b-0 md:border-r"
         />
         <Field
-          id="zone"
           label="Quartier"
-          options={ZONES}
+          options={[{ value: "", label: "Toutes les zones" }, ...zoneOptions]}
           value={zone}
           onChange={setZone}
           open={openKey === "zone"}
@@ -84,7 +86,6 @@ export default function HeroSearch() {
           className="border-b border-white/10 md:border-b-0 md:border-r"
         />
         <Field
-          id="budget"
           label="Budget"
           options={BUDGETS}
           value={budget}
@@ -108,7 +109,6 @@ export default function HeroSearch() {
 }
 
 function Field({
-  id,
   label,
   options,
   value,
@@ -118,9 +118,8 @@ function Field({
   onClose,
   className = "",
 }: {
-  id: string;
   label: string;
-  options: Opt[];
+  options: HeroSearchOption[];
   value: string;
   onChange: (v: string) => void;
   open: boolean;

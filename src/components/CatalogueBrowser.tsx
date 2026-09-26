@@ -2,8 +2,23 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Check, ChevronDown, LayoutGrid, Map as MapIcon } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronDown,
+  LayoutGrid,
+  Map as MapIcon,
+  SlidersHorizontal,
+} from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
 import {
   NEIGHBORHOODS,
@@ -15,7 +30,19 @@ import type { PropertyPin } from "@/lib/db";
 import type { FilterMode } from "@/components/Catalogue";
 
 type Bucket = { key: string; label: string; min?: number; max?: number };
-const PAGE_SIZE = 24;
+const MOBILE_PAGE_SIZE = 12;
+const DESKTOP_PAGE_SIZE = 24;
+const DESKTOP_MEDIA = "(min-width: 1024px)";
+
+function subscribeToDesktopMedia(onChange: () => void) {
+  const media = window.matchMedia(DESKTOP_MEDIA);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function getDesktopMediaSnapshot() {
+  return window.matchMedia(DESKTOP_MEDIA).matches;
+}
 
 const MapClientWrapper = dynamic(() => import("@/components/MapClientWrapper"), {
   ssr: false,
@@ -53,6 +80,7 @@ type Filters = {
   piscine?: string;
   tri?: string;
   vue?: string;
+  page?: string;
 };
 
 const DURATION_OPTIONS = [
@@ -127,28 +155,37 @@ export default function CatalogueBrowser({
 }: Props) {
   const [filters, setFilters] = useState<Filters>(initial);
   const [openKey, setOpenKey] = useState<string | null>(null);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const isDesktop = useSyncExternalStore(
+    subscribeToDesktopMedia,
+    getDesktopMediaSnapshot,
+    () => false
+  );
+  const pageSize = isDesktop ? DESKTOP_PAGE_SIZE : MOBILE_PAGE_SIZE;
+  const initialPage = Math.max(1, Number.parseInt(initial.page ?? "1", 10) || 1);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const catalogueTopRef = useRef<HTMLDivElement>(null);
   const isMap = filters.vue === "carte";
 
   useEffect(() => {
     const params = new URLSearchParams();
     (Object.entries(filters) as [string, string | undefined][]).forEach(([k, v]) => {
-      if (v) params.set(k, v);
+      if (k !== "page" && v) params.set(k, v);
     });
+    if (!isMap && currentPage > 1) params.set("page", String(currentPage));
     const qs = params.toString();
     window.history.replaceState(null, "", qs ? `${baseHref}?${qs}` : baseHref);
-  }, [filters, baseHref]);
+  }, [filters, baseHref, currentPage, isMap]);
 
   const set = useCallback((patch: Partial<Filters>) => {
     setFilters((f) => ({ ...f, ...patch }));
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
     setOpenKey(null);
   }, []);
 
   const clearAll = useCallback(() => {
     setFilters((f) => ({ tri: f.tri, vue: f.vue }));
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
     setOpenKey(null);
   }, []);
 
@@ -161,25 +198,20 @@ export default function CatalogueBrowser({
     return out;
   }, [properties, filters, buckets, mode]);
 
-  const visibleItems = useMemo(
-    () => items.slice(0, visibleCount),
-    [items, visibleCount]
-  );
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const visibleItems = useMemo(() => {
+    const start = (effectivePage - 1) * pageSize;
+    return items.slice(start, start + pageSize);
+  }, [items, effectivePage, pageSize]);
 
-  useEffect(() => {
-    const target = loadMoreRef.current;
-    if (!target || visibleCount >= items.length) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisibleCount((count) => Math.min(count + PAGE_SIZE, items.length));
-        }
-      },
-      { rootMargin: "500px 0px" }
-    );
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [items.length, visibleCount]);
+  const goToPage = useCallback((page: number) => {
+    setCurrentPage(Math.min(Math.max(1, page), totalPages));
+    window.requestAnimationFrame(() => {
+      const top = (catalogueTopRef.current?.offsetTop ?? 0) - 72;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  }, [totalPages]);
 
   const typeOpts = useMemo(() => {
     const candidates = properties.filter((property) =>
@@ -246,11 +278,55 @@ export default function CatalogueBrowser({
   return (
     <>
       {/* ═══ BARRE — filtres en ligne, instantanés ═══ */}
-      <div className="sticky top-14 z-40 border-b border-[var(--color-border)] bg-white/95 backdrop-blur-xl lg:top-16">
-        <div className="container-luxe py-4">
+      <div ref={catalogueTopRef} className="sticky top-14 z-40 border-b border-[var(--color-border)] bg-white/95 backdrop-blur-xl lg:top-16">
+        <div className="container-luxe py-3 md:py-4">
+          <div className="flex items-center justify-between gap-4 md:hidden">
+            <div className="flex items-baseline gap-2">
+              <span className="font-serif text-2xl text-[var(--color-charcoal)]">{items.length}</span>
+              <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--color-stone)]">
+                {items.length > 1 ? "biens" : "bien"}
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setMobileFiltersOpen((open) => !open)}
+                aria-expanded={mobileFiltersOpen}
+                aria-controls="catalogue-filters"
+                className="inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]"
+              >
+                <SlidersHorizontal size={14} />
+                Filtres{activeCount > 0 ? ` (${activeCount})` : ""}
+              </button>
+              {!isMap && (
+                <Pill
+                  label="Trier"
+                  value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
+                  display={filters.tri && filters.tri !== "default" ? sortLabel : undefined}
+                  options={SORT_OPTIONS.filter((option) => option.value !== "default")}
+                  open={openKey === "mobile-tri"}
+                  onToggle={() => setOpenKey((key) => (key === "mobile-tri" ? null : "mobile-tri"))}
+                  onSelect={(value) => set({ tri: value })}
+                  onClose={() => setOpenKey(null)}
+                  allLabel="Trier"
+                  bare
+                  align="right"
+                />
+              )}
+              <button
+                type="button"
+                onClick={() => set({ vue: isMap ? undefined : "carte" })}
+                className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]"
+              >
+                {isMap ? <LayoutGrid size={14} /> : <MapIcon size={14} />}
+                {isMap ? "Liste" : "Carte"}
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-3">
             {/* Groupe filtres (gauche) */}
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div id="catalogue-filters" className={`${mobileFiltersOpen ? "flex" : "hidden"} mt-3 flex-wrap items-center gap-2.5 border-t border-[var(--color-border)] pt-3 md:mt-0 md:flex md:border-0 md:pt-0`}>
               <div className="mr-1 hidden items-baseline gap-2 md:flex">
                 <span className="font-serif text-[1.6rem] text-[var(--color-charcoal)]">{items.length}</span>
                 <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
@@ -323,7 +399,7 @@ export default function CatalogueBrowser({
             </div>
 
             {/* Groupe Tri + Vue (droite) */}
-            <div className="flex items-center gap-5 md:gap-7">
+            <div className="hidden items-center gap-5 md:flex md:gap-7">
               {!isMap && (
                 <Pill label="Trier" value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
                   display={filters.tri && filters.tri !== "default" ? sortLabel : undefined}
@@ -352,7 +428,7 @@ export default function CatalogueBrowser({
           <MapClientWrapper pins={items.map(toPin)} />
         </div>
       ) : (
-        <section className="bg-white py-16 md:py-24">
+        <section className="bg-white py-8 md:py-20">
           <div className="container-luxe">
             {items.length === 0 ? (
               <div className="mx-auto max-w-lg py-20 text-center">
@@ -375,33 +451,85 @@ export default function CatalogueBrowser({
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-20">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
                 {visibleItems.map((p, i) => (
                   <PropertyCard key={p.slug} property={p} priority={i === 0} />
                 ))}
               </div>
             )}
 
-            {!isMap && visibleCount < items.length && (
-              <div ref={loadMoreRef} className="mt-16 flex justify-center">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setVisibleCount((count) => Math.min(count + PAGE_SIZE, items.length))
-                  }
-                  className="btn-outline"
-                >
-                  Afficher plus
-                  <span className="text-[var(--color-stone)]">
-                    {Math.min(PAGE_SIZE, items.length - visibleCount)}
-                  </span>
-                </button>
-              </div>
+            {!isMap && items.length > 0 && totalPages > 1 && (
+              <Pagination currentPage={effectivePage} totalPages={totalPages} onChange={goToPage} />
             )}
           </div>
         </section>
       )}
+
     </>
+  );
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  onChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onChange: (page: number) => void;
+}) {
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1).filter(
+    (page) => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
+  );
+
+  return (
+    <nav aria-label="Pagination des biens" className="mt-12 flex flex-col items-center gap-4 md:mt-16">
+      <div className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
+        Page {currentPage} sur {totalPages}
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          aria-label="Page précédente"
+          className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-[var(--color-border)] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)] disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <ArrowLeft size={15} />
+        </button>
+        {pages.map((page, index) => {
+          const previous = pages[index - 1];
+          return (
+            <span key={page} className="flex items-center gap-2">
+              {previous && page - previous > 1 && (
+                <span className="px-1 text-[var(--color-stone)]">…</span>
+              )}
+              <button
+                type="button"
+                onClick={() => onChange(page)}
+                aria-current={page === currentPage ? "page" : undefined}
+                className={`flex h-11 min-w-11 items-center justify-center rounded-[10px] px-3 text-sm transition-colors ${
+                  page === currentPage
+                    ? "bg-[var(--color-charcoal)] text-white"
+                    : "border border-[var(--color-border)] text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
+                }`}
+              >
+                {page}
+              </button>
+            </span>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => onChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          aria-label="Page suivante"
+          className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-[var(--color-border)] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)] disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <ArrowRight size={15} />
+        </button>
+      </div>
+    </nav>
   );
 }
 
@@ -465,8 +593,8 @@ function Pill({
               }`
         }
       >
-        {bare && <span className="hidden text-[var(--color-stone)] sm:inline">{label}&nbsp;·</span>}
-        <span>{active && display ? display : label}</span>
+        {bare && <span className="hidden text-[var(--color-stone)] sm:inline">Trier&nbsp;·</span>}
+        <span>{active && display ? display : bare ? allLabel : label}</span>
         <ChevronDown size={12} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
 

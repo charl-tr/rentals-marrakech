@@ -110,7 +110,7 @@ export default async function PropertyDetail({ property }: { property: Property 
       />
 
       {/* HERO */}
-      <section className="relative h-[88vh] min-h-[640px] w-full overflow-hidden bg-[var(--color-charcoal-deep)]">
+      <section className="relative h-[76svh] min-h-[560px] w-full overflow-hidden bg-[var(--color-charcoal-deep)] md:h-[88vh] md:min-h-[640px]">
         <Image
           src={hero}
           alt={property.title}
@@ -121,25 +121,27 @@ export default async function PropertyDetail({ property }: { property: Property 
         />
         <div className="hero-overlay-bottom absolute inset-0" />
 
-        <div className="absolute inset-x-0 top-[92px] z-10 lg:top-[116px]">
+        <div className="absolute inset-x-0 top-[72px] z-10 md:top-[92px] lg:top-[116px]">
           <div className="container-luxe flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
-            <BackToList fallbackHref={backHref} fallbackLabel={backLabel} variant="dark" />
-            <Breadcrumbs
-              variant="dark"
-              items={[
-                { label: "Accueil", href: "/" },
-                { label: isLocation ? "Louer" : "Acheter", href: backHref },
-                {
-                  label: displayPropertyType(property),
-                  href: isLocation ? backHref : `/acheter/${property.type}`,
-                },
-                { label: property.neighborhood },
-              ]}
-            />
+            <BackToList fallbackHref={backHref} fallbackLabel={backLabel} variant="dark" compactOnMobile />
+            <div className="hidden sm:block">
+              <Breadcrumbs
+                variant="dark"
+                items={[
+                  { label: "Accueil", href: "/" },
+                  { label: isLocation ? "Louer" : "Acheter", href: backHref },
+                  {
+                    label: displayPropertyType(property),
+                    href: isLocation ? backHref : `/acheter/${property.type}`,
+                  },
+                  { label: property.neighborhood },
+                ]}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="absolute inset-x-0 bottom-0 z-10 pb-16">
+        <div className="absolute inset-x-0 bottom-0 z-10 pb-8 md:pb-16">
           <div className="container-luxe">
             <div className="flex flex-wrap items-center gap-3 text-white/85">
               {property.status && property.status !== "available" && (
@@ -169,11 +171,11 @@ export default async function PropertyDetail({ property }: { property: Property 
               </div>
             </div>
 
-            <h1 className="hero-text mt-6 max-w-4xl font-serif text-5xl leading-[1.04] text-white md:text-6xl lg:text-[68px]">
+            <h1 className="hero-text mt-4 max-w-4xl font-serif text-[2.25rem] leading-[1.04] text-white md:mt-6 md:text-6xl lg:text-[68px]">
               {property.tagline || property.title}
             </h1>
 
-            <div className="mt-8 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end md:gap-8">
+            <div className="mt-5 flex flex-col items-start justify-between gap-4 md:mt-8 md:flex-row md:items-end md:gap-8">
               <div className="max-w-2xl text-base text-white/85">
                 {property.tagline ? property.title : null}
               </div>

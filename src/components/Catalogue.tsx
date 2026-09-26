@@ -84,23 +84,25 @@ export default async function Catalogue({
     <>
       {/* HEADER — éditorial, bandeau noir, zéro image stock */}
       <section className="bg-[var(--color-charcoal-deep)] text-white">
-        <div className="container-luxe pt-28 pb-12 md:pt-32 md:pb-16">
+        <div className="container-luxe pb-8 pt-20 md:pb-16 md:pt-32">
           {(breadcrumbs || backFallbackHref) && (
-            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
-              <BackToList fallbackHref={backFallbackHref} variant="dark" />
+            <div className="mb-5 flex items-center gap-8 md:mb-8">
+              <BackToList fallbackHref={backFallbackHref} variant="dark" compactOnMobile />
               {breadcrumbs && breadcrumbs.length > 0 && (
-                <Breadcrumbs variant="dark" items={breadcrumbs} />
+                <div className="hidden sm:block">
+                  <Breadcrumbs variant="dark" items={breadcrumbs} />
+                </div>
               )}
             </div>
           )}
           <div className="eyebrow-light">
             {eyebrow}
           </div>
-          <h1 className="mt-4 max-w-3xl font-serif text-4xl leading-[1.06] text-white md:text-5xl lg:text-6xl">
+          <h1 className="mt-3 max-w-3xl font-serif text-[2.15rem] leading-[1.04] text-white md:mt-4 md:text-5xl lg:text-6xl">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-5 max-w-2xl leading-relaxed text-white/60 md:text-lg">
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/65 md:mt-5 md:text-lg">
               {subtitle}
             </p>
           )}
