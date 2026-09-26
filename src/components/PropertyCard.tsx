@@ -48,7 +48,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
     <Link
       href={href}
       className={`group flex flex-col overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-[rgba(255,255,255,0.82)] shadow-[var(--shadow-card)] transition-[transform,box-shadow,background-color] duration-500 hover:-translate-y-0.5 hover:bg-white hover:shadow-[var(--shadow-hover)] ${
-        isUnavailable ? "opacity-80" : ""
+        isUnavailable ? "border-[#795238]/30" : ""
       }`}
     >
       {/* Image */}
@@ -69,8 +69,10 @@ export default function PropertyCard({ property, priority = false }: Props) {
         <div className="absolute left-0 top-0 p-4">
           {property.status && property.status !== "available" ? (
             <span
-              className={`rounded-full px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.22em] ${
-                property.status === "new"
+              className={`inline-flex rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] ${
+                isUnavailable
+                  ? "bg-[#795238] text-white ring-1 ring-white/70 shadow-sm"
+                  : property.status === "new"
                   ? "bg-[var(--color-accent)] text-white"
                   : "bg-[var(--color-charcoal-deep)]/85 text-white backdrop-blur-sm"
               }`}

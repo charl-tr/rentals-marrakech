@@ -1,8 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import { useAdminNotifications } from "./AdminNotificationsProvider";
+
+function NavigationProgress() {
+  const { pending } = useLinkStatus();
+  return <span role="status" aria-label={pending ? "Chargement de la section" : undefined} className={`ml-1.5 inline-block h-2 w-2 shrink-0 rounded-full bg-current ${pending ? "animate-pulse opacity-70" : "opacity-0"}`} />;
+}
 
 function Badge({ count }: { count: number }) {
   return (
@@ -43,6 +48,7 @@ export default function AdminNavLink({
         }`}
       >
         {label}
+        <NavigationProgress />
         {badge !== null && <Badge count={badge} />}
       </Link>
     );
@@ -58,6 +64,7 @@ export default function AdminNavLink({
       }`}
     >
       {label}
+      <NavigationProgress />
       {badge !== null && <Badge count={badge} />}
     </Link>
   );

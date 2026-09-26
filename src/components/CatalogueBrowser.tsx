@@ -1,4 +1,5 @@
 "use client";
+import { meetsMinimum, matchesPriceBucket } from "@/lib/property-filter-values";
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -167,14 +168,12 @@ function matches(p: PropertySummary, f: Filters, buckets: readonly Bucket[], mod
       // Un prix nul signifie "Prix sur demande" : il ne doit appartenir à
       // aucune tranche. Les bornes basses sont exclusives pour éviter qu'un
       // bien exactement à 300 k€, 600 k€, etc. apparaisse dans deux tranches.
-      if (p.price <= 0) return false;
-      if (b.min !== undefined && p.price <= b.min) return false;
-      if (b.max !== undefined && p.price > b.max) return false;
+      if (!matchesPriceBucket(p.price, b)) return false;
     }
   }
   if (f.chambres) {
     const m = parseInt(f.chambres, 10);
-    if (!Number.isNaN(m) && p.bedrooms < m) return false;
+    if (!Number.isNaN(m) && !meetsMinimum(p.bedrooms, m)) return false;
   }
   if (f.piscine === "1" && !p.pool) return false;
   if (f.duree && mode === "location") {

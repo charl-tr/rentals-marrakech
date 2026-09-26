@@ -69,6 +69,7 @@ function useSetParam() {
 
   return function setParam(key: string, value: string | null) {
     const next = new URLSearchParams(params.toString());
+    next.delete("page");
     if (value === null || value === "" || value === "all") {
       next.delete(key);
     } else {
@@ -198,6 +199,7 @@ function Pill({
   return (
     <div className="relative inline-block">
       <select
+        aria-label={label}
         value={current ?? ""}
         onChange={(e) => {
           const v = e.target.value;

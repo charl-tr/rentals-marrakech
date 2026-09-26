@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   LEAD_STATUSES,
   slaStatus,
@@ -5,7 +6,7 @@ import {
   type LeadStatus,
 } from "@/lib/leads";
 import { computeNextAction } from "@/lib/next-best-action";
-import { getAllAdvisors, getAllLeads, getLeadsForSession } from "@/lib/db";
+import { getAllAdvisors, getAllLeads, getLeadsForSession, getLeadsForProperty } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import LeadsFilterBar, {
   type IntentFilter,
@@ -36,6 +37,7 @@ export default async function AdminLeadsPage({
     sla?: string;
     q?: string;
     intent?: string;
+    property?: string;
   }>;
 }) {
   const now = new Date();
@@ -70,7 +72,9 @@ export default async function AdminLeadsPage({
       : "all";
 
   // ── Fetch ───────────────────────────────────────────────────
-  const allLeads = await (isDirector && scope === "mine"
+  const allLeads = await (sp.property
+    ? getLeadsForProperty(sp.property).then((leads) => scope === "mine" ? leads.filter((l) => l.advisorSlug === session?.advisorSlug) : leads)
+    : isDirector && scope === "mine"
     ? getAllLeads({ assignedAdvisorSlug: session!.advisorSlug })
     : isDirector
     ? getAllLeads()
@@ -157,6 +161,7 @@ export default async function AdminLeadsPage({
       </div>
 
       {/* FILTER BAR */}
+      {sp.property && <div className="flex flex-wrap gap-4 px-5 py-3 text-sm md:px-8"><Link href={`/admin/biens/${encodeURIComponent(sp.property)}`} className="underline">Demandes du bien · Retour à sa fiche</Link><Link href="/admin/leads" className="underline">Afficher tous les dossiers</Link></div>}
       <LeadsFilterBar
         advisors={advisors}
         isDirector={isDirector}

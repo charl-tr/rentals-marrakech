@@ -2,19 +2,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { EyeOff, Star } from "lucide-react";
 import {
-  STATUS_LABELS,
-  formatPrice,
   propertyTypeLabel,
   type Property,
   type PropertyStatus,
+  type Listing,
 } from "@/data/properties";
+import { inventoryPrice, inventoryStatusLabel } from "@/lib/admin-inventory";
 
 export default function BiensGrid({
   properties,
   leadsCountBySlug,
+  returnHref = "/admin/biens",
 }: {
   properties: Property[];
   leadsCountBySlug: Record<string, number>;
+  returnHref?: string;
 }) {
   if (properties.length === 0) {
     return (
@@ -35,6 +37,7 @@ export default function BiensGrid({
         <BienCard
           key={p.slug}
           property={p}
+          returnHref={returnHref}
           leadsCount={leadsCountBySlug[p.slug] ?? 0}
         />
       ))}
@@ -45,15 +48,17 @@ export default function BiensGrid({
 function BienCard({
   property,
   leadsCount,
+  returnHref,
 }: {
   property: Property;
   leadsCount: number;
+  returnHref: string;
 }) {
   const unpublished = property.published === false;
 
   return (
     <Link
-      href={`/admin/biens/${property.slug}`}
+      href={`/admin/biens/${property.slug}?returnTo=${encodeURIComponent(returnHref)}`}
       className={`group flex flex-col overflow-hidden rounded-[14px] border bg-white transition-all hover:-translate-y-0.5 hover:border-[var(--color-charcoal)] hover:shadow-[var(--shadow-card)] ${
         unpublished
           ? "border-[var(--color-beige-warm)] opacity-80"
@@ -74,7 +79,7 @@ function BienCard({
 
         {/* Status overlay top-left */}
         <div className="absolute left-2 top-2 flex gap-1.5">
-          <StatusPill status={property.status} />
+          <StatusPill status={property.status} listing={property.listing} />
         </div>
 
         {/* Visibility overlay top-right */}
@@ -114,16 +119,11 @@ function BienCard({
 
         <div className="mt-3 flex items-baseline justify-between gap-2 border-t border-[var(--color-beige-warm)] pt-3">
           <span className="font-serif text-lg text-[var(--color-charcoal)]">
-            {formatPrice(
-              property.price,
-              property.listing,
-              property.currency,
-              property.priceUnit
-            )}
+            {inventoryPrice(property)}
           </span>
           {leadsCount > 0 && (
             <span className="whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-terracotta)]">
-              {leadsCount} lead{leadsCount > 1 ? "s" : ""}
+              {leadsCount} demande{leadsCount > 1 ? "s" : ""}
             </span>
           )}
         </div>
@@ -132,10 +132,10 @@ function BienCard({
   );
 }
 
-function StatusPill({ status }: { status: PropertyStatus }) {
+function StatusPill({ status, listing }: { status: PropertyStatus; listing: Listing }) {
   const style =
     status === "sold" || status === "rented"
-      ? "bg-[var(--color-stone)] text-white"
+      ? "bg-[#795238] text-white"
       : status === "reserved"
       ? "bg-[var(--color-terracotta)] text-white"
       : status === "new"
@@ -143,9 +143,9 @@ function StatusPill({ status }: { status: PropertyStatus }) {
       : "bg-white/95 text-[var(--color-charcoal)]";
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] backdrop-blur-sm ${style}`}
+      className={`inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] backdrop-blur-sm ${style}`}
     >
-      {STATUS_LABELS[status]}
+      {inventoryStatusLabel(status, listing)}
     </span>
   );
 }

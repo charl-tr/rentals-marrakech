@@ -40,6 +40,7 @@ export interface Advisor {
 }
 
 export interface Property {
+  missingFields?: string[];
   slug: string;
   reference: string;
   title: string;

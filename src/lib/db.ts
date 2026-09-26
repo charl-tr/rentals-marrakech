@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase";
 import { supabaseAdmin } from "./supabase-admin";
 import type { AdminSession } from "./auth";
+import { requireAdminSession } from "./auth";
 import {
   eventToComm,
   splitName,
@@ -85,6 +86,7 @@ const CITY_DEFAULT_COORDS: Record<string, { lat: number; lng: number }> = {
 
 function rowToProperty(row: PropertyRow, neighborhoodLabel: string | null): Property {
   return {
+    missingFields: (["bedrooms", "bathrooms", "surface", "land_surface"] as const).filter((key) => row[key] == null),
     slug: row.slug,
     reference: row.reference,
     title: row.title,
@@ -279,50 +281,120 @@ export async function getPropertiesBySlugs(slugs: string[]): Promise<Map<string,
  * Admin read — retourne TOUS les biens (publiés ou non) via service-role.
  * À utiliser dans /admin/biens/* uniquement.
  */
-export const getAllPropertiesAdmin = cache(
-  unstable_cache(
-    async (): Promise<Property[]> => {
+const getAdminPropertyPage = unstable_cache(
+    async (page: number): Promise<{ properties: Property[]; count: number }> => {
       const { data, error } = await supabaseAdmin
         .from("properties")
         .select(PROPERTY_ADMIN_SELECT)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .order("slug")
+        .range(page * 100, page * 100 + 99);
       if (error) throw error;
-      return (data as PropertyWithNeigh[]).map((r) =>
-        rowToProperty(r, r.neighborhood?.name ?? null)
-      );
+      return { count: data.length, properties: (data as PropertyWithNeigh[]).map((r) => rowToProperty(r, r.neighborhood?.name ?? null)) };
     },
-    ["properties-admin"],
+    ["properties-admin-page-v2"],
     { tags: ["admin"], revalidate: 15 }
-  )
 );
 
-/** Compte des leads par property_slug — pour health check dans l'admin biens. */
-export const getLeadsCountByProperty = unstable_cache(
-  async (): Promise<Record<string, number>> => {
-    const { data, error } = await supabaseAdmin
-      .from("leads")
-      .select("property_slug")
-      .not("property_slug", "is", null);
-    if (error) throw error;
-    const counts: Record<string, number> = {};
-    for (const row of (data as { property_slug: string }[]) ?? []) {
-      counts[row.property_slug] = (counts[row.property_slug] ?? 0) + 1;
+// Cache small pages: the former 4 MB entry exceeded Next's 2 MB limit and
+// silently forced repeated full catalogue reads. Four pages at a time bound load.
+export const getAllPropertiesAdmin = cache(async (): Promise<Property[]> => {
+  const properties: Property[] = [];
+  for (let page = 0; ; page += 4) {
+    const pages = await Promise.all([0, 1, 2, 3].map((offset) => getAdminPropertyPage(page + offset)));
+    for (const batch of pages) {
+      properties.push(...batch.properties);
+      if (batch.count < 100) return properties;
     }
-    return counts;
-  },
-  ["leads-count-by-property"],
-  { tags: ["admin"], revalidate: 15 }
-);
+  }
+});
+
+/** Compte des leads par property_slug — pour health check dans l'admin biens. */
+export async function getLeadsCountByProperty(): Promise<Record<string, number>> {
+  const session = await requireAdminSession();
+  const grouped = new Map<string, Set<string>>();
+  const add = (slug: string | null, id: string) => {
+    if (!slug) return;
+    if (!grouped.has(slug)) grouped.set(slug, new Set());
+    grouped.get(slug)!.add(id);
+  };
+  for (let offset = 0; ; offset += 500) {
+    let query = supabaseAdmin.from("leads").select("id,property_slug").order("id");
+    if (session.role !== "director") query = query.eq("assigned_advisor_slug", session.advisorSlug);
+    const { data, error } = await query.range(offset, offset + 499);
+    if (error) throw error;
+    data.forEach((row) => add(row.property_slug, row.id));
+    if (data.length < 500) break;
+  }
+  for (let offset = 0; ; offset += 500) {
+    let query = supabaseAdmin.from("lead_events").select("lead_id,payload,leads!inner(assigned_advisor_slug)")
+      .contains("payload", { kind: "property_request" }).order("id");
+    if (session.role !== "director") query = query.eq("leads.assigned_advisor_slug", session.advisorSlug);
+    const { data, error } = await query.range(offset, offset + 499);
+    if (error) throw error;
+    data.forEach((row) => { if (typeof row.payload?.property_slug === "string") add(row.payload.property_slug, row.lead_id); });
+    if (data.length < 500) break;
+  }
+  return Object.fromEntries([...grouped].map(([slug, ids]) => [slug, ids.size]));
+}
+
+export async function getPropertyForAdmin(slug: string): Promise<Property | null> {
+  const session = await requireAdminSession();
+  const { data, error } = await supabaseAdmin.from("properties").select(PROPERTY_ADMIN_SELECT).eq("slug", slug).maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const row = data as unknown as PropertyWithNeigh;
+  if (session.role !== "director") {
+    row.owner_name = null;
+    row.owner_phone = null;
+    row.owner_email = null;
+    row.owner_notes = null;
+  }
+  return rowToProperty(row, row.neighborhood?.name ?? null);
+}
 
 /** Leads associés à un bien donné — pour la fiche admin bien. */
 export async function getLeadsForProperty(slug: string): Promise<AdminLead[]> {
-  const { data, error } = await supabaseAdmin
-    .from("leads")
-    .select("*")
-    .eq("property_slug", slug)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data as LeadRow[]).map(rowToAdminLead);
+  const session = await requireAdminSession();
+  const linkedIds = new Set<string>();
+  for (let offset = 0; ; offset += 500) {
+    const { data, error } = await supabaseAdmin.from("lead_events")
+      .select("lead_id").contains("payload", { kind: "property_request", property_slug: slug })
+      .order("id").range(offset, offset + 499);
+    if (error) throw error;
+    data.forEach((row) => linkedIds.add(row.lead_id));
+    if (data.length < 500) break;
+  }
+  const results = new Map<string, AdminLead>();
+  const ids = [...linkedIds];
+  // Direct demands and explicit manual links only; views/favorites are not requests.
+  for (let batch = -1; batch < ids.length; batch += batch === -1 ? 1 : 100) {
+    for (let offset = 0; ; offset += 500) {
+      let query = supabaseAdmin.from("leads").select("*");
+      query = batch === -1 ? query.eq("property_slug", slug) : query.in("id", ids.slice(batch, batch + 100));
+      if (session.role !== "director") query = query.eq("assigned_advisor_slug", session.advisorSlug);
+      const { data, error } = await query.order("id").range(offset, offset + 499);
+      if (error) throw error;
+      for (const row of data as LeadRow[]) results.set(row.id, rowToAdminLead(row));
+      if (data.length < 500) break;
+    }
+  }
+  return [...results.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+/** Minimal, session-scoped choices for linking an existing prospect. */
+export async function getProspectChoices() {
+  const session = await requireAdminSession();
+  const choices: { id: string; name: string }[] = [];
+  for (let offset = 0; ; offset += 500) {
+    let query = supabaseAdmin.from("leads").select("id,name").order("name").order("id");
+    if (session.role !== "director") query = query.eq("assigned_advisor_slug", session.advisorSlug);
+    const { data, error } = await query.range(offset, offset + 499);
+    if (error) throw error;
+    choices.push(...data);
+    if (data.length < 500) break;
+  }
+  return choices;
 }
 
 export async function getAllPropertySlugs(): Promise<

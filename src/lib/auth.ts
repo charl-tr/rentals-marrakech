@@ -31,7 +31,7 @@ interface AdvisorIdentity {
  * Résout une identité Auth vers un profil équipe actif.
  * La table de liaison est privée et n'est jamais lisible avec la clé anon.
  */
-export async function getAdvisorIdentity(): Promise<AdvisorIdentity | null> {
+export const getAdvisorIdentity = cache(async (): Promise<AdvisorIdentity | null> => {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -39,22 +39,19 @@ export async function getAdvisorIdentity(): Promise<AdvisorIdentity | null> {
 
   if (!user?.id || !user.email) return null;
 
-  const { data: mapping } = await supabaseAdmin
+  const { data: mapping, error } = await supabaseAdmin
     .from("advisor_auth")
-    .select("advisor_slug")
+    .select("advisor:advisors!inner(slug,name,role,access_role,active)")
     .eq("auth_user_id", user.id)
     .maybeSingle();
 
-  if (!mapping) return null;
-
-  const { data: advisor } = await supabaseAdmin
-    .from("advisors")
-    .select("slug, name, role, access_role, active")
-    .eq("slug", mapping.advisor_slug)
-    .eq("active", true)
-    .maybeSingle();
-
-  if (!advisor) return null;
+  if (error || !mapping) return null;
+  // PostgREST exposes a to-one relation for this foreign key.
+  const linked = mapping.advisor;
+  const advisor = (Array.isArray(linked) ? linked[0] : linked) as {
+    slug: string; name: string; role: string | null; access_role: string; active: boolean;
+  } | null;
+  if (!advisor?.active) return null;
 
   return {
     userId: user.id,
@@ -65,7 +62,7 @@ export async function getAdvisorIdentity(): Promise<AdvisorIdentity | null> {
     role:
       (advisor.access_role as string) === "director" ? "director" : "advisor",
   };
-}
+});
 
 /**
  * Lie une identité Supabase au profil équipe portant le même email.
@@ -128,11 +125,11 @@ export async function linkAdvisorIdentity(
  */
 export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
   const supabase = await createSupabaseServerClient();
-  const identity = await getAdvisorIdentity();
+  const [identity, { data: assurance, error }] = await Promise.all([
+    getAdvisorIdentity(),
+    supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
+  ]);
   if (!identity) return null;
-
-  const { data: assurance, error } =
-    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
 
   if (error || assurance.currentLevel !== "aal2") return null;
   return identity;

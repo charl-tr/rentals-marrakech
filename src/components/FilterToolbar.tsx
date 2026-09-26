@@ -1,4 +1,5 @@
 "use client";
+import { meetsMinimum, matchesPriceBucket } from "@/lib/property-filter-values";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -67,13 +68,12 @@ function matchesFilters(
   if (filters.budget) {
     const bucket = buckets.find((b) => b.key === filters.budget);
     if (bucket) {
-      if (bucket.min !== undefined && p.price < bucket.min) return false;
-      if (bucket.max !== undefined && p.price > bucket.max) return false;
+      if (!matchesPriceBucket(p.price, bucket)) return false;
     }
   }
   if (filters.chambres) {
     const min = parseInt(filters.chambres, 10);
-    if (!Number.isNaN(min) && p.bedrooms < min) return false;
+    if (!Number.isNaN(min) && !meetsMinimum(p.bedrooms, min)) return false;
   }
   if (filters.piscine === "1" && !p.pool) return false;
   if (filters.duree && mode === "location") {

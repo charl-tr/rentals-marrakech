@@ -7,15 +7,15 @@ import {
   getLeadsCountByProperty,
 } from "@/lib/db";
 import {
-  STATUS_LABELS,
-  formatPrice,
   propertyTypeLabel,
   type PropertyStatus,
+  type Listing,
 } from "@/data/properties";
 import BiensFilterBar, {
   type BiensViewMode,
 } from "@/components/admin/BiensFilterBar";
 import BiensGrid from "@/components/admin/BiensGrid";
+import { inventoryPrice, inventoryStatusLabel, inventoryTransaction, sortInventory, TRANSACTION_LABELS } from "@/lib/admin-inventory";
 
 export const metadata: Metadata = {
   title: "Biens — Admin Marrakech Realty",
@@ -32,12 +32,17 @@ export default async function AdminBiensPage({
     zone?: string;
     vis?: string;
     view?: string;
+    page?: string;
+    listing?: string;
+    sort?: string;
+    missing?: string;
   }>;
 }) {
   const sp = await searchParams;
 
   const q = (sp.q ?? "").trim().toLowerCase();
-  const statusFilter = sp.status ?? "all";
+  const statusFilter = sp.status ?? "active";
+  const listing = inventoryTransaction(sp.listing);
   const typeFilter = sp.type ?? "all";
   const zoneFilter = sp.zone ?? "all";
   const visFilter = sp.vis ?? "all";
@@ -47,9 +52,19 @@ export default async function AdminBiensPage({
     getAllPropertiesAdmin(),
     getLeadsCountByProperty(),
   ]);
+  const scoped = properties.filter((p) => p.listing === listing);
+  const counts = Object.fromEntries((Object.keys(TRANSACTION_LABELS) as Listing[]).map((key) => [key, properties.filter((p) => p.listing === key).length])) as Record<Listing, number>;
+  const types = [...new Set(scoped.map((p) => p.type))].sort((a, b) => propertyTypeLabel(a).localeCompare(propertyTypeLabel(b), "fr"));
+  const zones = [...new Map(scoped.filter((p) => p.neighborhoodSlug).map((p) => [p.neighborhoodSlug, { slug: p.neighborhoodSlug, label: `${p.neighborhood || p.neighborhoodSlug} · ${p.city}` }])).values()].sort((a, b) => a.label.localeCompare(b.label, "fr"));
 
   // Apply filters
-  let filtered = properties;
+  let filtered = scoped;
+  const referenceCounts = new Map<string, number>();
+  properties.forEach((p) => { const key = p.reference.trim().toUpperCase(); referenceCounts.set(key, (referenceCounts.get(key) ?? 0) + 1); });
+  if (sp.missing === "reference") filtered = filtered.filter((p) => (referenceCounts.get(p.reference.trim().toUpperCase()) ?? 0) > 1);
+  else if (sp.missing === "price") filtered = filtered.filter((p) => !(p.price > 0));
+  else if (sp.missing === "neighborhood") filtered = filtered.filter((p) => !p.neighborhoodSlug);
+  else if (sp.missing) filtered = filtered.filter((p) => p.missingFields?.includes(sp.missing!));
   if (q) {
     filtered = filtered.filter(
       (p) =>
@@ -62,7 +77,9 @@ export default async function AdminBiensPage({
         (p.shortDescription ?? "").toLowerCase().includes(q)
     );
   }
-  if (statusFilter !== "all") {
+  if (statusFilter === "active") {
+    filtered = filtered.filter((p) => ["available", "new", "reserved"].includes(p.status));
+  } else if (statusFilter !== "any" && statusFilter !== "all") {
     filtered = filtered.filter((p) => p.status === statusFilter);
   }
   if (typeFilter !== "all") {
@@ -79,11 +96,24 @@ export default async function AdminBiensPage({
     filtered = filtered.filter((p) => p.featured === true);
   }
 
-  const totalActiveListings = properties.filter(
+  const validSort = ["recent", "price-asc", "price-desc", "surface", "requests", "reference", "title"].includes(sp.sort ?? "recent") ? sp.sort ?? "recent" : "recent";
+  filtered = sortInventory(filtered, validSort, leadsByProp);
+  const totalActiveListings = scoped.filter(
     (p) => p.status === "available" || p.status === "new"
   ).length;
-  const totalSold = properties.filter((p) => p.status === "sold" || p.status === "rented").length;
-  const totalReserved = properties.filter((p) => p.status === "reserved").length;
+  const totalSold = scoped.filter((p) => p.status === "sold" || p.status === "rented").length;
+  const totalReserved = scoped.filter((p) => p.status === "reserved").length;
+  const pageSize = 32;
+  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const requestedPage = Number(sp.page);
+  const page = Math.min(pageCount, Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1);
+  const visibleProperties = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const pageHref = (target: number) => {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(sp)) if (value && key !== "page") params.set(key, value);
+    params.set("page", String(target));
+    return `/admin/biens?${params.toString()}`;
+  };
 
   return (
     <div>
@@ -95,14 +125,14 @@ export default async function AdminBiensPage({
               Portefeuille de biens
             </div>
             <h1 className="mt-2 font-serif text-3xl text-[var(--color-charcoal)] md:text-4xl">
-              Biens
+              {TRANSACTION_LABELS[listing]}
               <span className="ml-3 text-[var(--color-stone)]">
                 · {filtered.length}
               </span>
             </h1>
             <p className="mt-1 text-xs text-[var(--color-stone)]">
-              {totalActiveListings} en commercialisation · {totalReserved} sous compromis ·{" "}
-              {totalSold} vendus/loués · {properties.length} au total
+              {totalActiveListings} disponibles ou nouveaux · {totalReserved} {listing === "vente" ? "sous compromis" : "réservés"} ·{" "}
+              {totalSold} archivés · {scoped.length} dans cette catégorie
             </p>
           </div>
 
@@ -115,12 +145,13 @@ export default async function AdminBiensPage({
         </div>
       </div>
 
-      <BiensFilterBar />
+      <BiensFilterBar listing={listing} counts={counts} types={types} zones={zones} />
 
       {/* CONTENU */}
       <div className="px-5 py-6 md:px-8">
+        <p className="mb-4 text-xs text-[var(--color-stone)]">{filtered.length} résultats · Les compteurs des catégories incluent les archives. {validSort.startsWith("price") && "Prix non renseignés en dernier ; tarifs locatifs regroupés par unité."}</p>
         {view === "grid" ? (
-          <BiensGrid properties={filtered} leadsCountBySlug={leadsByProp} />
+          <BiensGrid properties={visibleProperties} leadsCountBySlug={leadsByProp} returnHref={pageHref(page)} />
         ) : filtered.length === 0 ? (
           <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
             <div className="font-serif text-xl text-[var(--color-charcoal)]">
@@ -135,18 +166,18 @@ export default async function AdminBiensPage({
             <div className="grid grid-cols-[60px_minmax(240px,2fr)_minmax(120px,0.8fr)_minmax(100px,0.7fr)_minmax(80px,0.5fr)_minmax(60px,0.4fr)_20px] items-center gap-3 border-b border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
               <div></div>
               <div>Bien</div>
-              <div>Prix</div>
+              <div>{listing === "vente" ? "Prix de vente" : "Loyer / tarif"}</div>
               <div>Statut</div>
               <div className="text-center">Visibilité</div>
-              <div className="text-center">Leads</div>
+              <div className="text-center">Demandes</div>
               <div></div>
             </div>
 
             <div className="divide-y divide-[var(--color-beige-warm)]">
-              {filtered.map((p) => (
+              {visibleProperties.map((p) => (
                 <Link
                   key={p.slug}
-                  href={`/admin/biens/${p.slug}`}
+                  href={`/admin/biens/${p.slug}?returnTo=${encodeURIComponent(pageHref(page))}`}
                   className="group grid grid-cols-[60px_minmax(240px,2fr)_minmax(120px,0.8fr)_minmax(100px,0.7fr)_minmax(80px,0.5fr)_minmax(60px,0.4fr)_20px] items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--color-cream)]"
                 >
                   {/* Thumbnail */}
@@ -177,17 +208,18 @@ export default async function AdminBiensPage({
                       )}
                     </div>
                     <div className="mt-0.5 truncate text-[11px] text-[var(--color-stone)]">
-                      {propertyTypeLabel(p.type)} · {p.neighborhood}, {p.city} · Réf. {p.reference}
+                      {propertyTypeLabel(p.type)} · {[p.neighborhood, p.city].filter(Boolean).join(", ")} · Réf. {p.reference}
                     </div>
+                    <div className="mt-1 text-xs text-[var(--color-stone)]">{[p.surface > 0 ? `${p.surface} m²` : null, p.bedrooms > 0 ? `${p.bedrooms} ch.` : null].filter(Boolean).join(" · ")}</div>
                   </div>
 
                   {/* Price */}
                   <div className="font-serif text-sm text-[var(--color-charcoal)]">
-                    {formatPrice(p.price, p.listing, p.currency, p.priceUnit)}
+                    {inventoryPrice(p)}
                   </div>
 
                   {/* Status */}
-                  <StatusBadge status={p.status} />
+                  <StatusBadge status={p.status} listing={listing} />
 
                   {/* Visibility */}
                   <div className="flex items-center justify-center gap-1">
@@ -236,15 +268,16 @@ export default async function AdminBiensPage({
             </div>
           </div>
         )}
+        {pageCount > 1 && <nav aria-label="Pagination des biens" className="mt-6 flex items-center justify-between gap-4 text-sm"><span>{(page - 1) * pageSize + 1}–{Math.min(page * pageSize, filtered.length)} sur {filtered.length} biens</span><div className="flex items-center gap-4">{page > 1 && <Link href={pageHref(page - 1)} className="btn-outline">Précédent</Link>}<span>Page {page} / {pageCount}</span>{page < pageCount && <Link href={pageHref(page + 1)} className="btn-outline">Suivant</Link>}</div></nav>}
       </div>
     </div>
   );
 }
 
-function StatusBadge({ status }: { status: PropertyStatus }) {
+function StatusBadge({ status, listing }: { status: PropertyStatus; listing: Listing }) {
   const style =
     status === "sold" || status === "rented"
-      ? "bg-[var(--color-beige)] text-[var(--color-stone)]"
+      ? "bg-[#795238] text-white"
       : status === "reserved"
       ? "bg-[var(--color-terracotta)]/10 text-[var(--color-terracotta)]"
       : status === "new"
@@ -252,9 +285,9 @@ function StatusBadge({ status }: { status: PropertyStatus }) {
       : "bg-[var(--color-success-soft)] text-[var(--color-success)]";
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-full px-2 py-1 text-[9px] font-medium uppercase tracking-[0.18em] ${style}`}
+      className={`inline-flex items-center justify-center rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${style}`}
     >
-      {STATUS_LABELS[status]}
+      {inventoryStatusLabel(status, listing)}
     </span>
   );
 }

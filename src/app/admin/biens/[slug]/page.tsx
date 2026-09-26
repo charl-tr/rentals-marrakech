@@ -16,8 +16,9 @@ import {
   getAdvisor,
   getAllAdvisors,
   getLeadsForProperty,
-  getPropertyBySlug,
+  getPropertyForAdmin,
   getPropertyEvents,
+  getProspectChoices,
 } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 import OwnerMandateSection from "@/components/admin/OwnerMandateSection";
@@ -33,7 +34,10 @@ import {
   relativeTime,
 } from "@/lib/leads";
 import PropertyAdminActions from "@/components/admin/PropertyAdminActions";
+import PropertyEditorSection from "@/components/admin/PropertyEditorSection";
 import AdminBreadcrumbs from "@/components/admin/AdminBreadcrumbs";
+import ManualRequestForm from "@/components/admin/ManualRequestForm";
+import { computeNextAction } from "@/lib/next-best-action";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -41,23 +45,28 @@ export const metadata: Metadata = {
 
 export default async function AdminPropertyDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ returnTo?: string }>;
 }) {
   const { slug } = await params;
+  const { returnTo } = await searchParams;
+  const returnHref = returnTo && /^\/admin\/biens(?:\?[^#\\]*)?$/.test(returnTo) ? returnTo : "/admin/biens";
   const now = new Date();
   const session = await getAdminSession();
   const canEdit = session?.role === "director";
 
-  const property = await getPropertyBySlug(slug);
+  const property = await getPropertyForAdmin(slug);
   if (!property) notFound();
 
-  const [advisor, leads, mandate, events, allAdvisors] = await Promise.all([
+  const [advisor, leads, mandate, events, allAdvisors, prospects] = await Promise.all([
     property.advisorSlug ? getAdvisor(property.advisorSlug) : null,
     getLeadsForProperty(slug),
     getActiveMandateForProperty(slug),
     getPropertyEvents(slug),
     getAllAdvisors(),
+    getProspectChoices(),
   ]);
 
   const activeLeads = leads.filter(
@@ -73,7 +82,7 @@ export default async function AdminPropertyDetailPage({
     <div className="container-luxe py-10 md:py-14">
       <AdminBreadcrumbs
         crumbs={[
-          { label: "Biens", href: "/admin/biens" },
+          { label: "Retour au portefeuille", href: returnHref },
           { label: property.title },
         ]}
       />
@@ -82,6 +91,7 @@ export default async function AdminPropertyDetailPage({
       <div className="mt-6 flex flex-col gap-6 border-b border-[var(--color-beige-warm)] pb-8 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-3">
+            {(property.status === "sold" || property.status === "rented") && <span className="rounded-full bg-[#795238] px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white">{property.status === "sold" ? "Vendu" : "Loué"} · archive</span>}
             <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-stone)]">
               Réf. {property.reference}
             </span>
@@ -130,6 +140,7 @@ export default async function AdminPropertyDetailPage({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {canEdit && <a href="#modifier" className="rounded-[10px] bg-[var(--color-terracotta)] px-4 py-2.5 text-sm font-medium text-white">Modifier la fiche</a>}
           <Link
             href={publicHref}
             target="_blank"
@@ -140,6 +151,8 @@ export default async function AdminPropertyDetailPage({
           </Link>
         </div>
       </div>
+
+      {canEdit && <PropertyEditorSection slug={slug} />}
 
       {/* MAIN GRID */}
       <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
@@ -184,10 +197,12 @@ export default async function AdminPropertyDetailPage({
           )}
 
           {/* Leads générés */}
-          <Section title={`Leads générés par ce bien · ${leads.length}`} icon={Users}>
+          <Section title={`Demandes pour ce bien · ${leads.length}`} icon={Users}>
+            <ManualRequestForm propertySlug={slug} requestId={crypto.randomUUID()} prospects={prospects} />
+            <p className="mb-3 text-xs text-[var(--color-stone)]">Demandes directes et rattachements manuels · {canEdit ? "toute l’équipe" : "votre portefeuille"}. Les consultations et favoris ne sont pas comptés comme demandes.</p>
             {leads.length === 0 ? (
               <p className="text-sm text-[var(--color-stone)]">
-                Aucun lead généré par ce bien pour l&apos;instant.
+                Aucune demande enregistrée pour ce bien dans votre périmètre.
               </p>
             ) : (
               <>
@@ -206,6 +221,11 @@ export default async function AdminPropertyDetailPage({
                         <div className="truncate font-medium text-[var(--color-charcoal)] group-hover:text-[var(--color-terracotta)]">
                           {l.buyer.firstName} {l.buyer.lastName}
                         </div>
+                        <div className="mt-1 text-xs text-[var(--color-stone)]">
+                          Origine du dossier : {({ phone: "Téléphone", whatsapp: "WhatsApp", email: "Email", portal: "Portail", other: "Autre", contact_form: "Formulaire", property_form: "Formulaire du bien", favorites_save: "Sélection sauvegardée", matching: "Rapprochement" } as Record<string, string>)[l.source] ?? l.source}
+                          {" · "}{allAdvisors.find((a) => a.slug === l.advisorSlug)?.name ?? "Non attribué"}
+                        </div>
+                        <div className="mt-1 text-xs text-[var(--color-terracotta)]">{computeNextAction(l, now)?.label ?? "Dossier clos"}</div>
                         <div className="mt-0.5 truncate text-[11px] text-[var(--color-stone)]">
                           {l.buyer.city}
                           {l.buyer.city && l.buyer.country ? ", " : ""}
@@ -223,7 +243,7 @@ export default async function AdminPropertyDetailPage({
                     href={`/admin/leads?property=${property.slug}`}
                     className="mt-4 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.22em] text-[var(--color-stone)] hover:text-[var(--color-terracotta)]"
                   >
-                    Voir les {leads.length} leads →
+                    Voir les {leads.length} demandes →
                   </Link>
                 )}
               </>

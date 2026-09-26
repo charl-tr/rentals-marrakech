@@ -148,10 +148,11 @@ export default async function PropertyDetail({ property }: { property: Property 
           <div className="container-luxe">
             <div className="flex flex-wrap items-center gap-3 text-white/85">
               {property.status && property.status !== "available" && (
-                <span className="rounded-full border border-white/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white">
+                <span className={unavailable ? "rounded-full bg-[#795238] px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.16em] text-white ring-1 ring-white/70 shadow-sm" : "rounded-full border border-white/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white"}>
                   {STATUS_LABELS[property.status]}
                 </span>
               )}
+              {unavailable && <span className="rounded-[10px] bg-white/95 px-3 py-2 text-sm font-medium text-[#795238]">Ce bien n’est plus disponible</span>}
               {property.exclusivity && (
                 <span className="rounded-full border border-white/40 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white">
                   Exclusivité agence

@@ -33,6 +33,8 @@ export const LEAD_CHANNELS = [
   "phone",
   "matching",
   "favorites_save",
+  "portal",
+  "other",
 ] as const;
 export type LeadChannel = (typeof LEAD_CHANNELS)[number];
 
