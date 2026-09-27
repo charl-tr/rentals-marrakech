@@ -46,6 +46,8 @@ interface PropertyRow {
   seo_description: string | null;
   price_eur: number;
   price_mad: number | null;
+  source_price_eur?: string | null;
+  source_price_mad?: string | null;
   price_unit: "semaine" | "mois" | null;
   bedrooms: number | null;
   bathrooms: number | null;
@@ -107,6 +109,8 @@ function rowToProperty(row: PropertyRow, neighborhoodLabel: string | null): Prop
     price: row.price_eur,
     currency: "EUR",
     priceMad: row.price_mad ?? undefined,
+    sourcePriceEur: row.source_price_eur ?? undefined,
+    sourcePriceMad: row.source_price_mad ?? undefined,
     priceUnit: row.price_unit ?? undefined,
     bedrooms: row.bedrooms ?? 0,
     bathrooms: row.bathrooms ?? 0,
@@ -139,6 +143,7 @@ function rowToProperty(row: PropertyRow, neighborhoodLabel: string | null): Prop
 // ════════════════════════════════════════════════════════════════════
 
 const PROPERTY_PUBLIC_SELECT = `
+  source_price_eur:source_payload->>originalPriceEur, source_price_mad:source_payload->>originalPriceMad,
   slug, reference, title, tagline, type, listing, status, exclusivity,
   city, neighborhood_slug, price_eur, price_mad, price_unit, bedrooms,
   source_type_label, source_location_label, source_url, source_modified_at,
@@ -152,6 +157,7 @@ const PROPERTY_ADMIN_SELECT = `${PROPERTY_PUBLIC_SELECT}, owner_name, owner_phon
 // Inventory does not need the bulky original HTML/import payload. Keep the
 // application fields used by matching/dashboard, without downloading raw sources.
 const PROPERTY_ADMIN_LIST_SELECT = `
+  source_price_eur:source_payload->>originalPriceEur, source_price_mad:source_payload->>originalPriceMad,
   slug, reference, title, tagline, type, listing, status, exclusivity,
   city, neighborhood_slug, source_type_label, source_location_label, source_modified_at,
   price_eur, price_mad, price_unit, bedrooms, bathrooms, surface, land_surface,
@@ -159,6 +165,7 @@ const PROPERTY_ADMIN_LIST_SELECT = `
   created_at, updated_at, neighborhood:neighborhoods(name)
 `;
 const PROPERTY_SUMMARY_SELECT = `
+  source_price_eur:source_payload->>originalPriceEur, source_price_mad:source_payload->>originalPriceMad,
   slug, title, type, listing, status, exclusivity, city, neighborhood_slug,
   source_type_label, source_location_label, price_eur, price_mad, price_unit,
   bedrooms, bathrooms, surface, land_surface, pool, images, featured,
@@ -221,6 +228,8 @@ export const getCatalogueProperties = cache(
         sourceTypeLabel: row.source_type_label ?? undefined,
         price: row.price_eur,
         priceMad: row.price_mad ?? undefined,
+        sourcePriceEur: row.source_price_eur ?? undefined,
+        sourcePriceMad: row.source_price_mad ?? undefined,
         priceUnit: row.price_unit ?? undefined,
         bedrooms: row.bedrooms ?? 0,
         bathrooms: row.bathrooms ?? 0,
@@ -238,7 +247,7 @@ export const getCatalogueProperties = cache(
           { lat: 31.6295, lng: -7.9811 },
       }));
     },
-    ["public-property-catalogue-v3"],
+    ["public-property-catalogue-v4"],
     { tags: ["public-properties"], revalidate: 300 }
   )
 );
@@ -305,7 +314,7 @@ const getAdminPropertyPage = unstable_cache(
         return rowToProperty(raw as unknown as PropertyRow, neighborhood?.name ?? null);
       }) };
     },
-    ["properties-admin-page-v5"],
+    ["properties-admin-page-v6"],
     { tags: ["admin"], revalidate: 15 }
 );
 

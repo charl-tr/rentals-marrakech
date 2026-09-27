@@ -61,6 +61,8 @@ export interface Property {
   price: number;
   currency: "EUR";
   priceMad?: number;          // prix en dirhams marocains, affiché à côté de l'EUR
+  sourcePriceEur?: string;
+  sourcePriceMad?: string;
   priceUnit?: "semaine" | "mois";
   bedrooms: number;
   bathrooms: number;
@@ -99,6 +101,8 @@ export type PropertySummary = Pick<
   | "sourceTypeLabel"
   | "price"
   | "priceMad"
+  | "sourcePriceEur"
+  | "sourcePriceMad"
   | "priceUnit"
   | "bedrooms"
   | "bathrooms"

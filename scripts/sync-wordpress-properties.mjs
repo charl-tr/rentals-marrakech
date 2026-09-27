@@ -15,6 +15,7 @@
  */
 
 import { createHash } from "node:crypto";
+import { sourceAttributes, classText } from "./lib/source-attributes.mjs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
@@ -158,6 +159,7 @@ function parseStatus(html) {
 }
 
 function parseDetail(rest, config, html) {
+  const accurate = sourceAttributes(html);
   const sourceTypeLabel = first(html, /<b>Type de bien\s*:<\/b>\s*(?:<span[^>]*>)?\s*(?:vente|location|programme)?\s*\/?\s*([^<]+)/i)
     || first(html, /class=["']capitalize-letter["'][^>]*>\s*(?:vente|location|programme)?\s*\/?\s*([^<]+)/i)
     || (config.postType === "programme" ? "Programme neuf" : null);
@@ -173,7 +175,6 @@ function parseDetail(rest, config, html) {
   const seoTitle = cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "") || null;
   const seoDescription = metaContent(html, "description") || metaContent(html, "og:description", "property");
   const priceText = first(html, /class=["'][^"']*price-euro[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
-  const priceMadText = first(html, /class=["'][^"']*price-mad[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
   const reference = first(html, /class=["'][^"']*ref-numero[^"']*["'][^>]*>([^<]+)/i)
     || first(html, /<b>Référence\s*:<\/b>\s*([^<]+)/i)
     || "";
@@ -193,13 +194,13 @@ function parseDetail(rest, config, html) {
     exclusivity: /exclusivit[ée]|exclusif/i.test(first(html, /bien-options[^>]*>([\s\S]*?)<\/div>/i) || ""),
     city,
     neighborhood_slug: neighborhoodSlug(locationContext),
-    price_eur: numberFrom(priceText) || 0,
-    price_mad: numberFrom(priceMadText),
-    price_unit: listing !== "vente" ? (listing === "location-saisonniere" || /semaine/i.test(priceText || html.slice(0, 40000)) ? "semaine" : "mois") : null,
-    bedrooms: numberFrom(first(html, /<b>Nombre de chambres\s*:<\/b>\s*([^<]+)/i)),
-    bathrooms: numberFrom(first(html, /<b>(?:Nombre de salles? de bains?|Salles? de bains?)\s*:<\/b>\s*([^<]+)/i)),
-    surface: numberFrom(first(html, /<b>Surface habitable\s*:<\/b>\s*([^<]+)/i)),
-    land_surface: numberFrom(first(html, /<b>Surface terrain\s*:<\/b>\s*([^<]+)/i)),
+    price_eur: accurate.price_eur ?? 0,
+    price_mad: accurate.price_mad,
+    price_unit: listing !== "vente" && !/nuit/i.test(priceText || "") ? (listing === "location-saisonniere" || /semaine/i.test(priceText || html.slice(0, 40000)) ? "semaine" : "mois") : null,
+    bedrooms: accurate.bedrooms ?? numberFrom(first(html, /<b>Nombre de chambres\s*:<\/b>\s*([^<]+)/i)),
+    bathrooms: accurate.bathrooms ?? numberFrom(first(html, /<b>(?:Nombre de salles? de bains?|Salles? de bains?)\s*:<\/b>\s*([^<]+)/i)),
+    surface: accurate.surface ?? numberFrom(first(html, /<b>Surface habitable\s*:<\/b>\s*([^<]+)/i)),
+    land_surface: accurate.land_surface ?? numberFrom(first(html, /<b>Surface terrain\s*:<\/b>\s*([^<]+)/i)),
     year_built: null,
     pool: extractFeatures(html).some((feature) => /piscine|bassin/i.test(feature)),
     featured: false,
@@ -223,6 +224,8 @@ function parseDetail(rest, config, html) {
     seo_title: seoTitle,
     seo_description: seoDescription,
     source_payload: {
+      originalPriceEur: classText(html, "price-euro"),
+      originalPriceMad: classText(html, "price-mad"),
       wordpressDate: rest.date,
       wordpressStatus: rest.status,
       featuredMediaId: rest.featured_media,

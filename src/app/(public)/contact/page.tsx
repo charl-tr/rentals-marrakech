@@ -113,6 +113,8 @@ export default async function ContactPage({
                   <PriceDisplay
                     priceEur={property.price}
                     priceMad={property.priceMad}
+                    sourcePriceEur={property.sourcePriceEur}
+                    sourcePriceMad={property.sourcePriceMad}
                     listing={property.listing}
                     priceUnit={property.priceUnit}
                   />

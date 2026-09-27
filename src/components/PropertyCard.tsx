@@ -138,6 +138,8 @@ export default function PropertyCard({ property, priority = false }: Props) {
               <PriceDisplay
                 priceEur={property.price}
                 priceMad={property.priceMad}
+                sourcePriceEur={property.sourcePriceEur}
+                sourcePriceMad={property.sourcePriceMad}
                 listing={property.listing}
                 priceUnit={property.priceUnit}
               />

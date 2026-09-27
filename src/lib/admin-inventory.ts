@@ -1,7 +1,9 @@
 import type { Listing, Property, PropertyStatus } from "@/data/properties";
-import { propertyPricePair } from "@/lib/property-price";
+import { propertyPricePair, sourcePriceRange } from "@/lib/property-price";
 
 export function inventoryPrice(property: Property) {
+  const range = !(property.price > 0) ? sourcePriceRange(property.sourcePriceEur, property.sourcePriceMad) : null;
+  if (range) return `${range.primary} · ${range.secondary}`;
   const pair = propertyPricePair(property.price, property.priceMad);
   const price = [pair.primary, pair.secondary].filter(Boolean).join(" · ");
   if (property.listing === "vente" || !(property.price > 0)) return price;

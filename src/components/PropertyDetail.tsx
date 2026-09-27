@@ -190,6 +190,8 @@ export default async function PropertyDetail({ property }: { property: Property 
                   <PriceDisplay
                     priceEur={property.price}
                     priceMad={property.priceMad}
+                    sourcePriceEur={property.sourcePriceEur}
+                    sourcePriceMad={property.sourcePriceMad}
                     listing={property.listing}
                     priceUnit={property.priceUnit}
                   />
