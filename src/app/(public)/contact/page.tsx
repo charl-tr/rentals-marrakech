@@ -112,6 +112,7 @@ export default async function ContactPage({
                 <div className="font-serif text-2xl leading-none text-[var(--color-charcoal)]">
                   <PriceDisplay
                     priceEur={property.price}
+                    priceMad={property.priceMad}
                     listing={property.listing}
                     priceUnit={property.priceUnit}
                   />

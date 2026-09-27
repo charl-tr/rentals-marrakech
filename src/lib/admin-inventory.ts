@@ -1,8 +1,9 @@
 import type { Listing, Property, PropertyStatus } from "@/data/properties";
-import { formatPrice } from "@/data/properties";
+import { propertyPricePair } from "@/lib/property-price";
 
 export function inventoryPrice(property: Property) {
-  const price = formatPrice(property.price, "vente", property.currency);
+  const pair = propertyPricePair(property.price, property.priceMad);
+  const price = [pair.primary, pair.secondary].filter(Boolean).join(" · ");
   if (property.listing === "vente" || !(property.price > 0)) return price;
   return property.priceUnit ? `${price} / ${property.priceUnit}` : `${price} · période à confirmer`;
 }

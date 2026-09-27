@@ -16,6 +16,7 @@ import BiensGrid from "@/components/admin/BiensGrid";
 import InventoryPhoto from "@/components/admin/InventoryPhoto";
 import PropertyQuickActions from "@/components/admin/PropertyQuickActions";
 import { requireAdminSession } from "@/lib/auth";
+import { matchesPropertySearch } from "@/lib/inventory-search";
 import { inventoryPrice, inventoryTransaction, sortInventory, TRANSACTION_LABELS } from "@/lib/admin-inventory";
 
 export const metadata: Metadata = {
@@ -79,13 +80,7 @@ export default async function AdminBiensPage({
   if (q) {
     filtered = filtered.filter(
       (p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.slug.toLowerCase().includes(q) ||
-        p.reference.toLowerCase().includes(q) ||
-        (p.neighborhood ?? "").toLowerCase().includes(q) ||
-        p.city.toLowerCase().includes(q) ||
-        (p.tagline ?? "").toLowerCase().includes(q) ||
-        (p.shortDescription ?? "").toLowerCase().includes(q)
+        matchesPropertySearch(q, [p.title, p.slug, p.reference, p.neighborhood, p.city, p.tagline, p.shortDescription])
     );
   }
   if (statusFilter === "active") {

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BedDouble, Bath, Maximize, Trees } from "lucide-react";
 import {
-  formatMad,
   displayPropertyType,
   STATUS_LABELS,
   type PropertySummary,
@@ -138,15 +137,11 @@ export default function PropertyCard({ property, priority = false }: Props) {
             <div className="font-serif text-[1.7rem] leading-none text-[var(--color-charcoal)]">
               <PriceDisplay
                 priceEur={property.price}
+                priceMad={property.priceMad}
                 listing={property.listing}
                 priceUnit={property.priceUnit}
               />
             </div>
-            {property.priceMad && (
-              <div className="mt-1.5 text-[10px] text-[var(--color-stone)]">
-                {formatMad(property.priceMad)}
-              </div>
-            )}
           </div>
           <span className="flex shrink-0 items-center gap-1.5 pb-1 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors group-hover:text-[var(--color-accent)]">
             Découvrir

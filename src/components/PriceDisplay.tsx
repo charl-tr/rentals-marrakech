@@ -1,35 +1,31 @@
 "use client";
 
-import { formatInCurrency, useCurrency } from "@/hooks/useCurrency";
+import { propertyPricePair } from "@/lib/property-price";
 import type { Listing } from "@/data/properties";
 
-// Client component qui affiche un prix selon la devise choisie.
-// Tous les prix en DB sont en EUR — on convertit à l'affichage.
-//
-// Mode "compact" (card) : juste le montant + unité
-// Mode "full" : inclut la devise originale en subtext si différente
+// Display the recorded MAD and EUR values, never a silent fixed-rate conversion.
 
 export default function PriceDisplay({
   priceEur,
+  priceMad,
   listing,
   priceUnit,
   className = "",
-  showOriginal = false,
 }: {
   priceEur: number;
+  priceMad?: number;
   listing: Listing;
   priceUnit?: "semaine" | "mois";
   className?: string;
   showOriginal?: boolean;
 }) {
-  const { currency, hydrated } = useCurrency();
+  const pair = propertyPricePair(priceEur, priceMad);
 
-  if (!priceEur || priceEur <= 0) {
+  if (!(priceEur > 0) && !(priceMad && priceMad > 0)) {
     return <span className={className}>Prix sur demande</span>;
   }
 
-  const effective = hydrated ? currency : "EUR";
-  const amount = formatInCurrency(priceEur, effective);
+  const amount = pair.primary;
   const suffix =
     listing === "vente"
       ? ""
@@ -37,15 +33,15 @@ export default function PriceDisplay({
       ? " / mois"
       : priceUnit === "semaine"
       ? " / semaine"
-      : "";
+      : " · période à confirmer";
 
   return (
     <span className={className}>
       {amount}
       {suffix}
-      {showOriginal && effective !== "EUR" && (
-        <span className="ml-2 text-xs text-[var(--color-stone)]">
-          ({formatInCurrency(priceEur, "EUR")})
+      {pair.secondary && (
+        <span className="mt-1 block font-sans text-sm leading-snug opacity-75">
+          {pair.secondary}{suffix}
         </span>
       )}
     </span>

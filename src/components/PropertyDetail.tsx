@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Map as MapIcon, MapPin, Phone } from "lucide-react";
 import {
-  formatMad,
   formatPrice,
   displayPropertyType,
   STATUS_LABELS,
@@ -190,16 +189,11 @@ export default async function PropertyDetail({ property }: { property: Property 
                 <div className="mt-1.5 font-serif text-3xl text-white md:text-4xl">
                   <PriceDisplay
                     priceEur={property.price}
+                    priceMad={property.priceMad}
                     listing={property.listing}
                     priceUnit={property.priceUnit}
                   />
                 </div>
-                {property.priceMad && (
-                  <div className="mt-1 text-xs text-white/55">
-                    {formatMad(property.priceMad)}
-                    {property.listing !== "vente" && ` / ${property.priceUnit ?? "mois"}`}
-                  </div>
-                )}
               </div>
             </div>
           </div>
