@@ -1,13 +1,15 @@
 "use client";
 
-import { useActionState, useOptimistic } from "react";
+import { useActionState, useOptimistic, useRef } from "react";
 import type { MutationState } from "@/lib/actions/_core/defineMutation";
+import AdminChoice from "./AdminChoice";
 import { quickEditProperty } from "@/lib/actions/property-quick-edit";
 import { useMutationToast } from "@/lib/hooks/useMutationToast";
 import { inventoryStatusLabel } from "@/lib/admin-inventory";
 import type { Listing, PropertyStatus } from "@/data/properties";
 
 export default function PropertyQuickActions({ slug, title, status, published, listing, canEdit }: { slug: string; title: string; status: PropertyStatus; published: boolean; listing: Listing; canEdit: boolean }) {
+  const statusInput = useRef<HTMLInputElement>(null);
   const [visible, setVisible] = useOptimistic(published);
   const [state, action, pending] = useActionState<MutationState, FormData>(async (previous, form) => {
     if (form.get("field") === "published") setVisible(form.get("value") === "true");
@@ -23,12 +25,13 @@ export default function PropertyQuickActions({ slug, title, status, published, l
       if ((value === "sold" || value === "rented") && !window.confirm(`Marquer « ${title} » comme ${value === "sold" ? "vendu" : "loué"} ? Sa visibilité ne changera pas.`)) { event.preventDefault(); form.reset(); }
     }}>
       <input type="hidden" name="slug" value={slug} /><input type="hidden" name="field" value="status" /><input type="hidden" name="expected" value={status} />
-      <select key={`${status}-${pending}-${state.status}`} name="value" aria-label={`Statut commercial : ${title}`} defaultValue={status} disabled={pending} onChange={(event) => event.currentTarget.form?.requestSubmit()} className="min-h-10 max-w-full rounded-lg border border-[#d8cbbc] bg-[#f7f4ee] px-2 text-xs font-medium disabled:opacity-50">
-        <option value="available">{listing === "vente" ? "À vendre" : "À louer"}</option>
-        {status === "new" && <option value="new">{listing === "vente" ? "À vendre · nouveau" : "À louer · nouveau"}</option>}
-        <option value="reserved">{listing === "vente" ? "Sous compromis" : "Réservé"}</option>
-        <option value={listing === "vente" ? "sold" : "rented"}>{listing === "vente" ? "Vendu" : "Loué"}</option>
-      </select>
+      <input ref={statusInput} type="hidden" name="value" defaultValue={status} />
+      <AdminChoice label={`Statut commercial : ${title}`} value={status} disabled={pending} onChange={(value) => { if (statusInput.current) { statusInput.current.value = value; statusInput.current.form?.requestSubmit(); } }} options={[
+        { value: "available", label: listing === "vente" ? "À vendre" : "À louer" },
+        ...(status === "new" ? [{ value: "new", label: listing === "vente" ? "À vendre · nouveau" : "À louer · nouveau" }] : []),
+        { value: "reserved", label: listing === "vente" ? "Sous compromis" : "Réservé" },
+        { value: listing === "vente" ? "sold" : "rented", label: listing === "vente" ? "Vendu" : "Loué" },
+      ]} />
     </form>
     <form action={action}>
       <input type="hidden" name="slug" value={slug} /><input type="hidden" name="field" value="published" /><input type="hidden" name="expected" value={String(published)} /><input type="hidden" name="value" value={String(!published)} />

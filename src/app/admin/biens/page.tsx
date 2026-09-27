@@ -167,7 +167,7 @@ export default async function AdminBiensPage({
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-[var(--color-beige-warm)] overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
+          <div className="divide-y divide-[var(--color-beige-warm)] rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
             {visibleProperties.map((p) => <article key={p.slug} className="grid items-center gap-4 p-4 sm:grid-cols-[112px_minmax(0,1fr)] xl:grid-cols-[112px_minmax(220px,1fr)_150px_330px]">
               <InventoryPhoto images={p.images} title={p.title} />
               <div className="min-w-0">
@@ -176,7 +176,7 @@ export default async function AdminBiensPage({
                 <p className="mt-1 text-xs text-[var(--color-stone)]">{[p.surface > 0 ? `${p.surface} m²` : null, p.bedrooms > 0 ? `${p.bedrooms} ch.` : null, `${leadsByProp[p.slug] ?? 0} demande(s)`].filter(Boolean).join(" · ")}</p>
               </div>
               <p className="font-medium text-sm">{inventoryPrice(p)}</p>
-              <PropertyQuickActions slug={p.slug} title={p.title} listing={p.listing} status={p.status} published={p.published !== false} canEdit={canEdit} />
+              <div className="space-y-2"><PropertyQuickActions slug={p.slug} title={p.title} listing={p.listing} status={p.status} published={p.published !== false} canEdit={canEdit} /><Link href={`/admin/biens/${p.slug}?returnTo=${encodeURIComponent(pageHref(page))}`} className="inline-flex min-h-9 items-center rounded-lg border border-[#795238] px-3 text-sm font-medium text-[#795238] hover:bg-[#f0e7dc]">{canEdit ? "Modifier la fiche" : "Ouvrir la fiche"} →</Link></div>
             </article>)}
           </div>
         )}
