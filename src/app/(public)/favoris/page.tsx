@@ -78,6 +78,8 @@ export default function FavorisPage() {
   const { favorites, hydrated, count } = useFavorites();
   const [properties, setProperties] = useState<PropertySummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -87,7 +89,9 @@ export default function FavorisPage() {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      setLoadError(false);
+      try {
+      const { data, error } = await supabase
         .from("properties")
         .select(`
           slug,title,type,listing,status,exclusivity,city,neighborhood_slug,
@@ -97,6 +101,7 @@ export default function FavorisPage() {
         .in("slug", favorites)
         .eq("published", true);
       if (cancelled) return;
+      if (error) throw error;
       // Respecter l'ordre d'ajout (favoris[0] en premier)
       const rows = (data ?? []) as unknown as FavoriteRow[];
       const byslug = new Map(rows.map((row) => [row.slug, row]));
@@ -105,12 +110,16 @@ export default function FavorisPage() {
         .filter((row): row is FavoriteRow => Boolean(row))
         .map(rowToProperty);
       setProperties(ordered);
-      setLoading(false);
+      } catch {
+        if (!cancelled) setLoadError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
     return () => {
       cancelled = true;
     };
-  }, [favorites, hydrated]);
+  }, [favorites, hydrated, retry]);
 
   return (
     <>
@@ -130,7 +139,7 @@ export default function FavorisPage() {
         backHref="/acheter"
       />
 
-      <section className="bg-[var(--color-cream)] py-16">
+      <section className="bg-[var(--color-cream)] py-6 md:py-8">
         <div className="container-luxe">
           {!hydrated || (loading && favorites.length > 0) ? (
             <div className="py-20 text-center text-sm text-[var(--color-stone)]">
@@ -138,6 +147,11 @@ export default function FavorisPage() {
             </div>
           ) : count === 0 ? (
             <EmptyState />
+          ) : loadError ? (
+            <div role="alert" className="rounded-[14px] border border-[var(--color-border)] bg-white p-6 text-sm">
+              <p>Les fiches n’ont pas pu être chargées. Votre sélection est conservée.</p>
+              <button type="button" onClick={() => setRetry((value) => value + 1)} className="btn-outline mt-4">Réessayer</button>
+            </div>
           ) : (
             <>
               <SaveSelectionBanner kind="favoris" slugs={favorites} />
@@ -157,6 +171,7 @@ export default function FavorisPage() {
                   <PropertyCard key={p.slug} property={p} priority={i < 3} />
                 ))}
               </div>
+              {properties.length < count && <p className="mt-5 text-sm text-[var(--color-stone)]">{count - properties.length} bien(s) de votre sélection ne sont plus publiés. Les autres favoris sont conservés.</p>}
             </>
           )}
         </div>
@@ -199,11 +214,11 @@ function EmptyState() {
 }
 
 function ClearAllButton() {
+  const { clear } = useFavorites();
   const handleClear = () => {
     if (typeof window === "undefined") return;
     if (!confirm("Effacer tous vos favoris ?")) return;
-    window.localStorage.removeItem("mr:favorites");
-    window.dispatchEvent(new CustomEvent("mr:favorites:change", { detail: [] }));
+    clear();
   };
   return (
     <button

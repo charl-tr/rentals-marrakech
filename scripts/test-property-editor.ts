@@ -5,7 +5,7 @@ const sample = {
   ...Object.fromEntries(EDITOR_FIELDS.map((key) => [key, ""])),
   slug: "test", updated_at: "2026-09-27T00:00:00Z", reference: "TEST",
   title: "Test", type: "villa", listing: "vente", city: "Marrakech",
-  pool: "false", exclusivity: "false",
+  pool: "false", exclusivity: "false", published: "false",
 };
 const parsed = propertyEditorSchema.parse(sample);
 assert.equal(parsed.bedrooms, null);

@@ -150,12 +150,12 @@ export default async function AdminLeadsPage({
 
           <div className="flex items-center gap-3">
             <ExportButton />
-            <button
-              type="button"
+            <Link
+              href="/admin/biens"
               className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
             >
-              + Nouveau lead
-            </button>
+              Ajouter une demande sur un bien
+            </Link>
           </div>
         </div>
       </div>

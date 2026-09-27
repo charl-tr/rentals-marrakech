@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { Check, ChevronRight, Star } from "lucide-react";
 import {
   getAllPropertiesAdmin,
@@ -39,6 +40,14 @@ export default async function AdminBiensPage({
   }>;
 }) {
   const sp = await searchParams;
+  // Old bookmarks used overlapping statuses. Canonicalize them to the new views.
+  if (sp.status && !["reserved", "sold", "rented", "any"].includes(sp.status)) {
+    const canonical = new URLSearchParams(Object.entries(sp).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+    canonical.delete("status");
+    canonical.delete("page");
+    if (sp.status === "all") canonical.set("status", "any");
+    redirect(`/admin/biens?${canonical.toString()}`);
+  }
 
   const q = (sp.q ?? "").trim().toLowerCase();
   const statusFilter = sp.status ?? "active";
@@ -53,7 +62,7 @@ export default async function AdminBiensPage({
     getLeadsCountByProperty(),
   ]);
   const scoped = properties.filter((p) => p.listing === listing);
-  const counts = Object.fromEntries((Object.keys(TRANSACTION_LABELS) as Listing[]).map((key) => [key, properties.filter((p) => p.listing === key).length])) as Record<Listing, number>;
+  const counts = Object.fromEntries((Object.keys(TRANSACTION_LABELS) as Listing[]).map((key) => [key, properties.filter((p) => p.listing === key && ["available", "new"].includes(p.status)).length])) as Record<Listing, number>;
   const types = [...new Set(scoped.map((p) => p.type))].sort((a, b) => propertyTypeLabel(a).localeCompare(propertyTypeLabel(b), "fr"));
   const zones = [...new Map(scoped.filter((p) => p.neighborhoodSlug).map((p) => [p.neighborhoodSlug, { slug: p.neighborhoodSlug, label: `${p.neighborhood || p.neighborhoodSlug} · ${p.city}` }])).values()].sort((a, b) => a.label.localeCompare(b.label, "fr"));
 
@@ -78,7 +87,7 @@ export default async function AdminBiensPage({
     );
   }
   if (statusFilter === "active") {
-    filtered = filtered.filter((p) => ["available", "new", "reserved"].includes(p.status));
+    filtered = filtered.filter((p) => ["available", "new"].includes(p.status));
   } else if (statusFilter !== "any" && statusFilter !== "all") {
     filtered = filtered.filter((p) => p.status === statusFilter);
   }
@@ -131,17 +140,11 @@ export default async function AdminBiensPage({
               </span>
             </h1>
             <p className="mt-1 text-xs text-[var(--color-stone)]">
-              {totalActiveListings} disponibles ou nouveaux · {totalReserved} {listing === "vente" ? "sous compromis" : "réservés"} ·{" "}
+              {totalActiveListings} {listing === "vente" ? "à vendre" : "à louer"} · {totalReserved} {listing === "vente" ? "sous compromis" : "réservés"} ·{" "}
               {totalSold} archivés · {scoped.length} dans cette catégorie
             </p>
           </div>
 
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
-          >
-            + Nouveau bien
-          </button>
         </div>
       </div>
 
@@ -149,7 +152,7 @@ export default async function AdminBiensPage({
 
       {/* CONTENU */}
       <div className="px-5 py-6 md:px-8">
-        <p className="mb-4 text-xs text-[var(--color-stone)]">{filtered.length} résultats · Les compteurs des catégories incluent les archives. {validSort.startsWith("price") && "Prix non renseignés en dernier ; tarifs locatifs regroupés par unité."}</p>
+        <p className="mb-4 text-xs text-[var(--color-stone)]">{filtered.length} résultats {validSort.startsWith("price") && "· Prix non renseignés en dernier ; tarifs locatifs regroupés par unité."}</p>
         {view === "grid" ? (
           <BiensGrid properties={visibleProperties} leadsCountBySlug={leadsByProp} returnHref={pageHref(page)} />
         ) : filtered.length === 0 ? (

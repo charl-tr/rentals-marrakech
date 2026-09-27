@@ -299,6 +299,7 @@ const getAdminPropertyPage = unstable_cache(
 // Cache small pages: the former 4 MB entry exceeded Next's 2 MB limit and
 // silently forced repeated full catalogue reads. Four pages at a time bound load.
 export const getAllPropertiesAdmin = cache(async (): Promise<Property[]> => {
+  await requireAdminSession();
   const properties: Property[] = [];
   for (let page = 0; ; page += 4) {
     const pages = await Promise.all([0, 1, 2, 3].map((offset) => getAdminPropertyPage(page + offset)));

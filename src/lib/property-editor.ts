@@ -29,10 +29,11 @@ export const propertyEditorSchema = z.object({
   year_built: optionalNumber.refine((v) => v === null || (v >= 1000 && v <= 2200), "Année entre 1000 et 2200."),
   pool: flag,
   exclusivity: flag,
+  published: flag,
   short_description: text,
   description: text,
   features: lines,
-  images: lines.pipe(z.array(z.url().refine((v) => {
+  images: z.string().trim().max(80000).transform((v) => v.split(/\r?\n/).map((s) => s.trim()).filter(Boolean)).pipe(z.array(z.url().refine((v) => {
     const u = new URL(v);
     return u.protocol === "https:" && !u.username && !u.password &&
       ["www.marrakechrealty.com", "bjdcdtwfqlmvwxkrfklt.supabase.co"].includes(u.hostname);
@@ -45,9 +46,10 @@ export const EDITOR_FIELDS = Object.keys(propertyEditorSchema.shape);
 
 export const EDITOR_GROUPS = [
   { title: "Identification et classement", fields: ["title", "reference", "type", "source_type_label", "listing", "city", "neighborhood_slug", "source_location_label", "advisor_slug", "tagline"] },
-  { title: "Prix et caractéristiques", fields: ["price_eur", "price_mad", "price_unit", "bedrooms", "bathrooms", "surface", "land_surface", "year_built", "pool", "exclusivity"] },
+  { title: "Prix et conditions", fields: ["price_eur", "price_mad", "price_unit", "exclusivity"] },
+  { title: "Surfaces et caractéristiques", fields: ["bedrooms", "bathrooms", "surface", "land_surface", "year_built", "pool"] },
   { title: "Description et équipements", fields: ["short_description", "description", "features"] },
-  { title: "Photos et référencement", fields: ["images", "seo_title", "seo_description"] },
+  { title: "Référencement", fields: ["seo_title", "seo_description"] },
 ];
 
 export const EDITOR_LABELS: Record<string, string> = {

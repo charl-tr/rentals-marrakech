@@ -26,7 +26,7 @@ import {
   usePathname,
   useSearchParams,
 } from "next/navigation";
-import { useTransition, type ReactNode } from "react";
+import { useTransition, useEffect, useRef, useState, type ReactNode } from "react";
 import { Search, X } from "lucide-react";
 
 // ── Wrapper ─────────────────────────────────────────────────────────
@@ -99,6 +99,13 @@ function SearchInput({
 }) {
   const setParam = useSetParam();
   const currentValue = useCurrentParam(paramKey) ?? "";
+  const [draft, setDraft] = useState({ source: currentValue, value: currentValue });
+  if (draft.source !== currentValue) setDraft({ source: currentValue, value: currentValue });
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestSetParam = useRef(setParam);
+  useEffect(() => { latestSetParam.current = setParam; });
+  useEffect(() => { if (timer.current) clearTimeout(timer.current); }, [currentValue]);
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
   return (
     <div className="relative flex-1 min-w-[220px] max-w-md">
@@ -109,13 +116,13 @@ function SearchInput({
       <input
         type="search"
         placeholder={placeholder}
-        defaultValue={currentValue}
+        value={draft.value}
+        aria-label="Rechercher dans la liste"
         onChange={(e) => {
           const v = e.target.value;
-          const target = e.target;
-          setTimeout(() => {
-            if (target.value === v) setParam(paramKey, v);
-          }, debounceMs);
+          setDraft({ source: currentValue, value: v });
+          if (timer.current) clearTimeout(timer.current);
+          timer.current = setTimeout(() => latestSetParam.current(paramKey, v), debounceMs);
         }}
         className="w-full rounded-[10px] border border-[var(--color-beige-warm)] bg-[var(--color-cream)] py-2 pl-9 pr-3 text-sm focus:border-[var(--color-charcoal)] focus:bg-white focus:outline-none"
       />
@@ -157,13 +164,14 @@ function Toggle<T extends string | null>({
             onClick={() => setParam(param, opt.value)}
             title={opt.title ?? opt.label}
             aria-label={opt.title ?? opt.label}
+            aria-pressed={active}
             className={`${
               iconOnly ? "flex h-8 w-8 items-center justify-center" : "px-3 py-1.5"
             } ${
               i > 0 ? "border-l border-[var(--color-beige-warm)]" : ""
             } text-[10px] font-medium uppercase tracking-[0.22em] transition-colors ${
               active
-                ? "bg-[var(--color-charcoal)] text-white"
+                ? "bg-[#795238] text-white"
                 : "text-[var(--color-charcoal)] hover:bg-[var(--color-cream)]"
             }`}
           >

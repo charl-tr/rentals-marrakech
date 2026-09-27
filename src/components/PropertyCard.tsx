@@ -45,9 +45,8 @@ export default function PropertyCard({ property, priority = false }: Props) {
   }[];
 
   return (
-    <Link
-      href={href}
-      className={`group flex flex-col overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-[rgba(255,255,255,0.82)] shadow-[var(--shadow-card)] transition-[transform,box-shadow,background-color] duration-500 hover:-translate-y-0.5 hover:bg-white hover:shadow-[var(--shadow-hover)] ${
+    <article
+      className={`group relative flex flex-col overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-[rgba(255,255,255,0.82)] shadow-[var(--shadow-card)] transition-[transform,box-shadow,background-color] duration-500 hover:-translate-y-0.5 hover:bg-white hover:shadow-[var(--shadow-hover)] focus-within:ring-2 focus-within:ring-[var(--color-accent)] ${
         isUnavailable ? "border-[#795238]/30" : ""
       }`}
     >
@@ -87,7 +86,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
         </div>
 
         {/* Actions */}
-        <div className="absolute right-0 top-0 flex flex-col items-end gap-2 p-4">
+        <div className="absolute right-0 top-0 z-20 flex flex-col items-end gap-2 p-4">
           <FavoriteButton slug={property.slug} />
           <CompareToggleButton slug={property.slug} variant="card" />
         </div>
@@ -98,7 +97,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
         {/* Localisation + type */}
         <div className="flex items-center justify-between gap-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
           <span className="truncate">
-            {property.neighborhood} · {property.city}
+            {[property.neighborhood, property.city].filter(Boolean).join(" · ")}
           </span>
           <span className="shrink-0 text-[var(--color-accent)]">
             {displayPropertyType(property)}
@@ -107,7 +106,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
 
         {/* Titre — 2 lignes max, hauteur stable */}
         <h3 className="mt-2.5 line-clamp-2 min-h-[2.5em] font-serif text-[1.5rem] leading-[1.25] text-[var(--color-charcoal)]">
-          {property.title}
+          <Link href={href} className="after:absolute after:inset-0 after:z-10 focus:outline-none">{property.title}</Link>
         </h3>
 
         {/* Specs — icônes fines, lisibles d'un coup d'œil */}
@@ -158,6 +157,6 @@ export default function PropertyCard({ property, priority = false }: Props) {
           </span>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }

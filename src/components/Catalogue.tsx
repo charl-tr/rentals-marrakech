@@ -89,10 +89,10 @@ export default async function Catalogue({
           préserver la lisibilité de la navigation transparente au sommet. */}
       <section className="relative overflow-hidden bg-[radial-gradient(circle_at_84%_18%,rgba(156,114,86,0.13),transparent_34%),linear-gradient(145deg,#f7f5f0_0%,#efeae1_100%)]">
         <div aria-hidden className="absolute inset-x-0 top-0 h-14 bg-[linear-gradient(90deg,#80634f_0%,#9c7256_52%,#b3927a_100%)] lg:h-16" />
-        <div className="container-luxe relative pb-10 pt-20 md:pb-16 md:pt-24">
+        <div className="container-luxe relative pb-5 pt-20 md:pb-6 md:pt-24">
           {(breadcrumbs || backFallbackHref) && (
-            <div className="mb-5 flex items-center gap-8 md:mb-8">
-              <BackToList fallbackHref={backFallbackHref} variant="light" compactOnMobile />
+            <div className="mb-3 flex items-center gap-5">
+              {baseHref !== "/acheter" && baseHref !== "/louer" && <BackToList fallbackHref={backFallbackHref} variant="light" compactOnMobile />}
               {breadcrumbs && breadcrumbs.length > 0 && (
                 <div className="hidden sm:block">
                   <Breadcrumbs variant="light" items={breadcrumbs} />
@@ -100,18 +100,24 @@ export default async function Catalogue({
               )}
             </div>
           )}
-          {filterMode === "vente" && <nav aria-label="Disponibilité des biens" className="mb-5 flex gap-4 text-sm"><Link href="/acheter" aria-current={inventory === "active" ? "page" : undefined} className="underline underline-offset-4">À vendre</Link><Link href="/biens-vendus" aria-current={inventory === "sold" ? "page" : undefined} className="underline underline-offset-4">Biens vendus</Link></nav>}
-          <div className="eyebrow">
+          <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <div>
+          <div className="eyebrow text-[10px]">
             {eyebrow}
           </div>
-          <h1 className="mt-3 max-w-3xl font-serif text-[2.15rem] leading-[1.04] text-[var(--color-charcoal)] md:mt-4 md:text-5xl lg:text-[3.55rem]">
+          <h1 className="mt-2 max-w-3xl font-serif text-[1.85rem] leading-[1.12] text-[var(--color-charcoal)] md:text-[2.5rem]">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-stone)] md:mt-5 md:text-lg">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--color-stone)]">
               {subtitle}
             </p>
           )}
+          </div>
+          {filterMode === "vente" && <nav aria-label="Disponibilité des biens" className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-border)] bg-white/60 p-1 text-sm">
+            {[{ href: "/acheter", label: "À vendre", active: inventory === "active" }, { href: "/biens-vendus", label: "Vendus", active: inventory === "sold" }].map((item) => <Link key={item.href} href={item.href} aria-current={item.active ? "page" : undefined} className={`rounded-full px-5 py-2.5 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)] ${item.active ? "bg-[#795238] text-white shadow-sm" : "text-[var(--color-stone)] hover:bg-[var(--color-cream)] hover:text-[var(--color-charcoal)]"}`}>{item.label}</Link>)}
+          </nav>}
+          </div>
         </div>
       </section>
 

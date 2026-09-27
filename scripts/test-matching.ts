@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import { computeMatchScore, buildPropertyMatches } from "../src/lib/matching";
+import type { AdminLead } from "../src/lib/leads";
+import type { Property } from "../src/data/properties";
+const lead = { id: "test", intent: "acheter", status: "new", buyer: { budget: { max: 0 }, criteria: { types: [], neighborhoods: [], bedroomsMin: 0 } } } as unknown as AdminLead;
+const property = { slug: "test", listing: "vente", type: "villa", status: "available", price: 200000, bedrooms: 4 } as Property;
+assert.equal(computeMatchScore(lead, property).score, 0, "No criteria must not create a 100% match");
+lead.buyer.budget.max = 250000;
+assert.equal(computeMatchScore(lead, property).score, 100);
+assert.equal(computeMatchScore(lead, { ...property, price: 0 }).score, 0, "Unknown price is not within budget");
+assert.equal(computeMatchScore(lead, { ...property, status: "sold" }).score, 0);
+assert.equal(computeMatchScore(lead, { ...property, listing: "location", type: "programme-neuf" }).score, 0);
+assert.equal(buildPropertyMatches([{ ...property, status: "reserved" }, property], [lead]).length, 1);
+assert.equal(buildPropertyMatches([property], [{ ...lead, status: "lost" }]).length, 0);
+console.log("PASS: qualified criteria, unknown price, closed inventory, transaction and inactive buyers");

@@ -4,8 +4,7 @@ import { Resend } from "resend";
 // ════════════════════════════════════════════════════════════════════
 // Client email — wrapper Resend avec fallback gracieux.
 // ════════════════════════════════════════════════════════════════════
-// Si RESEND_API_KEY absente, log l'email dans la console et retourne OK.
-// Permet de dévelop + démo sans clé Resend, tout en étant prêt pour prod.
+// Une configuration absente ne doit jamais simuler un envoi réussi.
 //
 // En prod : poser RESEND_API_KEY + RESEND_FROM_EMAIL + RESEND_FROM_NAME
 // dans .env.local (gitignored). Domaine à vérifier côté Resend dashboard.
@@ -33,17 +32,10 @@ export interface SendEmailParams {
 export async function sendEmail(params: SendEmailParams): Promise<{ ok: boolean; id?: string; error?: string }> {
   const from = `${params.fromName ?? defaultFromName} <${defaultFromEmail}>`;
 
-  // Dev/démo mode : pas de clé → log et return OK
+  // Ne pas journaliser les coordonnées du destinataire, même en démo.
   if (!resend) {
-    console.log(
-      `\n📧 [EMAIL MOCKÉ — pas de RESEND_API_KEY]\n` +
-      `   From:    ${from}\n` +
-      `   To:      ${params.to}\n` +
-      `   Subject: ${params.subject}\n` +
-      `   ReplyTo: ${params.replyTo ?? "—"}\n` +
-      `   (HTML ${params.html.length} chars)\n`
-    );
-    return { ok: true, id: "mocked" };
+    console.warn("[sendEmail] Email delivery is not configured.");
+    return { ok: false, error: "Email delivery is not configured" };
   }
 
   try {

@@ -1,6 +1,7 @@
 "use client";
 
 import { GitCompare } from "lucide-react";
+import { toast } from "sonner";
 import { useCompareList } from "@/hooks/useCompareList";
 
 export default function CompareToggleButton({
@@ -16,7 +17,9 @@ export default function CompareToggleButton({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggle(slug);
+    if (toggle(slug) === false) {
+      toast("Votre comparateur contient déjà 3 biens.", { description: "Retirez un bien avant d’en ajouter un autre. Votre sélection est conservée." });
+    }
   };
 
   if (variant === "card") {

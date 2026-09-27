@@ -25,7 +25,6 @@ import OwnerMandateSection from "@/components/admin/OwnerMandateSection";
 import PropertyTimeline from "@/components/admin/PropertyTimeline";
 import { Activity } from "lucide-react";
 import {
-  STATUS_LABELS,
   formatPrice,
   propertyTypeLabel,
 } from "@/data/properties";
@@ -38,6 +37,7 @@ import PropertyEditorSection from "@/components/admin/PropertyEditorSection";
 import AdminBreadcrumbs from "@/components/admin/AdminBreadcrumbs";
 import ManualRequestForm from "@/components/admin/ManualRequestForm";
 import { computeNextAction } from "@/lib/next-best-action";
+import { inventoryStatusLabel } from "@/lib/admin-inventory";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -141,14 +141,14 @@ export default async function AdminPropertyDetailPage({
 
         <div className="flex flex-wrap items-center gap-2">
           {canEdit && <a href="#modifier" className="rounded-[10px] bg-[var(--color-terracotta)] px-4 py-2.5 text-sm font-medium text-white">Modifier la fiche</a>}
-          <Link
+          {property.published && <Link
             href={publicHref}
             target="_blank"
             className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
           >
             Voir sur le site
             <ArrowUpRight size={12} />
-          </Link>
+          </Link>}
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export default async function AdminPropertyDetailPage({
         {/* LEFT : aperçu + leads */}
         <div className="space-y-8">
           {/* Aperçu visuel */}
-          {property.images[0] && (
+          {!canEdit && property.images[0] && (
             <section>
               <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[14px] bg-[var(--color-charcoal)]">
                 <Image
@@ -190,8 +190,7 @@ export default async function AdminPropertyDetailPage({
                 </div>
               )}
               <p className="mt-3 text-xs text-[var(--color-stone)]">
-                {property.images.length} photo{property.images.length > 1 ? "s" : ""} ·
-                upload photo non encore disponible (géré depuis Supabase Studio pour l&apos;instant)
+                {property.images.length} photo{property.images.length > 1 ? "s" : ""} · Lecture seule
               </p>
             </section>
           )}
@@ -313,7 +312,7 @@ export default async function AdminPropertyDetailPage({
               <Row label="Slug" value={property.slug} mono />
               <Row
                 label="Statut commercial"
-                value={STATUS_LABELS[property.status]}
+                value={inventoryStatusLabel(property.status, property.listing)}
               />
               <Row
                 label="Prix affiché"

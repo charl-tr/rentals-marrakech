@@ -11,6 +11,7 @@ export const savePropertyDetails = defineMutation({
   schema: propertyEditorSchema,
   handler: async ({ input }) => {
     const { slug, updated_at, ...fields } = input;
+    if (fields.published && fields.images.length === 0) throw new Error("Ajoutez au moins une photo avant de publier, ou enregistrez la fiche en brouillon.");
     // Compare-and-set: do not silently overwrite another advisor's changes.
     const { data: current, error: readError } = await supabaseAdmin.from("properties")
       .select("updated_at,description,reference").eq("slug", slug).single();
@@ -38,7 +39,7 @@ export const savePropertyDetails = defineMutation({
     if (error) throw new Error("Enregistrement impossible. Vérifiez les champs et réessayez.");
     if (!data?.length) throw new Error("La fiche vient de changer. Rechargez-la avant de réessayer.");
     updateTag("public-properties");
-    return { message: "Fiche enregistrée. Les informations publiques ont été actualisées." };
+    return { message: fields.published ? "Fiche enregistrée et publiée. La galerie et les informations sont à jour." : "Brouillon enregistré. Cette fiche n’est pas visible sur le site public." };
   },
   revalidate: ({ input }) => ["/", "/admin/biens", `/admin/biens/${input.slug}`, `/acheter/${input.slug}`, `/louer/${input.slug}`, "/acheter", "/louer", "/essaouira", "/biens-vendus"],
 });

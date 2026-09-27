@@ -12,16 +12,6 @@ import { TRANSACTION_LABELS } from "@/lib/admin-inventory";
 
 export type BiensViewMode = "table" | "grid";
 
-const STATUS_OPTIONS = [
-  { value: null as string | null, label: "En commercialisation" },
-  { value: "any", label: "Tous statuts · archives incluses" },
-  { value: "available", label: "Disponible" },
-  { value: "new", label: "Nouveau" },
-  { value: "reserved", label: "Sous compromis" },
-  { value: "sold", label: "Vendu" },
-  { value: "rented", label: "Loué" },
-];
-
 const VIS_OPTIONS = [
   { value: null as string | null, label: "Toute visibilité" },
   { value: "published", label: "Publiés" },
@@ -36,7 +26,7 @@ export default function BiensFilterBar({ listing, counts, types, zones }: {
   return (
     <AdminFilterBar>
       <nav aria-label="Type de transaction" className="flex flex-wrap gap-2 border-b border-[var(--color-beige-warm)] px-5 py-3 md:px-8">
-        {(Object.keys(TRANSACTION_LABELS) as Listing[]).map((key) => <Link key={key} href={`/admin/biens?listing=${key}`} aria-current={listing === key ? "page" : undefined} className={`rounded-[10px] px-4 py-2 text-sm font-medium ${listing === key ? "bg-[var(--color-terracotta)] text-white" : "bg-[var(--color-cream)] text-[var(--color-charcoal)]"}`}>{TRANSACTION_LABELS[key]} <span className="ml-2 opacity-75">{counts[key]}</span></Link>)}
+        {(Object.keys(TRANSACTION_LABELS) as Listing[]).map((key) => <Link key={key} href={`/admin/biens?listing=${key}`} aria-current={listing === key ? "page" : undefined} className={`rounded-[10px] px-4 py-2 text-sm font-medium ${listing === key ? "bg-[var(--color-terracotta)] text-white" : "bg-[var(--color-cream)] text-[var(--color-charcoal)]"}`}>{TRANSACTION_LABELS[key]} <span className="ml-2 opacity-75">{counts[key]} disponibles</span></Link>)}
       </nav>
       <AdminFilterBar.Row>
         <AdminFilterBar.Search placeholder="Titre, référence, quartier, ville, description…" />
@@ -52,7 +42,12 @@ export default function BiensFilterBar({ listing, counts, types, zones }: {
         />
       </AdminFilterBar.Row>
       <AdminFilterBar.Pills>
-        <AdminFilterBar.Pill param="status" label="Statut" options={STATUS_OPTIONS.map((option) => option.value === "reserved" && listing !== "vente" ? { ...option, label: "Réservé" } : option)} />
+        <AdminFilterBar.Toggle param="status" defaultValue={null} options={[
+          { value: null, label: listing === "vente" ? "À vendre" : "À louer" },
+          { value: "reserved", label: listing === "vente" ? "Sous compromis" : "Réservés" },
+          { value: listing === "vente" ? "sold" : "rented", label: listing === "vente" ? "Vendus" : "Loués" },
+          { value: "any", label: "Tous les biens" },
+        ]} />
         <AdminFilterBar.Pill
           param="type"
           label="Type"

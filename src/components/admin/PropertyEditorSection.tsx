@@ -15,7 +15,7 @@ export default async function PropertyEditorSection({ slug }: { slug: string }) 
     return <p role="alert" className="mt-6">Le formulaire n’a pas pu être chargé. Rechargez la page pour réessayer.</p>;
   }
   const values = Object.fromEntries(Object.entries(property.data).map(([key, value]) => [key,
-    Array.isArray(value) ? value.join("\n") : value == null ? (["pool", "exclusivity"].includes(key) ? "false" : "") : String(value),
+    Array.isArray(value) ? value.join("\n") : value == null ? (["pool", "exclusivity", "published"].includes(key) ? "false" : "") : String(value),
   ]));
   return <PropertyEditor key={values.updated_at} values={values}
     neighborhoods={(neighborhoods.data ?? []).map((n) => ({ value: n.slug, label: `${n.name} · ${n.city}` }))}

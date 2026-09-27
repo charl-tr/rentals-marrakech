@@ -91,7 +91,7 @@ const DURATION_OPTIONS = [
 
 const BEDROOM_OPTIONS = ["1", "2", "3", "4", "5"].map((n) => ({
   value: n,
-  label: n === "5" ? "5 chambres et +" : `${n} chambres et +`,
+  label: `${n} chambre${n === "1" ? "" : "s"} et +`,
 }));
 
 const SORT_OPTIONS = [
@@ -485,10 +485,10 @@ export default function CatalogueBrowser({
           <MapClientWrapper pins={items.map(toPin)} />
         </div>
       ) : (
-        <section className="min-h-[60vh] bg-[var(--color-cream)] py-8 md:py-16">
+        <section className="min-h-[60vh] bg-[var(--color-cream)] py-5 md:py-6">
           <div className="container-luxe">
             {baseHref === "/acheter" && activeCount === 0 && (
-              <div className="mb-7 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] pb-5 md:mb-10">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] pb-3">
                 <div>
                   <div className="eyebrow">La sélection</div>
                   <p className="mt-1 text-sm text-[var(--color-stone)]">

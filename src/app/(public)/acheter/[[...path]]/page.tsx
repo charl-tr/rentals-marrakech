@@ -137,8 +137,8 @@ export default async function AcheterPage({
     return (
       <Catalogue
         eyebrow="Achat — Marrakech & Essaouira"
-        title="Une sélection confidentielle, mise à jour chaque semaine."
-        subtitle="Riads rénovés, villas d'architecte, appartements de standing et programmes neufs. Plus de vingt ans à composer notre portefeuille avec discernement."
+        title="Biens à vendre"
+        subtitle="Riads, villas, appartements et terrains à Marrakech et Essaouira."
         breadcrumbs={[{ label: "Accueil", href: "/" }, { label: "Acheter" }]}
         prefilter={VENTE_BASE}
         baseHref="/acheter"

@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { readSelection, writeSelection } from "@/lib/local-selection-storage";
+import { toast } from "sonner";
 
 const STORAGE_KEY = "mr:favorites";
 const EVENT_NAME = "mr:favorites:change";
@@ -8,10 +10,7 @@ const EVENT_NAME = "mr:favorites:change";
 function readFavorites(): string[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    return readSelection(STORAGE_KEY);
   } catch {
     return [];
   }
@@ -19,9 +18,10 @@ function readFavorites(): string[] {
 
 function writeFavorites(list: string[]) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  const persisted = writeSelection(STORAGE_KEY, list);
+  if (!persisted) toast("Sauvegarde limitée à cette page", { id: "storage-unavailable", description: "Votre navigateur refuse le stockage. Vos favoris peuvent être perdus en quittant cette page." });
   // Sync across tabs + hooks on same page
-  window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: list }));
+  window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: readFavorites() }));
 }
 
 export function useFavorites() {
@@ -64,6 +64,7 @@ export function useFavorites() {
     const current = readFavorites();
     writeFavorites(current.filter((s) => s !== slug));
   }, []);
+  const clear = useCallback(() => writeFavorites([]), []);
 
   return {
     favorites,
@@ -71,6 +72,7 @@ export function useFavorites() {
     has,
     toggle,
     remove,
+    clear,
     hydrated,
   };
 }

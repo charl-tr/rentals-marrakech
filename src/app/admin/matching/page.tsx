@@ -7,7 +7,8 @@ import {
   Sparkles,
   Target,
 } from "lucide-react";
-import { getAllLeads, getAllPropertiesAdmin } from "@/lib/db";
+import { getLeadsForSession, getAllPropertiesAdmin } from "@/lib/db";
+import { requireAdminSession } from "@/lib/auth";
 import { formatPrice, propertyTypeLabel } from "@/data/properties";
 import { buildPropertyMatches } from "@/lib/matching";
 import type { AdminLead } from "@/lib/leads";
@@ -20,8 +21,9 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminMatchingPage() {
+  const session = await requireAdminSession();
   const [allLeads, allProperties] = await Promise.all([
-    getAllLeads(),
+    getLeadsForSession(session),
     getAllPropertiesAdmin(),
   ]);
 
@@ -42,15 +44,13 @@ export default async function AdminMatchingPage() {
           Matching inverse
         </div>
         <h1 className="mt-5 font-serif text-4xl leading-tight text-[var(--color-charcoal)] md:text-5xl">
-          Chaque bien trouve ses{" "}
-          <span className="italic text-[var(--color-accent)]">acheteurs</span>,
-          en 2 minutes.
+          Quels acheteurs pour{" "}
+          <span className="italic text-[var(--color-accent)]">ce bien ?</span>
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-[var(--color-stone)]">
-          Dès qu&apos;un nouveau bien rentre dans le portefeuille, notre moteur
-          croise ses caractéristiques avec les critères des acheteurs actifs.
-          Chaque conseiller reçoit ses matchs dans sa messagerie, prêt à
-          pinger.
+          Comparez les biens disponibles aux critères renseignés par vos acheteurs.
+          Le score est une aide au tri, pas une probabilité de vente. Vérifiez les
+          critères avant de contacter un acheteur ; aucun message n’est envoyé automatiquement.
         </p>
       </div>
 
@@ -89,17 +89,17 @@ export default async function AdminMatchingPage() {
             <Step
               num="01"
               title="Chaque acheteur renseigne ses critères"
-              body="Type, quartiers, budget, chambres minimum, équipements bloquants. Capturé au premier contact par le conseiller, ou saisi sur le site public via une alerte."
+              body="Type, quartiers, budget maximum et chambres minimum : seuls les critères renseignés interviennent dans le score. Sans critère, aucune suggestion n’est calculée."
             />
             <Step
               num="02"
               title="Le bien entre, le moteur croise"
-              body="Dès l'ajout du bien au portefeuille, notre moteur interroge les critères actifs et calcule un score de matching 0-100."
+              body="À l’ouverture de cette vue, les biens à vendre sont comparés aux demandes actives. Les biens vendus, loués et sous compromis sont exclus."
             />
             <Step
               num="03"
-              title="Le conseiller reçoit ses matchs"
-              body="Notification WhatsApp au conseiller de chaque acheteur matchant, avec contexte complet (profil + historique + dernière interaction). Un clic, un ping."
+              title="Le conseiller vérifie et contacte"
+              body="Ouvrez le dossier de l’acheteur pour vérifier ses besoins et son historique avant de proposer une visite. Aucun envoi automatique."
             />
           </div>
         </div>

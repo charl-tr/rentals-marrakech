@@ -25,6 +25,8 @@ export type ComparisonProperty = Pick<
   | "city"
   | "neighborhood"
   | "price"
+  | "priceUnit"
+  | "missingFields"
   | "bedrooms"
   | "bathrooms"
   | "surface"
@@ -46,9 +48,9 @@ export default function CompareView({
 
   // Dérivé directement de localStorage : aucun rendu intermédiaire ni effet
   // de synchronisation supplémentaire.
-  const displayed = hydrated
-    ? properties.filter((property) => items.includes(property.slug))
-    : properties;
+  const bySlug = new Map(properties.map((property) => [property.slug, property]));
+  const displayed = items.map((slug) => bySlug.get(slug)).filter((property): property is ComparisonProperty => Boolean(property));
+  if (!hydrated) return <div role="status" className="container-luxe py-24">Chargement de votre comparaison…</div>;
 
   if (displayed.length === 0) {
     return (
@@ -68,15 +70,15 @@ export default function CompareView({
   }
 
   // Helpers comparaison : quel est le winner par ligne ?
-  const maxPrice = Math.max(...displayed.map((p) => p.price));
-  const minPrice = Math.min(...displayed.map((p) => p.price));
+  const comparablePrices = new Set(displayed.map((p) => `${p.listing}:${p.priceUnit ?? ""}`)).size === 1;
+  const minPrice = Math.min(...displayed.filter((p) => p.price > 0).map((p) => p.price));
   const maxSurface = Math.max(...displayed.map((p) => p.surface));
   const maxBedrooms = Math.max(...displayed.map((p) => p.bedrooms));
   const maxBathrooms = Math.max(...displayed.map((p) => p.bathrooms));
   const maxLand = Math.max(...displayed.map((p) => p.landSurface ?? 0));
 
   return (
-    <div className="container-luxe py-10 md:py-14">
+    <div className="container-luxe pb-10 pt-24 md:pb-14">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <div className="eyebrow">Comparateur</div>
@@ -84,7 +86,7 @@ export default function CompareView({
             Comparer {displayed.length} bien{displayed.length > 1 ? "s" : ""}
           </h1>
           <p className="mt-1 text-sm text-[var(--color-stone)]">
-            Les critères en vert indiquent le meilleur de chaque catégorie.
+            Comparez les caractéristiques renseignées. Les valeurs manquantes ne sont pas estimées.
           </p>
         </div>
       </div>
@@ -179,17 +181,14 @@ export default function CompareView({
           {/* Row : price */}
           <Label>Prix</Label>
           {displayed.map((p) => (
-            <Cell key={`price-${p.slug}`} winner={p.price === minPrice && displayed.length > 1}>
+            <Cell key={`price-${p.slug}`} winner={comparablePrices && p.price > 0 && p.price === minPrice && displayed.length > 1}>
               <div className="font-serif text-lg text-[var(--color-charcoal)]">
-                {formatInCurrency(p.price, effective)}
+                {p.price > 0 ? formatInCurrency(p.price, effective) : "Prix sur demande"}
+                {p.price > 0 && p.listing !== "vente" && <span className="ml-1 text-xs">{p.priceUnit ? `/ ${p.priceUnit}` : "· période à confirmer"}</span>}
               </div>
-              {maxPrice !== minPrice && (
+              {comparablePrices && p.price > 0 && p.price === minPrice && displayed.length > 1 && (
                 <div className="text-[10px] text-[var(--color-stone)]">
-                  {p.price === minPrice
-                    ? "le plus accessible"
-                    : p.price === maxPrice
-                    ? "le plus premium"
-                    : ""}
+                  Prix affiché le plus bas
                 </div>
               )}
             </Cell>
@@ -198,10 +197,10 @@ export default function CompareView({
           {/* Row : bedrooms */}
           <Label>Chambres</Label>
           {displayed.map((p) => (
-            <Cell key={`bed-${p.slug}`} winner={p.bedrooms === maxBedrooms && displayed.length > 1}>
+            <Cell key={`bed-${p.slug}`} winner={p.bedrooms > 0 && p.bedrooms === maxBedrooms && displayed.length > 1}>
               <span className="flex items-center gap-1.5 text-sm text-[var(--color-charcoal)]">
                 <BedDouble size={12} className="text-[var(--color-stone)]" />
-                {p.bedrooms}
+                {p.missingFields?.includes("bedrooms") ? "Non renseigné" : p.bedrooms}
               </span>
             </Cell>
           ))}
@@ -209,10 +208,10 @@ export default function CompareView({
           {/* Row : bathrooms */}
           <Label>Salles de bain</Label>
           {displayed.map((p) => (
-            <Cell key={`bath-${p.slug}`} winner={p.bathrooms === maxBathrooms && displayed.length > 1}>
+            <Cell key={`bath-${p.slug}`} winner={p.bathrooms > 0 && p.bathrooms === maxBathrooms && displayed.length > 1}>
               <span className="flex items-center gap-1.5 text-sm text-[var(--color-charcoal)]">
                 <Bath size={12} className="text-[var(--color-stone)]" />
-                {p.bathrooms}
+                {p.missingFields?.includes("bathrooms") ? "Non renseigné" : p.bathrooms}
               </span>
             </Cell>
           ))}
@@ -220,10 +219,10 @@ export default function CompareView({
           {/* Row : surface habitable */}
           <Label>Surface habitable</Label>
           {displayed.map((p) => (
-            <Cell key={`surf-${p.slug}`} winner={p.surface === maxSurface && displayed.length > 1}>
+            <Cell key={`surf-${p.slug}`} winner={p.surface > 0 && p.surface === maxSurface && displayed.length > 1}>
               <span className="flex items-center gap-1.5 text-sm text-[var(--color-charcoal)]">
                 <Maximize size={12} className="text-[var(--color-stone)]" />
-                {p.surface} m²
+                {p.missingFields?.includes("surface") ? "Non renseigné" : `${p.surface} m²`}
               </span>
             </Cell>
           ))}

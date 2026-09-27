@@ -29,7 +29,7 @@ const schema = z.object({
 
 export type FavoritesLeadState =
   | { status: "idle" }
-  | { status: "success"; token: string }
+  | { status: "success"; token: string; emailSent: boolean }
   | { status: "error"; message: string };
 
 export async function submitFavoritesLead(
@@ -38,7 +38,7 @@ export async function submitFavoritesLead(
 ): Promise<FavoritesLeadState> {
   // Anti-spam — drop silencieux (le bot reçoit un "succès", token neutre)
   if (isLikelyBot(formData)) {
-    return { status: "success", token: "" };
+    return { status: "success", token: "", emailSent: false };
   }
 
   const raw = Object.fromEntries(formData.entries());
@@ -102,19 +102,18 @@ export async function submitFavoritesLead(
     // updateTag ne peut échouer que hors Server Action — ici on l'est.
   }
 
-  // Envoi du lien magique (non-bloquant) — c'est le SEUL moyen de retrouver la
-  // sélection sur un AUTRE appareil (l'appareil courant l'a déjà en localStorage).
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  // Confirm transport acceptance without pretending delivery to the inbox.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://rentals-marrakech.vercel.app");
   const restoreUrl = `${siteUrl}/ma-selection/${portalToken}`;
-  void sendSelectionEmail({
+  const emailSent = await sendSelectionEmail({
     to: email,
     url: restoreUrl,
     siteUrl,
     slugs: slugList,
     kind,
-  });
+  }).catch(() => false);
 
-  return { status: "success", token: portalToken };
+  return { status: "success", token: portalToken, emailSent };
 }
 
 // ── Mise à jour d'une sélection déjà liée ────────────────────────────
@@ -251,13 +250,15 @@ async function sendSelectionEmail(params: {
   </div>`;
 
   try {
-    await sendEmail({
+    const result = await sendEmail({
       to: params.to,
       subject: `Vos ${count} bien${plural} sélectionné${plural} vous attendent`,
       html,
     });
+    return result.ok && result.id !== "mocked" && !process.env.DEV_EMAIL_OVERRIDE;
   } catch (err) {
     console.error("[submitFavoritesLead] email send failed:", err);
     // Non-bloquant : la sélection est déjà en base et restaurable via le lien.
+    return false;
   }
 }

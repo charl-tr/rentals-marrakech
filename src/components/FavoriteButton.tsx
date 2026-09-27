@@ -32,7 +32,7 @@ export default function FavoriteButton({
       setBurst(true);
       window.setTimeout(() => setBurst(false), 550);
       toast("Ajouté à vos favoris.", {
-        description: "Votre sélection reste sur cet appareil. Retrouvez-la aussi par email.",
+        description: "Retrouvez les biens qui vous plaisent dans Ma sélection.",
         action: { label: "Ma sélection", onClick: () => router.push("/favoris") },
       });
     } else {

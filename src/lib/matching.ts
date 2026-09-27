@@ -9,52 +9,48 @@ export interface MatchResult {
 export function computeMatchScore(lead: AdminLead, property: Property): MatchResult {
   // Only match buyer leads against sale properties
   if (lead.intent !== "acheter") return { score: 0, reasons: [] };
-  if (property.listing !== "vente" && property.type !== "programme-neuf") return { score: 0, reasons: [] };
+  if (property.listing !== "vente" || !["available", "new"].includes(property.status)) return { score: 0, reasons: [] };
 
   let score = 0;
+  let possible = 0;
   const reasons: string[] = [];
 
   // Budget (40 pts) — property.price <= lead budget, with 15% tolerance
   const budgetMax = lead.buyer.budget.max;
-  if (budgetMax <= 0) {
-    score += 40;
-    reasons.push("Budget non contraint");
-  } else if (property.price <= budgetMax) {
+  if (budgetMax > 0) possible += 40;
+  if (budgetMax > 0 && property.price > 0 && property.price <= budgetMax) {
     score += 40;
     reasons.push(`Dans le budget (${(property.price / 1e6).toFixed(1)} M€ ≤ ${(budgetMax / 1e6).toFixed(1)} M€)`);
-  } else if (property.price <= budgetMax * 1.15) {
+  } else if (budgetMax > 0 && property.price > 0 && property.price <= budgetMax * 1.15) {
     score += 20;
     reasons.push(`Légèrement au-dessus du budget`);
   }
 
   // Type (25 pts)
   const types = lead.buyer.criteria.types;
-  if (types.length === 0) {
-    score += 25;
-  } else if (types.includes(property.type)) {
+  if (types.length > 0) possible += 25;
+  if (types.includes(property.type)) {
     score += 25;
     reasons.push(`Type correspondant (${property.type})`);
   }
 
   // Neighborhood (20 pts)
   const hoods = lead.buyer.criteria.neighborhoods;
-  if (hoods.length === 0) {
-    score += 20;
-  } else if (property.neighborhoodSlug && hoods.includes(property.neighborhoodSlug)) {
+  if (hoods.length > 0) possible += 20;
+  if (property.neighborhoodSlug && hoods.includes(property.neighborhoodSlug)) {
     score += 20;
     reasons.push(`Quartier souhaité (${property.neighborhood})`);
   }
 
   // Bedrooms (15 pts)
   const bedroomsMin = lead.buyer.criteria.bedroomsMin;
-  if (bedroomsMin <= 0) {
-    score += 15;
-  } else if (property.bedrooms >= bedroomsMin) {
+  if (bedroomsMin > 0) possible += 15;
+  if (bedroomsMin > 0 && property.bedrooms >= bedroomsMin) {
     score += 15;
     reasons.push(`${property.bedrooms} ch. ≥ min ${bedroomsMin}`);
   }
 
-  return { score, reasons };
+  return { score: possible > 0 ? Math.round(score / possible * 100) : 0, reasons };
 }
 
 export interface PropertyWithMatches {
@@ -72,7 +68,7 @@ export function buildPropertyMatches(
   );
 
   return properties
-    .filter((p) => p.listing === "vente" || p.type === "programme-neuf")
+    .filter((p) => p.listing === "vente" && ["available", "new"].includes(p.status))
     .map((property) => {
       const matches = activeBuyers
         .map((lead) => ({ lead, ...computeMatchScore(lead, property) }))

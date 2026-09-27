@@ -73,26 +73,7 @@ const VENDRE_LINKS = [
   { href: "/marche", label: "Rapport marché" },
 ];
 
-// Routes dont le haut de page est sombre (hero image ou bandeau noir) :
-// la navbar y est transparente en haut, puis claire au scroll.
-// Routes dont le haut de page est sombre (hero SectionHero charcoal ou image) :
-// la navbar y est transparente en haut puis se solidifie au scroll.
-const DARK_TOP_PREFIXES = [
-  "/acheter",
-  "/louer",
-  "/essaouira",
-  "/quartiers",
-  "/contact",
-  "/estimer",
-  "/favoris",
-  "/a-propos",
-  "/savoir-acheter",
-  "/journal",
-  "/collections",
-  "/deposer-un-bien",
-  "/faq",
-  "/equipe",
-];
+// Only the home photo uses an overlay. Interior pages share a legible sand header.
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -103,9 +84,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const isHome = pathname === "/";
-  const hasDarkTop =
-    isHome ||
-    DARK_TOP_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const hasDarkTop = isHome;
   const solid = scrolled || mobileOpen || !hasDarkTop;
 
   useEffect(() => {

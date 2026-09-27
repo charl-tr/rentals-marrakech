@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { readSelection, writeSelection } from "@/lib/local-selection-storage";
+import { toast } from "sonner";
 
 // ════════════════════════════════════════════════════════════════════
 // useCompareList — slugs à comparer (max 3), persisté en localStorage.
@@ -14,10 +16,7 @@ const MAX_ITEMS = 3;
 function read(): string[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.slice(0, MAX_ITEMS) : [];
+    return readSelection(STORAGE_KEY, MAX_ITEMS);
   } catch {
     return [];
   }
@@ -26,7 +25,7 @@ function read(): string[] {
 function write(list: string[]) {
   if (typeof window === "undefined") return;
   const capped = list.slice(0, MAX_ITEMS);
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(capped));
+  if (!writeSelection(STORAGE_KEY, capped, MAX_ITEMS)) toast("Comparaison conservée pour cette page uniquement", { id: "storage-unavailable" });
   window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: capped }));
 }
 
@@ -61,12 +60,12 @@ export function useCompareList() {
       write(current.filter((s) => s !== slug));
     } else {
       if (current.length >= MAX_ITEMS) {
-        // Oust le plus ancien (position 0) pour insérer le nouveau
-        write([...current.slice(1), slug]);
+        return false;
       } else {
         write([...current, slug]);
       }
     }
+    return true;
   }, []);
 
   const remove = useCallback((slug: string) => {

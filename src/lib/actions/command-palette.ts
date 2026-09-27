@@ -1,6 +1,6 @@
 "use server";
 
-import { getAllAdvisors, getAllLeads, getAllPropertiesAdmin } from "@/lib/db";
+import { getAllAdvisors, getLeadsForSession, getAllPropertiesAdmin } from "@/lib/db";
 import { requireAdminSession } from "@/lib/auth";
 import "server-only";
 import type { CommandPaletteData } from "@/components/admin/CommandPalette";
@@ -10,10 +10,10 @@ import type { CommandPaletteData } from "@/components/admin/CommandPalette";
 // lectures sous-jacentes sont déjà en cache court (unstable_cache, 15s,
 // tag "admin"), donc même un ⌘K répété reste rapide.
 export async function getCommandPaletteData(): Promise<CommandPaletteData> {
-  await requireAdminSession();
+  const session = await requireAdminSession();
 
   const [leads, properties, advisors] = await Promise.all([
-    getAllLeads(),
+    getLeadsForSession(session),
     getAllPropertiesAdmin(),
     getAllAdvisors(),
   ]);
@@ -24,7 +24,7 @@ export async function getCommandPaletteData(): Promise<CommandPaletteData> {
       name: `${l.buyer.firstName} ${l.buyer.lastName}`.trim(),
       status: l.status,
     })),
-    properties: properties.slice(0, 30).map((p) => ({
+    properties: properties.map((p) => ({
       slug: p.slug,
       title: p.title,
       reference: p.reference,

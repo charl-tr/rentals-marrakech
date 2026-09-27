@@ -22,6 +22,8 @@ export default async function ComparerPage() {
     city: property.city,
     neighborhood: property.neighborhood,
     price: property.price,
+    priceUnit: property.priceUnit,
+    missingFields: property.missingFields,
     bedrooms: property.bedrooms,
     bathrooms: property.bathrooms,
     surface: property.surface,

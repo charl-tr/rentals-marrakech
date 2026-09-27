@@ -15,6 +15,7 @@ import {
 } from "@/lib/selection-link";
 import EmailField from "@/components/EmailField";
 import FormGuard from "@/components/FormGuard";
+import { toast } from "sonner";
 
 const DISMISS_KEY_PREFIX = "mr:save-selection-dismissed:";
 
@@ -41,7 +42,6 @@ export default function SaveSelectionBanner({
   const [hidden, setHidden] = useState(false); // masquage transitoire (états liés)
   const [link, setLink] = useState<SelectionLink | null>(null);
   const [email, setEmail] = useState("");
-  const [updated, setUpdated] = useState(false);
 
   const [state, action, isPending] = useActionState<FavoritesLeadState, FormData>(
     submitFavoritesLead,
@@ -51,20 +51,28 @@ export default function SaveSelectionBanner({
 
   // Montée : lire le flag "dismiss" + le lien existant sur ce navigateur
   useEffect(() => {
-    setDismissed(window.sessionStorage.getItem(DISMISS_KEY_PREFIX + kind) === "1");
+    try {
+      // Client-only storage hydration; server and first client render stay identical.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDismissed(window.sessionStorage.getItem(DISMISS_KEY_PREFIX + kind) === "1");
+    } catch {
+      setDismissed(false);
+    }
     setLink(getSelectionLink(kind));
     setChecked(true);
   }, [kind]);
 
   // Première sauvegarde réussie → on LIE ce navigateur à la sélection.
   useEffect(() => {
-    if (state.status === "success") {
+    if (state.status === "success" && state.token) {
       const newLink: SelectionLink = {
         token: state.token,
         email: email.trim(),
         savedSlugs: slugs,
       };
       setSelectionLink(kind, newLink);
+      // Synchronize the browser's linked selection after the server action succeeds.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLink(newLink);
     }
     // On ne réagit qu'à la transition d'état de l'action.
@@ -72,19 +80,22 @@ export default function SaveSelectionBanner({
   }, [state]);
 
   const dismissForever = () => {
-    window.sessionStorage.setItem(DISMISS_KEY_PREFIX + kind, "1");
+    try { window.sessionStorage.setItem(DISMISS_KEY_PREFIX + kind, "1"); } catch { /* Still dismiss for this visit. */ }
     setDismissed(true);
   };
 
   const handleUpdate = () => {
     if (!link) return;
     startUpdate(async () => {
-      const res = await updateSavedSelection(link.token, slugs);
-      if (res.ok) {
-        const newLink: SelectionLink = { ...link, savedSlugs: slugs };
+      try {
+        const res = await updateSavedSelection(link.token, slugs);
+        if (!res.ok) throw new Error("selection-update-failed");
+        const newLink: SelectionLink = { ...link, savedSlugs: [...slugs] };
         setSelectionLink(kind, newLink);
         setLink(newLink);
-        setUpdated(true);
+        toast.success("Sélection mise à jour.");
+      } catch {
+        toast.error("La mise à jour a échoué. Vos favoris sont conservés ; réessayez.");
       }
     });
   };
@@ -99,9 +110,9 @@ export default function SaveSelectionBanner({
           <Check size={15} strokeWidth={2.5} />
         </div>
         <p className="text-sm leading-relaxed text-[var(--color-charcoal)]">
-          <span className="font-medium">Sélection sauvegardée.</span> On vient de
-          vous envoyer un lien par email pour la retrouver sur tous vos appareils —
-          et un conseiller peut vous la recontextualiser si besoin.
+          <span className="font-medium">Sélection sauvegardée.</span>{" "}
+          {state.emailSent ? "L’email contenant votre lien a été transmis au service d’envoi. Vérifiez aussi vos indésirables." : "L’envoi de l’email n’a pas été confirmé. Vos favoris restent accessibles ici."}
+          {state.token && <a href={`/ma-selection/${state.token}`} className="ml-2 underline underline-offset-4">Ouvrir ma sélection sauvegardée</a>}
         </p>
       </div>
     );
@@ -110,7 +121,7 @@ export default function SaveSelectionBanner({
   // ── État 2 & 3 : navigateur DÉJÀ lié ─────────────────────────────────
   if (link) {
     if (slugs.length === 0) return null;
-    const upToDate = updated || sameSelection(slugs, link.savedSlugs);
+    const upToDate = sameSelection(slugs, link.savedSlugs);
 
     if (upToDate) {
       return (
@@ -120,8 +131,7 @@ export default function SaveSelectionBanner({
           </div>
           <p className="flex-1 text-sm text-[var(--color-charcoal)]">
             <span className="font-medium">Sélection enregistrée</span>
-            {link.email ? ` · ${link.email}` : ""}. Vous la retrouvez sur tous vos
-            appareils.
+            {link.email ? ` · ${link.email}` : ""}. <a href={`/ma-selection/${link.token}`} className="underline underline-offset-4">Ouvrir le lien de ma sélection</a>
           </p>
           <button
             type="button"
@@ -176,21 +186,21 @@ export default function SaveSelectionBanner({
         <X size={14} />
       </button>
 
-      <div className="flex flex-col gap-4 pr-8 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-charcoal)]">
+      <details open={state.status === "error" ? true : undefined}>
+        <summary className="cursor-pointer pr-8 text-sm font-medium text-[var(--color-charcoal)]">
+          <span className="inline-flex items-center gap-2">
             <Mail size={15} className="text-[var(--color-accent)]" />
-            Recevez votre sélection par email.
-          </div>
+            Retrouver ma sélection par email
+          </span>
+        </summary>
           <p className="mt-1 text-xs text-[var(--color-stone)]">
             Gardez les biens qui vous plaisent et retrouvez-les sur un autre
             appareil. Aucun compte à créer.
           </p>
-        </div>
 
         <form
           action={action}
-          className="flex flex-shrink-0 flex-col gap-2 sm:flex-row"
+          className="mt-4 flex flex-shrink-0 flex-col gap-2 sm:flex-row"
         >
           <FormGuard />
           <input type="hidden" name="kind" value={kind} />
@@ -211,17 +221,16 @@ export default function SaveSelectionBanner({
             {isPending ? "…" : "Recevoir"}
           </button>
         </form>
-      </div>
 
       {state.status === "error" && (
-        <p className="mt-2 text-xs text-[var(--color-accent-deep)]">{state.message}</p>
+        <p role="alert" className="mt-2 text-xs text-[var(--color-accent-deep)]">{state.message}</p>
       )}
 
       <p className="mt-3 text-[10px] leading-relaxed text-[var(--color-stone)]">
         En renseignant votre email, vous acceptez d&apos;être recontacté(e) par
-        l&apos;équipe Marrakech Realty au sujet de cette sélection. Vos données ne
-        sont jamais transmises à des tiers.
+        l&apos;équipe Marrakech Realty au sujet de cette sélection. <a href="/politique-confidentialite" className="underline">Confidentialité</a>.
       </p>
+      </details>
     </div>
   );
 }
