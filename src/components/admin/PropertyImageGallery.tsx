@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Download, GripVertical, ImagePlus, LoaderCircle, RotateCcw, Star, Trash2 } from "lucide-react";
 import { isExternalPropertyImage, MAX_PROPERTY_IMAGES, movePropertyImage } from "@/lib/property-media";
 import { compressPropertyPhoto } from "@/lib/property-media-client";
+import PropertyPhotoViewer from "./PropertyPhotoViewer";
 
 export default function PropertyImageGallery({ slug, images, onChange, onBusyChange, disabled = false }: {
   slug: string; images: string[]; onChange: (images: string[]) => void;
@@ -18,6 +19,7 @@ export default function PropertyImageGallery({ slug, images, onChange, onBusyCha
   const [undo, setUndo] = useState<{ url: string; index: number }[]>([]);
   const [dragged, setDragged] = useState<number | null>(null);
   const [target, setTarget] = useState<number | null>(null);
+  const [viewing, setViewing] = useState<number | null>(null);
   const inactive = disabled || busy;
   const externalCount = images.filter(isExternalPropertyImage).length;
   const button = "inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-white px-2.5 py-1.5 text-xs font-medium hover:bg-[var(--color-cream)] focus-visible:outline-2 focus-visible:outline-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-40";
@@ -82,6 +84,7 @@ export default function PropertyImageGallery({ slug, images, onChange, onBusyCha
   }
 
   return <div className="sm:col-span-2 lg:col-span-3" aria-busy={busy}>
+    {viewing !== null && <PropertyPhotoViewer images={images} initialIndex={viewing} onClose={() => setViewing(null)} />}
     <input type="hidden" name="images" value={images.join("\n")} />
     <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" aria-label="Choisir des photos du bien" disabled={inactive}
       onChange={(event) => { const files = Array.from(event.target.files ?? []); event.target.value = ""; void upload(files); }} />
@@ -101,6 +104,7 @@ export default function PropertyImageGallery({ slug, images, onChange, onBusyCha
           {/* Existing external URLs are intentional during gradual media migration. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={url} alt={`Photo ${index + 1} du bien${index === 0 ? ", couverture" : ""}`} loading="lazy" draggable={false} className="h-full w-full object-cover" />
+          <button type="button" onClick={() => setViewing(index)} aria-label={`Agrandir la photo ${index + 1}`} className="absolute inset-0 cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-3px]"><span className="absolute bottom-2 right-2 rounded-lg bg-white/95 px-3 py-2 text-xs font-medium">⤢ Agrandir</span></button>
           <span className="absolute left-2 top-2 rounded-full bg-[#795238] px-2.5 py-1 text-xs font-medium text-white">{index === 0 ? "Couverture" : `Photo ${index + 1}`}</span>
           <button type="button" draggable={!inactive} disabled={inactive} aria-label={`Réordonner la photo ${index + 1} par glisser-déposer`} title="Glisser pour réordonner — ou utiliser les flèches" onDragStart={(event) => { setDragged(index); event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", String(index)); }} onDragEnd={() => { setDragged(null); setTarget(null); }} className="absolute right-2 top-2 cursor-grab rounded-lg bg-white/95 p-2 active:cursor-grabbing"><GripVertical size={17} /></button>
         </div>

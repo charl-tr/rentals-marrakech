@@ -17,6 +17,7 @@ export const savePropertyDetails = defineMutation({
       .select("updated_at,description,reference").eq("slug", slug).single();
     if (readError || !current) throw new Error("Bien introuvable.");
     if (current.updated_at !== updated_at) throw new Error("Cette fiche a changé. Rechargez la page avant de réessayer ; vos modifications ne sont pas enregistrées.");
+    if (fields.reference !== current.reference) throw new Error("La référence de ce bien est protégée et ne peut pas être modifiée depuis cette fiche.");
     if (fields.reference.trim().toUpperCase() !== current.reference.trim().toUpperCase()) {
       for (let offset = 0; ; offset += 500) {
         const { data: references, error: duplicateError } = await supabaseAdmin.from("properties")

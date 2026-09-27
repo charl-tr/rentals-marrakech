@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
+import Link from "next/link";
 import { Check, Eye, Images, Save } from "lucide-react";
 import { savePropertyDetails } from "@/lib/actions/property-editor";
 import type { MutationState } from "@/lib/actions/_core/defineMutation";
@@ -14,17 +15,30 @@ type Option = { value: string; label: string };
 const numbers = new Set(["price_eur", "price_mad", "bedrooms", "bathrooms", "surface", "land_surface", "year_built"]);
 const multiline = new Set(["description", "short_description", "features", "seo_description"]);
 
-export default function PropertyEditor({ values, neighborhoods, advisors }: {
-  values: Record<string, string>; neighborhoods: Option[]; advisors: Option[];
+export default function PropertyEditor({ values, neighborhoods, advisors, summarySuggestion }: {
+  values: Record<string, string>; neighborhoods: Option[]; advisors: Option[]; summarySuggestion?: string;
 }) {
   const [state, action, pending] = useActionState<MutationState, FormData>(savePropertyDetails, { status: "idle" });
   const [draft, setDraft] = useState(values);
   const [uploading, setUploading] = useState(false);
   const [panel, setPanel] = useState<"images" | "preview">("images");
   const [resetKey, setResetKey] = useState(0);
+  const [history, setHistory] = useState<Record<string, string>[]>([]);
+  const [future, setFuture] = useState<Record<string, string>[]>([]);
   const dirty = Object.keys(values).some((key) => draft[key] !== values[key]);
   const images = (draft.images ?? "").split("\n").map((s) => s.trim()).filter(Boolean);
-  const update = (name: string, value: string) => setDraft((previous) => ({ ...previous, [name]: value }));
+  const update = (name: string, value: string) => {
+    setHistory((previous) => [...previous.slice(-99), draft]);
+    setFuture([]);
+    setDraft((previous) => ({ ...previous, [name]: value }));
+  };
+  const travel = (back: boolean) => {
+    const stack = back ? history : future;
+    if (!stack.length) return;
+    if (back) { setHistory(stack.slice(0, -1)); setFuture((previous) => [...previous, draft]); }
+    else { setFuture(stack.slice(0, -1)); setHistory((previous) => [...previous, draft]); }
+    setDraft(stack[stack.length - 1]); setResetKey((key) => key + 1);
+  };
   const publicHref = `${values.listing === "vente" ? "/acheter" : "/louer"}/${values.slug}`;
   const updated = formatPropertyUpdatedAt(values.updated_at);
   useEffect(() => {
@@ -53,15 +67,17 @@ export default function PropertyEditor({ values, neighborhoods, advisors }: {
 
   return <section id="modifier" className="mt-8 scroll-mt-24 rounded-[16px] border border-[var(--color-border)] bg-[var(--color-cream)]">
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--color-border)] p-5">
+      <Link href="/admin/biens" className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm">← Retour aux biens</Link>
       <div><h2 className="font-serif text-2xl">L’atelier du bien</h2><p className="mt-1 text-xs text-[var(--color-stone)]">{updated ? `Dernière mise à jour le ${updated} · heure de Marrakech` : "Date de mise à jour non renseignée"}</p></div>
       <a href="#galerie-edition" className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm lg:hidden">Photos et aperçu ↓</a>
       {values.published === "true" && <a href={publicHref} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm">Ouvrir la version en ligne ↗</a>}
     </div>
     <form action={action} onSubmit={(event) => { if (uploading) event.preventDefault(); }}>
       <input type="hidden" name="slug" value={values.slug} /><input type="hidden" name="updated_at" value={values.updated_at} />
+      <p className="break-all border-b border-[var(--color-border)] px-5 py-3 text-xs text-[var(--color-stone)]">Slug (URL protégée) : <code>{values.slug}</code></p>
       <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
         <div className="min-w-0 p-5 lg:max-h-[70dvh] lg:overflow-y-auto lg:overscroll-contain lg:border-r lg:border-[var(--color-border)]" aria-label="Champs de la fiche" tabIndex={0}>
-          <fieldset disabled={pending}>
+          <fieldset disabled={pending || uploading}>
             <div className="mb-5 rounded-xl border border-[var(--color-border)] bg-white p-4">
               <label htmlFor="edit-published" className="text-sm font-medium">Visibilité sur le site</label>
               <select id="edit-published" name="published" value={draft.published} onChange={(event) => update("published", event.target.value)} className={inputClass}>
@@ -70,15 +86,21 @@ export default function PropertyEditor({ values, neighborhoods, advisors }: {
               <p className="mt-2 text-xs text-[var(--color-stone)]">{values.published === "true" && draft.published === "false" ? "À l’enregistrement, ce bien sera retiré du site public. Il restera accessible à l’équipe." : draft.published === "true" ? "L’enregistrement actualisera la fiche publique. L’aperçu seul ne publie rien." : "Vous pouvez compléter ce bien sans le rendre visible aux visiteurs."}</p>
             </div>
             <p className="mb-3 text-xs text-[var(--color-stone)]">Une information inconnue ? Laissez le champ vide. 0 est une valeur explicite.</p>
+            {summarySuggestion && draft.short_description === values.short_description && <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm">Le résumé importé contient du texte technique de l’ancien site. <button type="button" className="underline underline-offset-4" onClick={() => update("short_description", summarySuggestion)}>Le remplacer par un extrait du descriptif</button>. Vous pourrez le relire avant d’enregistrer.</div>}
             {EDITOR_GROUPS.map((group, index) => <details key={group.title} open={index < 2 || (state.status === "error" && group.fields.some((name) => state.fieldErrors?.[name]))} className="border-t border-[var(--color-border)] py-4">
               <summary className="cursor-pointer text-base font-medium">{group.title}</summary>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {group.fields.map((name) => {
+                  // Keep hidden values submitted: changing category must never silently erase data.
+                  if ((name === "price_unit" && draft.listing === "vente") || (draft.type === "terrain" && ["bedrooms", "bathrooms", "year_built", "pool"].includes(name) && ["", "false"].includes(draft[name] ?? ""))) {
+                    return <input key={name} type="hidden" name={name} value={draft[name] ?? ""} />;
+                  }
                   const errors = state.status === "error" ? state.fieldErrors?.[name] : undefined;
                   const common = { id: `edit-${name}`, name, value: draft[name] ?? "", onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => update(name, event.target.value), className: inputClass, "aria-invalid": !!errors, "aria-describedby": errors ? `error-${name}` : undefined };
                   return <div key={name} className={multiline.has(name) || name === "title" ? "sm:col-span-2" : ""}>
                     <label htmlFor={common.id} className="text-sm font-medium">{EDITOR_LABELS[name]}</label>
-                    {options[name] ? <select {...common}>{options[name].map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select> : multiline.has(name) ? <textarea {...common} rows={name === "description" ? 7 : 3} /> : <input {...common} type={numbers.has(name) ? "number" : "text"} min={numbers.has(name) ? 0 : undefined} step={numbers.has(name) ? 1 : undefined} required={["title", "reference", "city"].includes(name)} placeholder="Non renseigné" />}
+                    {options[name] ? <select {...common}>{options[name].map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select> : multiline.has(name) ? <textarea {...common} rows={name === "description" ? 7 : 3} /> : <input {...common} readOnly={name === "reference"} type={numbers.has(name) ? "number" : "text"} min={numbers.has(name) ? 0 : undefined} step={numbers.has(name) ? 1 : undefined} required={["title", "reference", "city"].includes(name)} placeholder="Non renseigné" />}
+                    {name === "reference" && <p className="mt-1 text-xs text-[var(--color-stone)]">Référence protégée : elle identifie ce bien dans les échanges et imports.</p>}
                     {errors && <p id={`error-${name}`} className="mt-1 text-sm text-red-700">{errors.join(" ")}</p>}
                   </div>;
                 })}
@@ -102,7 +124,10 @@ export default function PropertyEditor({ values, neighborhoods, advisors }: {
       </div>
       <div className="sticky bottom-0 z-20 flex flex-wrap items-center justify-between gap-3 rounded-b-[16px] border-t border-[var(--color-border)] bg-white/95 p-4 backdrop-blur-md">
         <p role="status" className="flex items-center gap-2 text-sm text-[var(--color-stone)]">{uploading ? "Transfert en cours…" : dirty ? "Modifications non enregistrées" : <><Check size={16} /> Fiche à jour</>}</p>
-        <div className="flex flex-wrap gap-2"><button type="button" disabled={pending || uploading || !dirty} onClick={() => { setDraft(values); setResetKey((key) => key + 1); }} className="rounded-[10px] border border-[var(--color-border)] px-4 py-2.5 text-sm disabled:opacity-40">Annuler les modifications</button>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" disabled={pending || uploading || !history.length} onClick={() => travel(true)} className="rounded-[10px] border border-[var(--color-border)] px-3 py-2.5 text-sm disabled:opacity-40">↶ Annuler</button>
+          <button type="button" disabled={pending || uploading || !future.length} onClick={() => travel(false)} className="rounded-[10px] border border-[var(--color-border)] px-3 py-2.5 text-sm disabled:opacity-40">↷ Rétablir</button>
+          <button type="button" disabled={pending || uploading || !dirty} onClick={() => { if (!window.confirm("Revenir à la dernière version enregistrée ?")) return; setHistory((previous) => [...previous.slice(-99), draft]); setFuture([]); setDraft(values); setResetKey((key) => key + 1); }} className="rounded-[10px] border border-[var(--color-border)] px-4 py-2.5 text-sm disabled:opacity-40">Tout réinitialiser</button>
           <button type="submit" disabled={pending || uploading} className="flex items-center gap-2 rounded-[10px] bg-[#795238] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"><Save size={15} />{pending ? "Enregistrement…" : draft.published === "true" ? "Enregistrer et publier" : "Enregistrer le brouillon"}</button></div>
         {state.status !== "idle" && <p role={state.status === "error" ? "alert" : "status"} className={`w-full text-sm ${state.status === "error" ? "text-red-700" : "text-green-800"}`}>{state.message}</p>}
       </div>

@@ -19,6 +19,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import "dotenv/config";
+import { decodeHTML as decodeEntities } from "entities";
+import { cleanImportedHtml as cleanText, propertySummary } from "../src/lib/imported-property-text.mjs";
 
 const WP_BASE = "https://www.marrakechrealty.com";
 const TYPES = [
@@ -38,31 +40,6 @@ const limit = Number(valueArg("--limit") || 0);
 const concurrency = Math.max(1, Math.min(12, Number(valueArg("--concurrency") || 6)));
 const shouldWrite = args.has("--write");
 
-function decodeEntities(value = "") {
-  const named = {
-    amp: "&", quot: '"', apos: "'", nbsp: " ", laquo: "«", raquo: "»",
-    rsquo: "’", lsquo: "‘", ndash: "–", mdash: "—", hellip: "…", eacute: "é",
-    egrave: "è", agrave: "à", ecirc: "ê", ocirc: "ô", ucirc: "û", ccedil: "ç",
-  };
-  return String(value)
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .replace(/&#([0-9]+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
-    .replace(/&([a-z]+);/gi, (match, name) => named[name.toLowerCase()] ?? match);
-}
-
-function cleanText(value = "") {
-  return decodeEntities(
-    String(value)
-      .replace(/<br\s*\/?\s*>/gi, "\n")
-      .replace(/<\/p\s*>/gi, "\n\n")
-      .replace(/<\/li\s*>/gi, "\n")
-      .replace(/<[^>]+>/g, " "),
-  )
-    .replace(/[ \t]+/g, " ")
-    .replace(/ *\n */g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
 
 function parseWpJson(raw) {
   const starts = [raw.indexOf("[{"), raw.indexOf("[]")].filter((n) => n >= 0);
@@ -227,7 +204,7 @@ function parseDetail(rest, config, html) {
     pool: extractFeatures(html).some((feature) => /piscine|bassin/i.test(feature)),
     featured: false,
     published: true,
-    short_description: seoDescription || description.slice(0, 240),
+    short_description: propertySummary(seoDescription || "", description),
     description,
     description_html: descriptionHtml,
     story: null,

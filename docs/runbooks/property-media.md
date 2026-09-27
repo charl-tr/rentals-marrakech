@@ -7,6 +7,11 @@
 - Enregistrement explicite de l’ensemble. Un transfert seul ne modifie pas la fiche. Les erreurs de transfert n’effacent pas les photos existantes.
 - Brouillon = `published=false`. Dépublier retire la fiche du site ; il ne s’agit PAS d’une seconde version de travail parallèle à la fiche publique.
 - Date de dernière mise à jour dans l’éditeur, et contrôle de concurrence par `updated_at` lors de l’enregistrement.
+- Référence verrouillée côté formulaire et serveur ; slug affiché, non modifiable. Cela ne résout pas les doublons historiques d’import, qui nécessitent une décision métier séparée.
+- Annuler/rétablir dans la session de saisie (100 étapes maximum), remise à la version chargée avec confirmation et lien retour protégé contre l’abandon involontaire. Ce n’est pas un historique de versions après enregistrement.
+- Visionneuse en grand format, gros plan ×2, navigation clavier et fermeture Échap via dialogue natif.
+- Masquage conditionnel des périodes en vente et des caractéristiques logement non renseignées pour les terrains ; valeurs conservées lors des changements de catégorie.
+- Import texte : décodage HTML complet, paragraphes et listes conservés. Résumés techniques reconnus et remplacés par un extrait lors des futurs imports. Pour les fiches existantes, proposition de correction explicite dans l’éditeur, sans écriture massive en base.
 
 ## Stockage et limites
 

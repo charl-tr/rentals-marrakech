@@ -2,6 +2,7 @@ import { requireAdminSession, isDirector } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { EDITOR_FIELDS } from "@/lib/property-editor";
 import PropertyEditor from "./PropertyEditor";
+import { isBoilerplateSummary, propertySummary } from "@/lib/imported-property-text.mjs";
 
 export default async function PropertyEditorSection({ slug }: { slug: string }) {
   const session = await requireAdminSession();
@@ -17,7 +18,10 @@ export default async function PropertyEditorSection({ slug }: { slug: string }) 
   const values = Object.fromEntries(Object.entries(property.data).map(([key, value]) => [key,
     Array.isArray(value) ? value.join("\n") : value == null ? (["pool", "exclusivity", "published"].includes(key) ? "false" : "") : String(value),
   ]));
+  // Do not silently rewrite saved content. Offer a targeted repair in the editor.
+  const summarySuggestion = isBoilerplateSummary(values.short_description) ? propertySummary("", values.description) : undefined;
   return <PropertyEditor key={values.updated_at} values={values}
+    summarySuggestion={summarySuggestion}
     neighborhoods={(neighborhoods.data ?? []).map((n) => ({ value: n.slug, label: `${n.name} · ${n.city}` }))}
     advisors={(advisors.data ?? []).map((a) => ({ value: a.slug, label: a.name }))} />;
 }
