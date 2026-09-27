@@ -13,6 +13,14 @@ export function inventoryPrice(property: Property) {
 export const TRANSACTION_LABELS: Record<Listing, string> = {
   vente: "Vente", location: "Location longue durée", "location-saisonniere": "Location saisonnière",
 };
+export type InventorySection = Listing | "programme-neuf";
+export const INVENTORY_SECTIONS: Record<InventorySection, string> = { ...TRANSACTION_LABELS, "programme-neuf": "Programmes neufs" };
+export function inventorySection(value?: string): InventorySection {
+  return value === "programme-neuf" ? value : inventoryTransaction(value);
+}
+export function inInventorySection(property: Pick<Property, "listing" | "type">, section: InventorySection) {
+  return section === "programme-neuf" ? property.type === "programme-neuf" : property.type !== "programme-neuf" && property.listing === section;
+}
 export function inventoryStatusLabel(status: PropertyStatus, listing?: Listing) {
   return ({ available: "Disponible", new: "Nouveau", sold: "Vendu", rented: "Loué", reserved: listing && listing !== "vente" ? "Réservé" : "Sous compromis" })[status] ?? status;
 }

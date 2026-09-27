@@ -37,11 +37,12 @@ export default function HeroSearch({
 
   function submit() {
     const params = new URLSearchParams();
-    if (type) params.set("type", type);
+    if (type && type !== "programme-neuf") params.set("type", type);
     if (zone) params.set("quartier", zone);
     if (budget) params.set("budget", budget);
     const qs = params.toString();
-    router.push(qs ? `/acheter?${qs}` : "/acheter");
+    const base = type === "programme-neuf" ? "/acheter/programmes-neufs" : "/acheter";
+    router.push(qs ? `${base}?${qs}` : base);
   }
 
   return (

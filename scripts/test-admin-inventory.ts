@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
-import { inventoryTransaction, inventoryStatusLabel, inventoryPrice, sortInventory } from "../src/lib/admin-inventory";
+import { inventoryTransaction, inventoryStatusLabel, inventoryPrice, sortInventory, inventorySection, inInventorySection } from "../src/lib/admin-inventory";
 import type { Property } from "../src/data/properties";
 
 const property = (slug: string, price: number, overrides: Partial<Property> = {}) => ({ slug, title: slug, reference: slug, price, currency: "EUR", listing: "vente", surface: 100, ...overrides }) as Property;
 const rows = [property("unknown", 0), property("high", 500), property("low", 100)];
 assert.equal(inventoryTransaction(undefined), "vente");
+assert.equal(inventorySection("programme-neuf"), "programme-neuf");
+assert(inInventorySection(property("new", 0, { type: "programme-neuf" }), "programme-neuf"));
+assert(!inInventorySection(property("new", 0, { type: "programme-neuf" }), "vente"));
+assert(inInventorySection(property("villa", 10, { type: "villa" }), "vente"));
 assert.equal(inventoryTransaction("location"), "location");
 assert.equal(inventoryTransaction("location-saisonniere"), "location-saisonniere");
 assert.equal(inventoryStatusLabel("available"), "Disponible");

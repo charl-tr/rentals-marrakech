@@ -4,12 +4,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AdminFilterBar from "./_primitives/AdminFilterBar";
 import AdminChoice from "./AdminChoice";
-import { propertyTypeLabel, type PropertyType, type Listing } from "@/data/properties";
-import { TRANSACTION_LABELS } from "@/lib/admin-inventory";
+import { propertyTypeLabel, type PropertyType } from "@/data/properties";
+import { INVENTORY_SECTIONS, type InventorySection } from "@/lib/admin-inventory";
 
 export type BiensViewMode = "table" | "grid";
 export default function BiensFilterBar({ listing, counts, types, zones }: {
-  listing: Listing; counts: Record<Listing, number>; types: PropertyType[]; zones: { slug: string; label: string }[];
+  listing: InventorySection; counts: Record<InventorySection, number>; types: PropertyType[]; zones: { slug: string; label: string }[];
 }) {
   const params = useSearchParams(); const router = useRouter(); const pathname = usePathname();
   const [expanded, setExpanded] = useState(false); const [pending, startTransition] = useTransition();
@@ -21,10 +21,11 @@ export default function BiensFilterBar({ listing, counts, types, zones }: {
     { key: "missing", label: "À compléter", options: [{ value: "", label: "Toutes les fiches" }, { value: "bedrooms", label: "Chambres manquantes" }, { value: "bathrooms", label: "Salles de bain manquantes" }, { value: "surface", label: "Surface manquante" }, { value: "price", label: "Prix sur demande" }, { value: "neighborhood", label: "Quartier manquant" }, { value: "reference", label: "Références en doublon" }] },
   ];
   const active = criteria.filter(c => params.get(c.key));
-  const statuses = [{ value: "", label: listing === "vente" ? "À vendre" : "À louer" }, { value: "reserved", label: listing === "vente" ? "Sous compromis" : "Réservés" }, { value: listing === "vente" ? "sold" : "rented", label: listing === "vente" ? "Vendus" : "Loués" }, { value: "any", label: "Tous" }];
+  const sale = listing === "vente" || listing === "programme-neuf";
+  const statuses = [{ value: "", label: sale ? "À vendre" : "À louer" }, { value: "reserved", label: sale ? "Sous compromis" : "Réservés" }, { value: sale ? "sold" : "rented", label: sale ? "Vendus" : "Loués" }, { value: "any", label: "Tous" }];
   return <div className="border-b border-[var(--color-beige-warm)] bg-white px-5 py-4 md:px-8" aria-busy={pending}>
     <nav aria-label="Transaction" className="mb-4 flex flex-wrap gap-2">
-      {(Object.keys(TRANSACTION_LABELS) as Listing[]).map(key => <Link key={key} href={`/admin/biens?listing=${key}`} aria-current={listing === key ? "page" : undefined} className={`rounded-lg px-4 py-2 text-sm font-medium ${listing === key ? "bg-[#795238] text-white" : "bg-[#f7f4ee]"}`}>{TRANSACTION_LABELS[key]} <span className="ml-2 opacity-70">{counts[key]}</span></Link>)}
+      {(Object.keys(INVENTORY_SECTIONS) as InventorySection[]).map(key => <Link key={key} href={`/admin/biens?listing=${key}`} aria-current={listing === key ? "page" : undefined} className={`rounded-lg px-4 py-2 text-sm font-medium ${listing === key ? "bg-[#795238] text-white" : "bg-[#f7f4ee]"}`}>{INVENTORY_SECTIONS[key]} <span className="ml-2 opacity-70">{counts[key]}</span></Link>)}
     </nav>
     <div className="flex flex-wrap items-center gap-3">
       <AdminFilterBar.Search placeholder="Rechercher un bien, une référence, un quartier…" />

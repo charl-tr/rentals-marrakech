@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Catalogue from "@/components/Catalogue";
 import PropertyDetail from "@/components/PropertyDetail";
@@ -76,9 +76,9 @@ export async function generateMetadata({
   if (route.kind === "type") {
     const label = propertyTypeLabel(route.type);
     return {
-      title: `${label}s à vendre — Marrakech Realty`,
+      title: route.type === "programme-neuf" ? "Programmes neufs à Marrakech et Essaouira" : route.type === "riad-a-renover" ? "Riads à rénover à vendre — Marrakech Realty" : `${label}s à vendre — Marrakech Realty`,
       description: `Notre sélection de ${label.toLowerCase()}s à Marrakech et Essaouira.`,
-      alternates: { canonical: `/acheter/${route.type}` },
+      alternates: { canonical: `/acheter/${route.type === "programme-neuf" ? "programmes-neufs" : route.type}` },
     };
   }
   if (route.kind === "geo") {
@@ -134,13 +134,17 @@ export default async function AcheterPage({
   );
 
   if (route.kind === "catalogue") {
+    if (selected.type === "programme-neuf") {
+      const query = new URLSearchParams(Object.entries(selected).filter((entry): entry is [string, string] => entry[0] !== "type" && typeof entry[1] === "string"));
+      redirect(`/acheter/programmes-neufs${query.size ? `?${query}` : ""}`);
+    }
     return (
       <Catalogue
         eyebrow="Achat — Marrakech & Essaouira"
         title="Biens à vendre"
         subtitle="Riads, villas, appartements et terrains à Marrakech et Essaouira."
         breadcrumbs={[{ label: "Accueil", href: "/" }, { label: "Acheter" }]}
-        prefilter={VENTE_BASE}
+        prefilter={(p) => VENTE_BASE(p) && p.type !== "programme-neuf"}
         baseHref="/acheter"
         selectedFilters={selected}
       />
@@ -153,11 +157,11 @@ export default async function AcheterPage({
     return (
       <Catalogue
         eyebrow={`Acheter · ${label}`}
-        title={`${label}s à vendre.`}
-        subtitle={`Notre sélection de ${label.toLowerCase()}s à Marrakech et Essaouira.`}
+        title={route.type === "programme-neuf" ? "Programmes neufs" : route.type === "riad-a-renover" ? "Riads à rénover à vendre" : `${label}s à vendre.`}
+        subtitle={route.type === "programme-neuf" ? "Découvrez les programmes immobiliers neufs à Marrakech et Essaouira." : route.type === "riad-a-renover" ? "Les riads à rénover disponibles à Marrakech et Essaouira. Filtrez par ville pour affiner votre sélection." : `Notre sélection de ${label.toLowerCase()}s à Marrakech et Essaouira.`}
         breadcrumbs={[
           { label: "Accueil", href: "/" },
-          { label: "Acheter", href: "/acheter" },
+          ...(route.type === "programme-neuf" ? [] : [{ label: "Acheter", href: "/acheter" }]),
           { label: label },
         ]}
         prefilter={(p) => VENTE_BASE(p) && p.type === route.type}

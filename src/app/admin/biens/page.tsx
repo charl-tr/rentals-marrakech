@@ -7,7 +7,6 @@ import {
 } from "@/lib/db";
 import {
   propertyTypeLabel,
-  type Listing,
 } from "@/data/properties";
 import BiensFilterBar, {
   type BiensViewMode,
@@ -17,7 +16,7 @@ import InventoryPhoto from "@/components/admin/InventoryPhoto";
 import PropertyQuickActions from "@/components/admin/PropertyQuickActions";
 import { requireAdminSession } from "@/lib/auth";
 import { matchesPropertySearch } from "@/lib/inventory-search";
-import { inventoryPrice, inventoryTransaction, sortInventory, TRANSACTION_LABELS } from "@/lib/admin-inventory";
+import { inventoryPrice, inventorySection, inInventorySection, sortInventory, INVENTORY_SECTIONS, type InventorySection } from "@/lib/admin-inventory";
 
 export const metadata: Metadata = {
   title: "Biens — Admin Marrakech Realty",
@@ -54,7 +53,7 @@ export default async function AdminBiensPage({
 
   const q = (sp.q ?? "").trim().toLowerCase();
   const statusFilter = sp.status ?? "active";
-  const listing = inventoryTransaction(sp.listing);
+  const listing = inventorySection(sp.listing);
   const typeFilter = sp.type ?? "all";
   const zoneFilter = sp.zone ?? "all";
   const visFilter = sp.vis ?? "all";
@@ -64,8 +63,8 @@ export default async function AdminBiensPage({
     getAllPropertiesAdmin(),
     getLeadsCountByProperty(),
   ]);
-  const scoped = properties.filter((p) => p.listing === listing);
-  const counts = Object.fromEntries((Object.keys(TRANSACTION_LABELS) as Listing[]).map((key) => [key, properties.filter((p) => p.listing === key && ["available", "new"].includes(p.status)).length])) as Record<Listing, number>;
+  const scoped = properties.filter((p) => inInventorySection(p, listing));
+  const counts = Object.fromEntries((Object.keys(INVENTORY_SECTIONS) as InventorySection[]).map((key) => [key, properties.filter((p) => inInventorySection(p, key) && ["available", "new"].includes(p.status)).length])) as Record<InventorySection, number>;
   const types = [...new Set(scoped.map((p) => p.type))].sort((a, b) => propertyTypeLabel(a).localeCompare(propertyTypeLabel(b), "fr"));
   const zones = [...new Map(scoped.filter((p) => p.neighborhoodSlug).map((p) => [p.neighborhoodSlug, { slug: p.neighborhoodSlug, label: `${p.neighborhood || p.neighborhoodSlug} · ${p.city}` }])).values()].sort((a, b) => a.label.localeCompare(b.label, "fr"));
 
@@ -131,13 +130,13 @@ export default async function AdminBiensPage({
               Portefeuille de biens
             </div>
             <h1 className="mt-2 font-serif text-3xl text-[var(--color-charcoal)] md:text-4xl">
-              {TRANSACTION_LABELS[listing]}
+              {INVENTORY_SECTIONS[listing]}
               <span className="ml-3 text-[var(--color-stone)]">
                 · {filtered.length}
               </span>
             </h1>
             <p className="mt-1 text-xs text-[var(--color-stone)]">
-              {totalActiveListings} {listing === "vente" ? "à vendre" : "à louer"} · {totalReserved} {listing === "vente" ? "sous compromis" : "réservés"} ·{" "}
+              {totalActiveListings} {listing === "vente" || listing === "programme-neuf" ? "à vendre" : "à louer"} · {totalReserved} {listing === "vente" || listing === "programme-neuf" ? "sous compromis" : "réservés"} ·{" "}
               {totalSold} archivés · {scoped.length} dans cette catégorie
             </p>
           </div>

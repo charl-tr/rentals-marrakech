@@ -37,7 +37,6 @@ const ACHETER_MEGA: MegaColumn[] = [
     links: [
       { href: "/acheter/appartement", label: "Appartements" },
       { href: "/acheter/maison-hotes", label: "Maisons d'hôtes" },
-      { href: "/acheter/programmes-neufs", label: "Programmes neufs" },
       { href: "/acheter/terrain", label: "Terrains" },
       { href: "/acheter/autre", label: "Commerces" },
     ],
@@ -139,7 +138,7 @@ export default function Navbar() {
           />
         </Link>
 
-        <nav className="hidden items-center lg:flex">
+        <nav className="hidden items-center xl:flex">
           <NavDropdown
             label="Acheter"
             open={openMenu === "acheter"}
@@ -164,6 +163,7 @@ export default function Navbar() {
             <SimplePanel links={LOUER_LINKS} footerHref="/louer" footerLabel="Toutes les locations" />
           </NavDropdown>
 
+          <NavLink href="/acheter/programmes-neufs" label="Programmes neufs" textColor={textColor} underline={underline} />
           <NavDropdown
             label="Essaouira"
             open={openMenu === "essaouira"}
@@ -203,7 +203,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setMobileOpen((s) => !s)}
-          className={`lg:hidden ${solid ? "text-[var(--color-charcoal)]" : "text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"}`}
+          className={`xl:hidden ${solid ? "text-[var(--color-charcoal)]" : "text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"}`}
           aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
         >
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -211,11 +211,12 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] lg:hidden">
+        <div className="max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] xl:hidden">
           <div className="container-luxe py-7">
             <nav aria-label="Navigation mobile" className="space-y-1">
               {[
                 ["/acheter", "Acheter"],
+                ["/acheter/programmes-neufs", "Programmes neufs"],
                 ["/biens-vendus", "Biens vendus"],
                 ["/louer", "Louer"],
                 ["/essaouira", "Essaouira"],

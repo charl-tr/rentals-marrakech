@@ -101,12 +101,17 @@ function metaContent(html, key, attribute = "name") {
 
 function normalizeType(label, title, postType) {
   if (postType === "programme") return "programme-neuf";
+  // The explicit source taxonomy wins over marketing words in the title.
+  const category = (label || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (/commerce|commercial/.test(category)) return "autre";
+  if (/riad.*(?:renover|restaurer)/.test(category)) return "riad-a-renover";
+  if (/riad.*renove/.test(category)) return "riad-renove";
   const value = `${label || ""} ${title || ""}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   if (value.includes("appartement") || value.includes("penthouse") || value.includes("duplex")) return "appartement";
   if (value.includes("terrain")) return "terrain";
   if (value.includes("maison d'hote") || value.includes("maison d’hote") || value.includes("hotel")) return "maison-hotes";
-  if (value.includes("riad") && value.includes("renov")) return "riad-renove";
   if (value.includes("riad") && (value.includes("renover") || value.includes("restaur"))) return "riad-a-renover";
+  if (value.includes("riad") && value.includes("renov")) return "riad-renove";
   if (value.includes("riad")) return "riad-renove";
   if (value.includes("villa") || value.includes("maison") || value.includes("ferme")) return "villa";
   return "autre";
@@ -153,8 +158,7 @@ function parseStatus(html) {
   if (/lou[ée]/.test(value)) return "rented";
   if (/r[ée]serv|compromis/.test(value)) return "reserved";
   if (/new|nouveau/.test(value)) return "new";
-  if (/bien-options[^>]*\bvendu\b/i.test(html)) return "sold";
-  if (/bien-options[^>]*\bloue\b/i.test(html)) return "rented";
+  // Do not inspect badges belonging to the similar listings further down.
   return "available";
 }
 

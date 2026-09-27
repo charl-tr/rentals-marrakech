@@ -247,7 +247,7 @@ export const getCatalogueProperties = cache(
           { lat: 31.6295, lng: -7.9811 },
       }));
     },
-    ["public-property-catalogue-v4"],
+    ["public-property-catalogue-v5"],
     { tags: ["public-properties"], revalidate: 300 }
   )
 );
