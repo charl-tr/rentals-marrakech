@@ -214,7 +214,7 @@ export default async function PropertyDetail({ property }: { property: Property 
           <div className="container-luxe mb-8">
             <div className="eyebrow">La visite</div>
             <h2 className="mt-3 font-serif text-3xl text-[var(--color-charcoal)]">
-              {property.images.length} vues du bien.
+              {property.images.length} photos du bien.
             </h2>
           </div>
           <PropertyGallery images={property.images} title={property.title} />
