@@ -291,7 +291,7 @@ const getAdminPropertyPage = unstable_cache(
         .select(PROPERTY_ADMIN_LIST_SELECT)
         .order("created_at", { ascending: false })
         .order("slug")
-        .range(page * 100, page * 100 + 99);
+        .range(page * 250, page * 250 + 249);
       if (error) throw error;
       return { count: data.length, properties: data.map((raw) => {
         // The untyped Supabase client infers joins as arrays; handle both shapes.
@@ -299,7 +299,7 @@ const getAdminPropertyPage = unstable_cache(
         return rowToProperty(raw as unknown as PropertyRow, neighborhood?.name ?? null);
       }) };
     },
-    ["properties-admin-page-v3"],
+    ["properties-admin-page-v4"],
     { tags: ["admin"], revalidate: 15 }
 );
 
@@ -312,14 +312,13 @@ export const getAllPropertiesAdmin = cache(async (): Promise<Property[]> => {
     const pages = await Promise.all([0, 1, 2, 3].map((offset) => getAdminPropertyPage(page + offset)));
     for (const batch of pages) {
       properties.push(...batch.properties);
-      if (batch.count < 100) return properties;
+      if (batch.count < 250) return properties;
     }
   }
 });
 
 /** Compte des leads par property_slug — pour health check dans l'admin biens. */
-export async function getLeadsCountByProperty(): Promise<Record<string, number>> {
-  const session = await requireAdminSession();
+const getScopedPropertyLeadCounts = unstable_cache(async (role: string, advisorSlug: string): Promise<Record<string, number>> => {
   const grouped = new Map<string, Set<string>>();
   const add = (slug: string | null, id: string) => {
     if (!slug) return;
@@ -328,7 +327,7 @@ export async function getLeadsCountByProperty(): Promise<Record<string, number>>
   };
   for (let offset = 0; ; offset += 500) {
     let query = supabaseAdmin.from("leads").select("id,property_slug").order("id");
-    if (session.role !== "director") query = query.eq("assigned_advisor_slug", session.advisorSlug);
+    if (role !== "director") query = query.eq("assigned_advisor_slug", advisorSlug);
     const { data, error } = await query.range(offset, offset + 499);
     if (error) throw error;
     data.forEach((row) => add(row.property_slug, row.id));
@@ -337,13 +336,18 @@ export async function getLeadsCountByProperty(): Promise<Record<string, number>>
   for (let offset = 0; ; offset += 500) {
     let query = supabaseAdmin.from("lead_events").select("lead_id,payload,leads!inner(assigned_advisor_slug)")
       .contains("payload", { kind: "property_request" }).order("id");
-    if (session.role !== "director") query = query.eq("leads.assigned_advisor_slug", session.advisorSlug);
+    if (role !== "director") query = query.eq("leads.assigned_advisor_slug", advisorSlug);
     const { data, error } = await query.range(offset, offset + 499);
     if (error) throw error;
     data.forEach((row) => { if (typeof row.payload?.property_slug === "string") add(row.payload.property_slug, row.lead_id); });
     if (data.length < 500) break;
   }
   return Object.fromEntries([...grouped].map(([slug, ids]) => [slug, ids.size]));
+}, ["property-lead-counts-v1"], { tags: ["admin"], revalidate: 15 });
+
+export async function getLeadsCountByProperty(): Promise<Record<string, number>> {
+  const session = await requireAdminSession();
+  return getScopedPropertyLeadCounts(session.role, session.advisorSlug);
 }
 
 export async function getPropertyForAdmin(slug: string): Promise<Property | null> {

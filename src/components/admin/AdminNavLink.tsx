@@ -1,7 +1,7 @@
 "use client";
 
 import Link, { useLinkStatus } from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAdminNotifications } from "./AdminNotificationsProvider";
 
 function NavigationProgress() {
@@ -27,6 +27,8 @@ export default function AdminNavLink({
   mobile?: boolean;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const warm = () => { if (pathname !== href) router.prefetch(href); };
   const { unreadLeads } = useAdminNotifications();
   const active =
     href === "/admin"
@@ -41,6 +43,7 @@ export default function AdminNavLink({
     return (
       <Link
         href={href}
+        onMouseEnter={warm} onFocus={warm} onTouchStart={warm}
         className={`${base} flex flex-shrink-0 items-center px-5 py-3 text-[11px] ${
           active
             ? "bg-[var(--color-cream)] text-[var(--color-terracotta)]"
@@ -57,6 +60,7 @@ export default function AdminNavLink({
   return (
     <Link
       href={href}
+      onMouseEnter={warm} onFocus={warm} onTouchStart={warm}
       className={`${base} flex items-center px-3 py-1.5 text-[12px] ${
         active
           ? "bg-[var(--color-cream)] text-[var(--color-terracotta)]"

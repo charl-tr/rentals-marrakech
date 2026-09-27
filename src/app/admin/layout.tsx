@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import AdminNavLink from "@/components/admin/AdminNavLink";
+import AdminFreshness from "@/components/admin/AdminFreshness";
 import UserWidget from "@/components/admin/UserWidget";
 import CommandPalette from "@/components/admin/CommandPalette";
 import CommandPaletteTrigger from "@/components/admin/CommandPaletteTrigger";
@@ -93,6 +94,7 @@ export default async function AdminLayout({
           <div className="flex items-center gap-3 whitespace-nowrap">
             {/* Cmd-K trigger */}
             <CommandPaletteTrigger />
+            <AdminFreshness />
 
             {/* Retour au site */}
             <Link
