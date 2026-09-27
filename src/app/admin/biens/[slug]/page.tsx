@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { Suspense } from "react";
+import type { Property } from "@/data/properties";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -52,25 +54,11 @@ export default async function AdminPropertyDetailPage({
   const { slug } = await params;
   const { returnTo } = await searchParams;
   const returnHref = returnTo && /^\/admin\/biens(?:\?[^#\\]*)?$/.test(returnTo) ? returnTo : "/admin/biens";
-  const now = new Date();
   const session = await getAdminSession();
   const canEdit = session?.role === "director";
 
   const property = await getPropertyForAdmin(slug);
   if (!property) notFound();
-
-  const [advisor, leads, mandate, events, allAdvisors, prospects] = await Promise.all([
-    property.advisorSlug ? getAdvisor(property.advisorSlug) : null,
-    getLeadsForProperty(slug),
-    getActiveMandateForProperty(slug),
-    getPropertyEvents(slug),
-    getAllAdvisors(),
-    getProspectChoices(),
-  ]);
-
-  const activeLeads = leads.filter(
-    (l) => l.status !== "signed" && l.status !== "lost"
-  );
 
   const publicHref =
     property.listing === "vente" || property.type === "programme-neuf"
@@ -145,8 +133,32 @@ export default async function AdminPropertyDetailPage({
         </div>
       </div>
 
-      {canEdit && <PropertyEditorSection slug={slug} />}
+      {canEdit && <Suspense fallback={<div role="status" className="mt-4 h-64 animate-pulse rounded-xl bg-[var(--color-beige-warm)] p-5">Chargement de l’éditeur…</div>}><PropertyEditorSection slug={slug} /></Suspense>}
 
+      <Suspense fallback={<p role="status" className="py-8 text-sm text-[var(--color-stone)]">Chargement des demandes et de l’historique…</p>}>
+        <PropertyBusinessSections property={property} canEdit={canEdit} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function PropertyBusinessSections({ property, canEdit }: { property: Property; canEdit: boolean }) {
+  const slug = property.slug;
+  const now = new Date();
+  const [advisor, leads, mandate, events, allAdvisors, prospects] = await Promise.all([
+    property.advisorSlug ? getAdvisor(property.advisorSlug) : null,
+    getLeadsForProperty(slug),
+    getActiveMandateForProperty(slug),
+    getPropertyEvents(slug),
+    getAllAdvisors(),
+    getProspectChoices(),
+  ]);
+
+  const activeLeads = leads.filter(
+    (l) => l.status !== "signed" && l.status !== "lost"
+  );
+
+  return <>
       {/* MAIN GRID */}
       <div className="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
         {/* LEFT : aperçu + leads */}
@@ -344,8 +356,7 @@ export default async function AdminPropertyDetailPage({
           </Section>
         </div>
       </div>
-    </div>
-  );
+  </>;
 }
 
 function Section({

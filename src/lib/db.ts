@@ -148,10 +148,16 @@ const PROPERTY_PUBLIC_SELECT = `
   coordinates, advisor_slug, created_at, updated_at,
   neighborhood:neighborhoods(name)
 `;
-const PROPERTY_ADMIN_SELECT = "*, neighborhood:neighborhoods(name)";
+const PROPERTY_ADMIN_SELECT = `${PROPERTY_PUBLIC_SELECT}, owner_name, owner_phone, owner_email, owner_notes`;
 // Inventory does not need the bulky original HTML/import payload. Keep the
 // application fields used by matching/dashboard, without downloading raw sources.
-const PROPERTY_ADMIN_LIST_SELECT = `${PROPERTY_PUBLIC_SELECT}, owner_name, owner_phone, owner_email, owner_notes`;
+const PROPERTY_ADMIN_LIST_SELECT = `
+  slug, reference, title, tagline, type, listing, status, exclusivity,
+  city, neighborhood_slug, source_type_label, source_location_label, source_modified_at,
+  price_eur, price_mad, price_unit, bedrooms, bathrooms, surface, land_surface,
+  year_built, pool, featured, published, short_description, images, advisor_slug,
+  created_at, updated_at, neighborhood:neighborhoods(name)
+`;
 const PROPERTY_SUMMARY_SELECT = `
   slug, title, type, listing, status, exclusivity, city, neighborhood_slug,
   source_type_label, source_location_label, price_eur, price_mad, price_unit,
@@ -299,7 +305,7 @@ const getAdminPropertyPage = unstable_cache(
         return rowToProperty(raw as unknown as PropertyRow, neighborhood?.name ?? null);
       }) };
     },
-    ["properties-admin-page-v4"],
+    ["properties-admin-page-v5"],
     { tags: ["admin"], revalidate: 15 }
 );
 
@@ -350,12 +356,18 @@ export async function getLeadsCountByProperty(): Promise<Record<string, number>>
   return getScopedPropertyLeadCounts(session.role, session.advisorSlug);
 }
 
-export async function getPropertyForAdmin(slug: string): Promise<Property | null> {
-  const session = await requireAdminSession();
+const getCachedAdminProperty = unstable_cache(async (slug: string) => {
   const { data, error } = await supabaseAdmin.from("properties").select(PROPERTY_ADMIN_SELECT).eq("slug", slug).maybeSingle();
   if (error) throw error;
+  return data;
+}, ["admin-property-detail-v1"], { tags: ["admin"], revalidate: 15 });
+
+export async function getPropertyForAdmin(slug: string): Promise<Property | null> {
+  const session = await requireAdminSession();
+  const data = await getCachedAdminProperty(slug);
   if (!data) return null;
-  const row = data as unknown as PropertyWithNeigh;
+  // Never mutate the shared cached object when applying viewer permissions.
+  const row = { ...data } as unknown as PropertyWithNeigh;
   if (session.role !== "director") {
     row.owner_name = null;
     row.owner_phone = null;
@@ -993,7 +1005,7 @@ export async function getPropertiesByAdvisor(
     .eq("advisor_slug", advisorSlug)
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return (data as PropertyWithNeigh[]).map((r) =>
+  return (data as unknown as PropertyWithNeigh[]).map((r) =>
     rowToProperty(r, r.neighborhood?.name ?? null)
   );
 }

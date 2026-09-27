@@ -26,6 +26,11 @@
 
 ### Navigation et actions rapides
 
+- Visibilité via un switch accessible, sans confirmation supplémentaire : animation optimiste, verrouillage pendant la sauvegarde, retour à l’état confirmé et message en cas d’échec. Statut commercial indépendant.
+- Fiche : en-tête, éditeur et sections CRM rendus séparément via Suspense. Les requêtes des demandes/mandat/historique ne bloquent plus l’éditeur.
+- Projection portefeuille réduite aux champs utilisés (pas de descriptions longues, contenu éditorial ou données propriétaire). Sur les mêmes 250 lignes : 1 015 028 → 595 243 octets (-41 %). Mesure ponctuelle directe : 222 ms avant, 232 ms après, donc aucun gain de latence réseau démontré par cet échantillon. Temps de navigation authentifiée Vercel restant à mesurer.
+- Lecture de fiche en cache serveur 15 secondes, invalidée par les mutations ; contrôle d’accès à chaque appel, copie avant masquage des informations propriétaire selon le rôle.
+
 - En-tête de fiche compact : un seul retour au portefeuille (filtres conservés), un seul lien public, aucune action « Modifier » redondante. Date dans une ligne utilitaire ; slug sous une disclosure.
 - Liste et grille : statut commercial modifiable sur place, bouton publier/masquer indépendant, confirmations pour clôture et visibilité. Permissions directeur inchangées ; contrôle de concurrence et invalidation des caches publics/admin.
 - Une modification peut retirer la ligne du filtre courant (par exemple vendu dans « À vendre ») : c’est attendu, retrouver le bien dans le filtre des vendus.
