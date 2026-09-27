@@ -1,22 +1,22 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { Check, ChevronRight, Star } from "lucide-react";
 import {
   getAllPropertiesAdmin,
   getLeadsCountByProperty,
 } from "@/lib/db";
 import {
   propertyTypeLabel,
-  type PropertyStatus,
   type Listing,
 } from "@/data/properties";
 import BiensFilterBar, {
   type BiensViewMode,
 } from "@/components/admin/BiensFilterBar";
 import BiensGrid from "@/components/admin/BiensGrid";
-import { inventoryPrice, inventoryStatusLabel, inventoryTransaction, sortInventory, TRANSACTION_LABELS } from "@/lib/admin-inventory";
+import InventoryPhoto from "@/components/admin/InventoryPhoto";
+import PropertyQuickActions from "@/components/admin/PropertyQuickActions";
+import { requireAdminSession } from "@/lib/auth";
+import { inventoryPrice, inventoryTransaction, sortInventory, TRANSACTION_LABELS } from "@/lib/admin-inventory";
 
 export const metadata: Metadata = {
   title: "Biens — Admin Marrakech Realty",
@@ -40,6 +40,8 @@ export default async function AdminBiensPage({
   }>;
 }) {
   const sp = await searchParams;
+  const session = await requireAdminSession();
+  const canEdit = session.role === "director";
   // Old bookmarks used overlapping statuses. Canonicalize them to the new views.
   if (sp.status && !["reserved", "sold", "rented", "any"].includes(sp.status)) {
     const canonical = new URLSearchParams(Object.entries(sp).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
@@ -154,7 +156,7 @@ export default async function AdminBiensPage({
       <div className="px-5 py-6 md:px-8">
         <p className="mb-4 text-xs text-[var(--color-stone)]">{filtered.length} résultats {validSort.startsWith("price") && "· Prix non renseignés en dernier ; tarifs locatifs regroupés par unité."}</p>
         {view === "grid" ? (
-          <BiensGrid properties={visibleProperties} leadsCountBySlug={leadsByProp} returnHref={pageHref(page)} />
+          <BiensGrid properties={visibleProperties} leadsCountBySlug={leadsByProp} returnHref={pageHref(page)} canEdit={canEdit} />
         ) : filtered.length === 0 ? (
           <div className="rounded-[14px] border border-dashed border-[var(--color-beige-warm)] bg-white px-8 py-16 text-center">
             <div className="font-serif text-xl text-[var(--color-charcoal)]">
@@ -165,132 +167,21 @@ export default async function AdminBiensPage({
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
-            <div className="grid grid-cols-[60px_minmax(240px,2fr)_minmax(120px,0.8fr)_minmax(100px,0.7fr)_minmax(80px,0.5fr)_minmax(60px,0.4fr)_20px] items-center gap-3 border-b border-[var(--color-beige-warm)] bg-[var(--color-cream)] px-4 py-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-              <div></div>
-              <div>Bien</div>
-              <div>{listing === "vente" ? "Prix de vente" : "Loyer / tarif"}</div>
-              <div>Statut</div>
-              <div className="text-center">Visibilité</div>
-              <div className="text-center">Demandes</div>
-              <div></div>
-            </div>
-
-            <div className="divide-y divide-[var(--color-beige-warm)]">
-              {visibleProperties.map((p) => (
-                <Link
-                  key={p.slug}
-                  href={`/admin/biens/${p.slug}?returnTo=${encodeURIComponent(pageHref(page))}`}
-                  className="group grid grid-cols-[60px_minmax(240px,2fr)_minmax(120px,0.8fr)_minmax(100px,0.7fr)_minmax(80px,0.5fr)_minmax(60px,0.4fr)_20px] items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--color-cream)]"
-                >
-                  {/* Thumbnail */}
-                  <div className="relative h-12 w-14 flex-shrink-0 overflow-hidden rounded-[8px] bg-[var(--color-beige)]">
-                    {p.images[0] && (
-                      <Image
-                        src={p.images[0]}
-                        alt={p.title}
-                        fill
-                        sizes="56px"
-                        className="object-cover"
-                      />
-                    )}
-                  </div>
-
-                  {/* Title + meta */}
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="truncate font-medium text-[var(--color-charcoal)] group-hover:text-[var(--color-terracotta)]">
-                        {p.title}
-                      </span>
-                      {p.featured && (
-                        <Star
-                          size={10}
-                          fill="currentColor"
-                          className="flex-shrink-0 text-[var(--color-terracotta)]"
-                        />
-                      )}
-                    </div>
-                    <div className="mt-0.5 truncate text-[11px] text-[var(--color-stone)]">
-                      {propertyTypeLabel(p.type)} · {[p.neighborhood, p.city].filter(Boolean).join(", ")} · Réf. {p.reference}
-                    </div>
-                    <div className="mt-1 text-xs text-[var(--color-stone)]">{[p.surface > 0 ? `${p.surface} m²` : null, p.bedrooms > 0 ? `${p.bedrooms} ch.` : null].filter(Boolean).join(" · ")}</div>
-                  </div>
-
-                  {/* Price */}
-                  <div className="font-serif text-sm text-[var(--color-charcoal)]">
-                    {inventoryPrice(p)}
-                  </div>
-
-                  {/* Status */}
-                  <StatusBadge status={p.status} listing={listing} />
-
-                  {/* Visibility */}
-                  <div className="flex items-center justify-center gap-1">
-                    {p.published === false ? (
-                      <span
-                        title="Masqué"
-                        className="text-[9px] font-medium uppercase tracking-[0.18em] text-[var(--color-stone-soft)]"
-                      >
-                        Off
-                      </span>
-                    ) : (
-                      <Check
-                        size={12}
-                        className="text-[var(--color-success)]"
-                        strokeWidth={2.5}
-                      />
-                    )}
-                    {p.featured && (
-                      <Star
-                        size={10}
-                        className="text-[var(--color-terracotta)]"
-                        fill="currentColor"
-                      />
-                    )}
-                  </div>
-
-                  {/* Leads count */}
-                  <div className="text-center">
-                    <span
-                      className={`font-serif text-base ${
-                        (leadsByProp[p.slug] ?? 0) > 0
-                          ? "text-[var(--color-terracotta)]"
-                          : "text-[var(--color-stone-soft)]"
-                      }`}
-                    >
-                      {leadsByProp[p.slug] ?? 0}
-                    </span>
-                  </div>
-
-                  <ChevronRight
-                    size={14}
-                    className="text-[var(--color-stone-soft)] transition-colors group-hover:text-[var(--color-terracotta)]"
-                  />
-                </Link>
-              ))}
-            </div>
+          <div className="divide-y divide-[var(--color-beige-warm)] overflow-hidden rounded-[14px] border border-[var(--color-beige-warm)] bg-white">
+            {visibleProperties.map((p) => <article key={p.slug} className="grid items-center gap-4 p-4 sm:grid-cols-[112px_minmax(0,1fr)] xl:grid-cols-[112px_minmax(220px,1fr)_150px_330px]">
+              <InventoryPhoto images={p.images} title={p.title} />
+              <div className="min-w-0">
+                <Link href={`/admin/biens/${p.slug}?returnTo=${encodeURIComponent(pageHref(page))}`} className="line-clamp-2 font-medium text-[var(--color-charcoal)] hover:underline">{p.title}</Link>
+                <p className="mt-1 text-xs text-[var(--color-stone)]">{propertyTypeLabel(p.type)} · {[p.neighborhood, p.city].filter(Boolean).join(", ")} · Réf. {p.reference}</p>
+                <p className="mt-1 text-xs text-[var(--color-stone)]">{[p.surface > 0 ? `${p.surface} m²` : null, p.bedrooms > 0 ? `${p.bedrooms} ch.` : null, `${leadsByProp[p.slug] ?? 0} demande(s)`].filter(Boolean).join(" · ")}</p>
+              </div>
+              <p className="font-medium text-sm">{inventoryPrice(p)}</p>
+              <PropertyQuickActions slug={p.slug} title={p.title} listing={p.listing} status={p.status} published={p.published !== false} canEdit={canEdit} />
+            </article>)}
           </div>
         )}
         {pageCount > 1 && <nav aria-label="Pagination des biens" className="mt-6 flex items-center justify-between gap-4 text-sm"><span>{(page - 1) * pageSize + 1}–{Math.min(page * pageSize, filtered.length)} sur {filtered.length} biens</span><div className="flex items-center gap-4">{page > 1 && <Link href={pageHref(page - 1)} className="btn-outline">Précédent</Link>}<span>Page {page} / {pageCount}</span>{page < pageCount && <Link href={pageHref(page + 1)} className="btn-outline">Suivant</Link>}</div></nav>}
       </div>
     </div>
-  );
-}
-
-function StatusBadge({ status, listing }: { status: PropertyStatus; listing: Listing }) {
-  const style =
-    status === "sold" || status === "rented"
-      ? "bg-[#795238] text-white"
-      : status === "reserved"
-      ? "bg-[var(--color-terracotta)]/10 text-[var(--color-terracotta)]"
-      : status === "new"
-      ? "bg-[var(--color-charcoal)] text-white"
-      : "bg-[var(--color-success-soft)] text-[var(--color-success)]";
-  return (
-    <span
-      className={`inline-flex items-center justify-center rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] ${style}`}
-    >
-      {inventoryStatusLabel(status, listing)}
-    </span>
   );
 }

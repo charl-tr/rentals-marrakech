@@ -24,6 +24,14 @@
 
 ## Recette
 
+### Navigation et actions rapides
+
+- En-tête de fiche compact : un seul retour au portefeuille (filtres conservés), un seul lien public, aucune action « Modifier » redondante. Date dans une ligne utilitaire ; slug sous une disclosure.
+- Liste et grille : statut commercial modifiable sur place, bouton publier/masquer indépendant, confirmations pour clôture et visibilité. Permissions directeur inchangées ; contrôle de concurrence et invalidation des caches publics/admin.
+- Une modification peut retirer la ligne du filtre courant (par exemple vendu dans « À vendre ») : c’est attendu, retrouver le bien dans le filtre des vendus.
+- Photos de liste 112 × 80, grille à trois colonnes desktop, visionneuse sans ouvrir la fiche. Chargement différé des images ; pagination 32 conservée.
+- Lecture du portefeuille sans payload brut d’import ni HTML d’origine. Aucun gain de latence chiffré sans mesure authentifiée.
+
 - `npx tsx scripts/test-property-media.ts` : ordre, non-mutation, allowlist, dates, compression, EXIF, tailles et refus de données invalides.
 - `npx tsx scripts/test-property-editor.ts` : champs vides, validation, liste blanche.
 - Compilation production et lint ciblé validés.

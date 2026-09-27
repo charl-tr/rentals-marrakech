@@ -34,7 +34,6 @@ import {
 } from "@/lib/leads";
 import PropertyAdminActions from "@/components/admin/PropertyAdminActions";
 import PropertyEditorSection from "@/components/admin/PropertyEditorSection";
-import AdminBreadcrumbs from "@/components/admin/AdminBreadcrumbs";
 import ManualRequestForm from "@/components/admin/ManualRequestForm";
 import { computeNextAction } from "@/lib/next-best-action";
 import { inventoryStatusLabel } from "@/lib/admin-inventory";
@@ -79,16 +78,11 @@ export default async function AdminPropertyDetailPage({
       : `/louer/${property.slug}`;
 
   return (
-    <div className="container-luxe py-10 md:py-14">
-      <AdminBreadcrumbs
-        crumbs={[
-          { label: "Retour au portefeuille", href: returnHref },
-          { label: property.title },
-        ]}
-      />
+    <div className="container-luxe py-5 md:py-6">
+      <Link href={returnHref} className="inline-flex min-h-9 items-center text-sm text-[var(--color-stone)] hover:text-[var(--color-charcoal)]">← Retour au portefeuille</Link>
 
       {/* HEADER */}
-      <div className="mt-6 flex flex-col gap-6 border-b border-[var(--color-beige-warm)] pb-8 lg:flex-row lg:items-start lg:justify-between">
+      <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-3">
             {(property.status === "sold" || property.status === "rented") && <span className="rounded-full bg-[#795238] px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white">{property.status === "sold" ? "Vendu" : "Loué"} · archive</span>}
@@ -112,11 +106,11 @@ export default async function AdminPropertyDetailPage({
             )}
           </div>
 
-          <h1 className="mt-4 font-serif text-3xl leading-tight text-[var(--color-charcoal)] md:text-4xl">
+          <h1 className="mt-2 font-serif text-2xl leading-tight text-[var(--color-charcoal)] md:text-3xl">
             {property.title}
           </h1>
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-stone)]">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-stone)]">
             <span className="flex items-center gap-1.5">
               <MapPin size={12} /> {property.neighborhood}, {property.city}
             </span>
@@ -140,7 +134,6 @@ export default async function AdminPropertyDetailPage({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {canEdit && <a href="#modifier" className="rounded-[10px] bg-[var(--color-terracotta)] px-4 py-2.5 text-sm font-medium text-white">Modifier la fiche</a>}
           {property.published && <Link
             href={publicHref}
             target="_blank"

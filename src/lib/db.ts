@@ -149,6 +149,9 @@ const PROPERTY_PUBLIC_SELECT = `
   neighborhood:neighborhoods(name)
 `;
 const PROPERTY_ADMIN_SELECT = "*, neighborhood:neighborhoods(name)";
+// Inventory does not need the bulky original HTML/import payload. Keep the
+// application fields used by matching/dashboard, without downloading raw sources.
+const PROPERTY_ADMIN_LIST_SELECT = `${PROPERTY_PUBLIC_SELECT}, owner_name, owner_phone, owner_email, owner_notes`;
 const PROPERTY_SUMMARY_SELECT = `
   slug, title, type, listing, status, exclusivity, city, neighborhood_slug,
   source_type_label, source_location_label, price_eur, price_mad, price_unit,
@@ -285,14 +288,18 @@ const getAdminPropertyPage = unstable_cache(
     async (page: number): Promise<{ properties: Property[]; count: number }> => {
       const { data, error } = await supabaseAdmin
         .from("properties")
-        .select(PROPERTY_ADMIN_SELECT)
+        .select(PROPERTY_ADMIN_LIST_SELECT)
         .order("created_at", { ascending: false })
         .order("slug")
         .range(page * 100, page * 100 + 99);
       if (error) throw error;
-      return { count: data.length, properties: (data as PropertyWithNeigh[]).map((r) => rowToProperty(r, r.neighborhood?.name ?? null)) };
+      return { count: data.length, properties: data.map((raw) => {
+        // The untyped Supabase client infers joins as arrays; handle both shapes.
+        const neighborhood = Array.isArray(raw.neighborhood) ? raw.neighborhood[0] : raw.neighborhood;
+        return rowToProperty(raw as unknown as PropertyRow, neighborhood?.name ?? null);
+      }) };
     },
-    ["properties-admin-page-v2"],
+    ["properties-admin-page-v3"],
     { tags: ["admin"], revalidate: 15 }
 );
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import Link from "next/link";
 import { Check, Eye, Images, Save } from "lucide-react";
 import { savePropertyDetails } from "@/lib/actions/property-editor";
 import type { MutationState } from "@/lib/actions/_core/defineMutation";
@@ -39,7 +38,6 @@ export default function PropertyEditor({ values, neighborhoods, advisors, summar
     else { setFuture(stack.slice(0, -1)); setHistory((previous) => [...previous, draft]); }
     setDraft(stack[stack.length - 1]); setResetKey((key) => key + 1);
   };
-  const publicHref = `${values.listing === "vente" ? "/acheter" : "/louer"}/${values.slug}`;
   const updated = formatPropertyUpdatedAt(values.updated_at);
   useEffect(() => {
     if (!dirty && !uploading) return;
@@ -65,16 +63,14 @@ export default function PropertyEditor({ values, neighborhoods, advisors, summar
   };
   const inputClass = "mt-1.5 w-full rounded-[10px] border border-[var(--color-border)] bg-white px-3 py-2.5 text-sm focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
-  return <section id="modifier" className="mt-8 scroll-mt-24 rounded-[16px] border border-[var(--color-border)] bg-[var(--color-cream)]">
+  return <section id="modifier" className="mt-4 scroll-mt-24 rounded-[16px] border border-[var(--color-border)] bg-[var(--color-cream)]">
     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--color-border)] p-5">
-      <Link href="/admin/biens" className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm">← Retour aux biens</Link>
-      <div><h2 className="font-serif text-2xl">L’atelier du bien</h2><p className="mt-1 text-xs text-[var(--color-stone)]">{updated ? `Dernière mise à jour le ${updated} · heure de Marrakech` : "Date de mise à jour non renseignée"}</p></div>
+      <p className="text-xs text-[var(--color-stone)]">{updated ? `Dernière mise à jour le ${updated} · heure de Marrakech` : "Date de mise à jour non renseignée"}</p>
+      <details className="text-xs text-[var(--color-stone)]"><summary className="cursor-pointer">Adresse de la fiche</summary><p className="mt-2 max-w-xl break-all">Slug protégé : <code>{values.slug}</code></p></details>
       <a href="#galerie-edition" className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm lg:hidden">Photos et aperçu ↓</a>
-      {values.published === "true" && <a href={publicHref} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm">Ouvrir la version en ligne ↗</a>}
     </div>
     <form action={action} onSubmit={(event) => { if (uploading) event.preventDefault(); }}>
       <input type="hidden" name="slug" value={values.slug} /><input type="hidden" name="updated_at" value={values.updated_at} />
-      <p className="break-all border-b border-[var(--color-border)] px-5 py-3 text-xs text-[var(--color-stone)]">Slug (URL protégée) : <code>{values.slug}</code></p>
       <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
         <div className="min-w-0 p-5 lg:max-h-[70dvh] lg:overflow-y-auto lg:overscroll-contain lg:border-r lg:border-[var(--color-border)]" aria-label="Champs de la fiche" tabIndex={0}>
           <fieldset disabled={pending || uploading}>
