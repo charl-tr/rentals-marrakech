@@ -17,14 +17,13 @@ export default function Footer() {
               Un projet immobilier à Marrakech&nbsp;?
             </h3>
             <p className="mt-2 text-sm text-white/65">
-              Estimation gratuite sous 24 heures — ou une conversation, simplement,
-              autour de votre recherche.
+              Un bien à vendre ou une recherche à préciser ? Échangeons sur votre projet.
             </p>
           </div>
-          <Link href="/contact" className="btn-outline-light shrink-0">
+          <div className="flex flex-wrap gap-3"><Link href="/deposer-un-bien" className="btn-outline-light shrink-0">Vendre mon bien</Link><Link href="/contact" className="btn-outline-light shrink-0">
             Prendre rendez-vous
             <ArrowRight size={16} />
-          </Link>
+          </Link></div>
         </div>
       </div>
 
@@ -60,7 +59,7 @@ export default function Footer() {
             <ul className="mt-3 space-y-2 text-sm text-white/65">
               <li><Link href="/louer/villa" className="transition-colors hover:text-white">Location longue durée</Link></li>
               <li><Link href="/louer/saisonnier" className="transition-colors hover:text-white">Location saisonnière</Link></li>
-              <li><Link href="/deposer-un-bien" className="transition-colors hover:text-white">Estimation gratuite</Link></li>
+              <li><Link href="/deposer-un-bien" className="transition-colors hover:text-white">Vendre mon bien</Link></li>
               <li><Link href="/savoir-acheter" className="transition-colors hover:text-white">Guide juridique</Link></li>
               <li><Link href="/favoris" className="transition-colors hover:text-white">Mes favoris</Link></li>
             </ul>

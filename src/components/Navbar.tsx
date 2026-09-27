@@ -66,11 +66,6 @@ const ESSAOUIRA_LINKS = [
   { href: "/essaouira/location-villa", label: "Location villa" },
 ];
 
-const VENDRE_LINKS = [
-  { href: "/deposer-un-bien", label: "Déposer un bien" },
-  { href: "/estimer", label: "Estimation en ligne" },
-  { href: "/marche", label: "Rapport marché" },
-];
 
 // Only the home photo uses an overlay. Interior pages share a legible sand header.
 
@@ -175,16 +170,7 @@ export default function Navbar() {
             <SimplePanel links={ESSAOUIRA_LINKS} footerHref="/essaouira" footerLabel="Bord de mer" />
           </NavDropdown>
 
-          <NavDropdown
-            label="Vendre"
-            open={openMenu === "vendre"}
-            onEnter={() => setOpenMenu("vendre")}
-            onLeave={() => setOpenMenu(null)}
-            textColor={textColor}
-            underline={underline}
-          >
-            <SimplePanel links={VENDRE_LINKS} footerHref="/deposer-un-bien" footerLabel="Déposer un bien" />
-          </NavDropdown>
+          <NavLink href="/deposer-un-bien" label="Vendre" textColor={textColor} underline={underline} />
 
           <NavLink href="/journal" label="Journal" textColor={textColor} underline={underline} />
           <NavLink href="/contact" label="Contact" textColor={textColor} underline={underline} />

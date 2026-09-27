@@ -130,7 +130,7 @@ export default async function Home() {
     {
       href: "/deposer-un-bien",
       icon: ShieldCheck,
-      label: "Confier un bien",
+      label: "Vendre mon bien",
       detail: "Estimer et mettre en vente",
     },
   ];
@@ -351,15 +351,15 @@ export default async function Home() {
             <div className="p-8 md:p-14">
               <div className="eyebrow">Propriétaires</div>
               <h2 className="mt-4 max-w-2xl font-serif text-3xl leading-tight text-[var(--color-charcoal)] md:text-5xl">
-                Votre bien mérite une mise en marché à sa hauteur.
+                Vous avez un bien à vendre ?
               </h2>
               <p className="mt-5 max-w-xl text-sm leading-relaxed text-[var(--color-stone)] md:text-base">
-                Transmettez les informations essentielles. Un conseiller reprend ensuite le dossier avec vous, sans formulaire interminable.
+                Villa, riad, appartement ou terrain : parlons de votre projet à Marrakech ou Essaouira. Pas besoin d’avoir déjà fixé un prix ou préparé des photos.
               </p>
             </div>
             <div className="flex flex-col justify-center gap-4 border-t border-[var(--color-border)] bg-white/45 p-8 md:border-l md:border-t-0 md:p-10">
               <Link href="/deposer-un-bien" className="btn-gold w-full justify-center">
-                Déposer mon bien
+                Présenter mon bien
                 <ArrowRight size={15} />
               </Link>
               <Link href="/contact" className="btn-outline w-full justify-center">

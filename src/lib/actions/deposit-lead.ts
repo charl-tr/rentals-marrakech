@@ -8,17 +8,17 @@ import { z } from "zod";
 
 const depositSchema = z.object({
   // Strict minimum pour être rappelé — le reste est facultatif.
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().min(6),
-  type: z.string().optional(),
-  city: z.string().optional(),
-  neighborhood: z.string().optional(),
+  firstName: z.string().trim().min(1).max(100),
+  lastName: z.string().trim().max(100).optional().default(""),
+  email: z.union([z.string().trim().email().max(254), z.literal("")]).optional().default(""),
+  phone: z.string().trim().max(40).refine(v => /^\+?[\d\s().-]+$/.test(v) && v.replace(/\D/g, "").length >= 8 && v.replace(/\D/g, "").length <= 15),
+  type: z.enum(["", "villa", "appartement", "riad-renove", "riad-a-renover", "terrain", "maison-hotes", "programme-neuf", "autre"]).optional(),
+  city: z.string().trim().max(100).optional(),
+  neighborhood: z.string().trim().max(150).optional(),
   surface: z.string().optional(),
   landSurface: z.string().optional(),
   bedrooms: z.string().optional(),
-  description: z.string().optional(),
+  description: z.string().max(3000).optional(),
   timeline: z.string().optional(),
 });
 
@@ -43,7 +43,7 @@ export async function submitDepositLead(
     const tree = parsed.error.flatten();
     return {
       status: "error",
-      message: "Veuillez remplir tous les champs obligatoires.",
+      message: tree.fieldErrors.phone ? "Indiquez un numéro de téléphone valide (8 à 15 chiffres, avec indicatif si nécessaire)." : tree.fieldErrors.email ? "Vérifiez votre adresse e-mail, ou laissez ce champ vide." : "Vérifiez votre nom et les informations renseignées.",
       fieldErrors: tree.fieldErrors as Record<string, string[]>,
     };
   }
@@ -60,15 +60,16 @@ export async function submitDepositLead(
 
   const { error } = await supabase.from("leads").insert({
     name,
-    email: d.email,
+    email: d.email || null,
     phone: d.phone,
     channel: "website",
     source_page: "/deposer-un-bien",
     property_slug: null,
     intent: "vendre",
-    message: d.description || null,
+    message: [d.type && `Bien : ${d.type}`, d.city && `Ville : ${d.city}`, d.neighborhood && `Quartier : ${d.neighborhood}`, d.description].filter(Boolean).join("\n") || null,
     criteria_type: d.type || null,
-    criteria_neighborhood_slug: d.neighborhood || null,
+    // Free-form seller location is retained in message/meta, not in a FK slug.
+    criteria_neighborhood_slug: null,
     status: "new",
     sla_tier: slaTier,
     sla_due_at: slaDueAt.toISOString(),
