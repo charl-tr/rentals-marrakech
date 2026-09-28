@@ -10,10 +10,14 @@ import { trackProperty } from "@/lib/conversion-client";
 export default function FavoriteButton({
   slug,
   variant = "card",
+  locale = "fr",
 }: {
   slug: string;
   variant?: "card" | "hero";
+  locale?: "fr" | "en";
 }) {
+  const en = locale === "en";
+  const actionLabel = (active: boolean) => en ? active ? "Remove from saved properties" : "Save property" : active ? "Retirer des favoris" : "Ajouter aux favoris";
   const { has, toggle, hydrated } = useFavorites();
   const router = useRouter();
   const active = hydrated && has(slug);
@@ -31,12 +35,12 @@ export default function FavoriteButton({
       trackProperty("favorite_add", slug);
       setBurst(true);
       window.setTimeout(() => setBurst(false), 550);
-      toast("Ajouté à vos favoris.", {
-        description: "Retrouvez les biens qui vous plaisent dans Ma sélection.",
-        action: { label: "Ma sélection", onClick: () => router.push("/favoris") },
+      toast(en ? "Property saved." : "Ajouté à vos favoris.", {
+        description: en ? "Find it again in your saved properties." : "Retrouvez les biens qui vous plaisent dans Ma sélection.",
+        action: { label: en ? "Saved properties" : "Ma sélection", onClick: () => router.push(en ? "/en/saved-properties" : "/favoris") },
       });
     } else {
-      toast("Retiré de vos favoris.");
+      toast(en ? "Property removed from your selection." : "Retiré de vos favoris.");
     }
   };
 
@@ -45,7 +49,7 @@ export default function FavoriteButton({
       <button
         type="button"
         onClick={handleClick}
-        aria-label={active ? "Retirer des favoris" : "Ajouter aux favoris"}
+        aria-label={actionLabel(active)}
         aria-pressed={active}
         className={`inline-flex items-center gap-2 rounded-[10px] border px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.22em] backdrop-blur-sm transition-colors ${
           active
@@ -59,7 +63,7 @@ export default function FavoriteButton({
           strokeWidth={active ? 0 : 1.8}
           className={burst ? "animate-heart-pop" : ""}
         />
-        {active ? "Dans vos favoris" : "Ajouter aux favoris"}
+        {en ? active ? "Saved" : "Save property" : active ? "Dans vos favoris" : "Ajouter aux favoris"}
       </button>
     );
   }
@@ -69,7 +73,7 @@ export default function FavoriteButton({
     <button
       type="button"
       onClick={handleClick}
-      aria-label={active ? "Retirer des favoris" : "Ajouter aux favoris"}
+      aria-label={actionLabel(active)}
       aria-pressed={active}
       className={`relative flex h-9 w-9 items-center justify-center rounded-full bg-white/85 backdrop-blur-sm transition-colors ${
         active

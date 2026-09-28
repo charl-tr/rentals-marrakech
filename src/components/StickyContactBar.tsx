@@ -19,13 +19,16 @@ export default function StickyContactBar({
   priceLabel,
   advisor,
   demanderHref,
+  locale = "fr",
 }: {
   propertyTitle: string;
   propertyReference: string;
-  priceLabel: string;
+  priceLabel: React.ReactNode;
   advisor: Advisor | null;
   demanderHref: string;
+  locale?: "fr" | "en";
 }) {
+  const en = locale === "en";
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -46,11 +49,11 @@ export default function StickyContactBar({
         }`}
         aria-hidden={!visible}
       >
-        <div className="container-luxe flex h-14 items-center gap-6">
+        <div className="container-luxe flex min-h-14 items-center gap-6 py-2">
           {/* Réf + titre */}
           <div className="min-w-0 flex-1">
             <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
-              Réf. {propertyReference}
+              {en ? "Ref." : "Réf."} {propertyReference}
             </div>
             <div className="truncate text-sm font-medium text-[var(--color-charcoal)]">
               {propertyTitle}
@@ -60,7 +63,7 @@ export default function StickyContactBar({
           {/* Prix */}
           <div className="hidden text-right lg:block">
             <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
-              Prix
+              {en ? "Price" : "Prix"}
             </div>
             <div className="font-serif text-lg text-[var(--color-charcoal)]">
               {priceLabel}
@@ -73,10 +76,10 @@ export default function StickyContactBar({
               <a
                 href={`tel:${advisor.phone.replace(/\s/g, "")}`}
                 className="inline-flex h-9 items-center gap-2 rounded-[10px] border border-[var(--color-beige-warm)] bg-white px-3 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
-                aria-label="Appeler"
+                aria-label={en ? "Call" : "Appeler"}
               >
                 <Phone size={12} />
-                <span className="hidden xl:inline">Appeler</span>
+                <span className="hidden xl:inline">{en ? "Call" : "Appeler"}</span>
               </a>
             )}
             {advisor?.whatsapp && (
@@ -95,7 +98,7 @@ export default function StickyContactBar({
               href={demanderHref}
               className="inline-flex h-9 items-center gap-2 rounded-[10px] bg-[var(--color-charcoal)] px-4 text-[11px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-terracotta)]"
             >
-              Demander ce bien
+              {en ? "Enquire about this property" : "Demander ce bien"}
             </Link>
           </div>
         </div>
@@ -121,7 +124,7 @@ export default function StickyContactBar({
             <a
               href={`tel:${advisor.phone.replace(/\s/g, "")}`}
               className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[10px] border border-[var(--color-beige-warm)] bg-white text-[var(--color-charcoal)]"
-              aria-label="Appeler"
+              aria-label={en ? "Call" : "Appeler"}
             >
               <Phone size={14} />
             </a>
@@ -130,7 +133,7 @@ export default function StickyContactBar({
             href={demanderHref}
             className="flex h-10 items-center rounded-[10px] bg-[var(--color-charcoal)] px-4 text-[11px] font-medium uppercase tracking-[0.18em] text-white"
           >
-            Demander
+            {en ? "Enquire" : "Demander"}
           </Link>
         </div>
       </div>

@@ -1,98 +1,86 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-
-// ════════════════════════════════════════════════════════════════════
-// useCurrency — devise d'affichage choisie par l'utilisateur.
-//
-// Persiste en localStorage. Sync cross-onglets via storage event.
-// Taux hardcodés pour MVP — à remplacer par API (ex OpenExchangeRates)
-// quand on monte en volume.
-// ════════════════════════════════════════════════════════════════════
-
-export type Currency = "EUR" | "MAD" | "GBP" | "USD";
+import { useSyncExternalStore } from "react";
+import { isCurrency, validRates, type Currency, type FxRates } from "@/lib/fx";
+export { convertFromEUR, formatInCurrency, type Currency } from "@/lib/fx";
 
 const STORAGE_KEY = "mr:currency";
 const EVENT_NAME = "mr:currency:change";
-
-// Taux depuis EUR (base). Mis à jour périodiquement.
-// 2026-04 mid-cycle — conservateurs.
-export const RATES_FROM_EUR: Record<Currency, number> = {
-  EUR: 1,
-  MAD: 10.7,
-  GBP: 0.85,
-  USD: 1.08,
-};
-
-export const CURRENCY_SYMBOLS: Record<Currency, string> = {
-  EUR: "€",
-  MAD: "DH",
-  GBP: "£",
-  USD: "$",
-};
-
-export const CURRENCY_LABELS: Record<Currency, string> = {
-  EUR: "Euro",
-  MAD: "Dirham marocain",
-  GBP: "Livre sterling",
-  USD: "Dollar US",
-};
-
-function readCurrency(): Currency {
-  if (typeof window === "undefined") return "EUR";
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (raw === "EUR" || raw === "MAD" || raw === "GBP" || raw === "USD") {
-    return raw;
-  }
-  return "EUR";
+let current: Currency = "EUR";
+let loaded = false;
+const listeners = new Set<() => void>();
+const emit = () => listeners.forEach(fn => fn());
+function read() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    current = isCurrency(raw) ? raw : "EUR"; // migrate the old MAD-only preference
+  } catch { /* Keep in-memory preference when storage is blocked. */ }
 }
-
-function writeCurrency(c: Currency) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, c);
-  window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: c }));
-}
-
-export function useCurrency() {
-  const [currency, setCurrency] = useState<Currency>("EUR");
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setCurrency(readCurrency());
-    setHydrated(true);
-
-    const onChange = (e: Event) => {
-      const custom = e as CustomEvent<Currency>;
-      setCurrency(custom.detail);
-    };
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) setCurrency(readCurrency());
-    };
-    window.addEventListener(EVENT_NAME, onChange);
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  if (listeners.size === 1) {
+    if (!loaded) { read(); loaded = true; }
     window.addEventListener("storage", onStorage);
-    return () => {
-      window.removeEventListener(EVENT_NAME, onChange);
-      window.removeEventListener("storage", onStorage);
-    };
-  }, []);
-
-  const change = useCallback((c: Currency) => writeCurrency(c), []);
-
-  return { currency, change, hydrated };
+  }
+  return () => {
+    listeners.delete(listener);
+    if (!listeners.size) window.removeEventListener("storage", onStorage);
+  };
+}
+function onStorage(event: StorageEvent) {
+  if (event.key === STORAGE_KEY || event.key === null) { read(); emit(); }
+}
+function change(currency: Currency) {
+  if (!isCurrency(currency)) return;
+  current = currency;
+  try { localStorage.setItem(STORAGE_KEY, currency); } catch { /* memory still works */ }
+  emit();
+  window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: currency }));
 }
 
-// ── Conversion + formatting helpers ─────────────────────────────────
-
-export function convertFromEUR(amountEur: number, target: Currency): number {
-  return amountEur * RATES_FROM_EUR[target];
+type FxState = { rates: FxRates | null; unavailable: boolean };
+const initialFx: FxState = { rates: null, unavailable: false };
+let fx: FxState = initialFx;
+let pending: Promise<void> | null = null;
+let nextRefresh = 0;
+const fxListeners = new Set<() => void>();
+async function refreshRates() {
+  if (pending || Date.now() < nextRefresh) return pending;
+  pending = (async () => {
+    try {
+      const response = await fetch("/api/exchange-rates", { signal: AbortSignal.timeout(10000) });
+      const value: unknown = await response.json();
+      if (!response.ok || !validRates(value)) throw new Error("No valid quote");
+      fx = { rates: value, unavailable: false };
+      nextRefresh = Date.now() + 3600000;
+    } catch {
+      fx = { rates: fx.rates && validRates(fx.rates) ? fx.rates : null, unavailable: true };
+      nextRefresh = Date.now() + 60000;
+    } finally {
+      pending = null;
+      fxListeners.forEach(fn => fn());
+    }
+  })();
+  return pending;
 }
-
-export function formatInCurrency(amountEur: number, target: Currency): string {
-  const amount = convertFromEUR(amountEur, target);
-  // MAD a une convention différente (milliers séparés par espace, pas de décimales)
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: target,
-    maximumFractionDigits: 0,
-  }).format(amount);
+let refreshTimer: ReturnType<typeof setInterval> | null = null;
+function subscribeRates(listener: () => void) {
+  fxListeners.add(listener);
+  if (fxListeners.size === 1) {
+    void refreshRates();
+    refreshTimer = setInterval(() => {
+      if (document.visibilityState === "visible") void refreshRates();
+    }, 60000);
+  }
+  return () => {
+    fxListeners.delete(listener);
+    if (!fxListeners.size && refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+  };
 }
+export function useCurrency() {
+  const currency = useSyncExternalStore(subscribe, () => current, () => "EUR" as Currency);
+  const state = useSyncExternalStore(subscribeRates, () => fx, () => initialFx);
+  return { currency, change, hydrated: true, rates: state.rates, ratesUnavailable: state.unavailable };
+}
+export const CURRENCY_SYMBOLS: Record<Currency, string> = { EUR: "€", GBP: "£", USD: "$" };
+export const CURRENCY_LABELS: Record<Currency, string> = { EUR: "Euro", GBP: "Livre sterling", USD: "Dollar US" };

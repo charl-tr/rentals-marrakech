@@ -63,7 +63,7 @@ export async function submitDepositLead(
     email: d.email || null,
     phone: d.phone,
     channel: "website",
-    source_page: "/deposer-un-bien",
+    source_page: formData.get("locale") === "en" ? "/en/sell" : "/deposer-un-bien",
     property_slug: null,
     intent: "vendre",
     message: [d.type && `Bien : ${d.type}`, d.city && `Ville : ${d.city}`, d.neighborhood && `Quartier : ${d.neighborhood}`, d.description].filter(Boolean).join("\n") || null,
@@ -75,6 +75,7 @@ export async function submitDepositLead(
     sla_due_at: slaDueAt.toISOString(),
     portal_token: portalToken,
     meta: {
+      preferred_language: formData.get("locale") === "en" ? "en" : "fr",
       project_label: "Vendre — dépôt de bien",
       deposit: {
         type: d.type,

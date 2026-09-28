@@ -18,9 +18,11 @@ export interface Crumb {
 export default function Breadcrumbs({
   items,
   variant = "light",
+  locale = "fr",
 }: {
   items: Crumb[];
   variant?: "light" | "dark";
+  locale?: "fr" | "en";
 }) {
   const muted =
     variant === "dark" ? "text-white/85 hero-text-soft" : "text-[var(--color-stone)]";
@@ -39,7 +41,7 @@ export default function Breadcrumbs({
 
   return (
     <nav
-      aria-label="Fil d'Ariane"
+      aria-label={locale === "en" ? "Breadcrumb" : "Fil d'Ariane"}
       className="flex flex-wrap items-center text-[10px] uppercase tracking-[0.18em]"
     >
       {items.map((c, i) => {

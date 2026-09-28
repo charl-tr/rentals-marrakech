@@ -4,10 +4,14 @@ import Link from "next/link";
 import CatalogueBrowser from "@/components/CatalogueBrowser";
 import { type PropertySummary, type PropertyType } from "@/data/properties";
 import { getCatalogueProperties } from "@/lib/db";
+import { languagePath } from "@/lib/i18n/routes";
+import { saleBudgets, rentalBudgets } from "@/lib/i18n/catalogue";
 
 export type FilterMode = "vente" | "location";
 
 export interface CatalogueProps {
+  locale?: "fr" | "en";
+  properties?: PropertySummary[];
   inventory?: "active" | "sold";
   eyebrow: string;
   title: string;
@@ -58,6 +62,8 @@ const TYPE_ORDER: PropertyType[] = [
 ];
 
 export default async function Catalogue({
+  locale = "fr",
+  properties,
   inventory = "active",
   eyebrow,
   title,
@@ -77,8 +83,9 @@ export default async function Catalogue({
   backFallbackHref = "/",
   selectedFilters = {},
 }: CatalogueProps) {
-  const all = await getCatalogueProperties(inventory);
-  const buckets = filterMode === "location" ? BUDGET_LOCATION : BUDGET_VENTE;
+  const en = locale === "en";
+  const all = properties ?? await getCatalogueProperties(inventory);
+  const buckets = en ? filterMode === "location" ? rentalBudgets : saleBudgets : filterMode === "location" ? BUDGET_LOCATION : BUDGET_VENTE;
   const prefiltered = all.filter(prefilter);
   const typesInCatalogue = new Set(prefiltered.map((property) => property.type));
   const availableTypes = TYPE_ORDER.filter((type) => typesInCatalogue.has(type));
@@ -92,10 +99,10 @@ export default async function Catalogue({
         <div className="container-luxe relative pb-5 pt-20 md:pb-6 md:pt-24">
           {(breadcrumbs || backFallbackHref) && (
             <div className="mb-3 flex items-center gap-5">
-              {baseHref !== "/acheter" && baseHref !== "/louer" && <BackToList fallbackHref={backFallbackHref} variant="light" compactOnMobile />}
+              {!["/acheter", "/louer", "/en/buy", "/en/rent"].includes(baseHref) && <BackToList locale={locale} fallbackHref={languagePath(backFallbackHref, locale)} fallbackLabel={en ? "Back to properties" : "Retour aux biens"} variant="light" compactOnMobile />}
               {breadcrumbs && breadcrumbs.length > 0 && (
                 <div className="hidden sm:block">
-                  <Breadcrumbs variant="light" items={breadcrumbs} />
+                  <Breadcrumbs locale={locale} variant="light" items={breadcrumbs} />
                 </div>
               )}
             </div>
@@ -114,8 +121,8 @@ export default async function Catalogue({
             </p>
           )}
           </div>
-          {filterMode === "vente" && <nav aria-label="Disponibilité des biens" className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-border)] bg-white/60 p-1 text-sm">
-            {[{ href: "/acheter", label: "À vendre", active: inventory === "active" }, { href: "/biens-vendus", label: "Vendus", active: inventory === "sold" }].map((item) => <Link key={item.href} href={item.href} aria-current={item.active ? "page" : undefined} className={`rounded-full px-5 py-2.5 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)] ${item.active ? "bg-[#795238] text-white shadow-sm" : "text-[var(--color-stone)] hover:bg-[var(--color-cream)] hover:text-[var(--color-charcoal)]"}`}>{item.label}</Link>)}
+          {filterMode === "vente" && <nav aria-label={en ? "Property availability" : "Disponibilité des biens"} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-border)] bg-white/60 p-1 text-sm">
+            {[{ href: "/acheter", label: en ? "For sale" : "À vendre", active: inventory === "active" }, { href: "/biens-vendus", label: en ? "Sold" : "Vendus", active: inventory === "sold" }].map((item) => <Link key={item.href} href={languagePath(item.href, locale)} aria-current={item.active ? "page" : undefined} className={`rounded-full px-5 py-2.5 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)] ${item.active ? "bg-[#795238] text-white shadow-sm" : "text-[var(--color-stone)] hover:bg-[var(--color-cream)] hover:text-[var(--color-charcoal)]"}`}>{item.label}</Link>)}
           </nav>}
           </div>
         </div>
@@ -123,6 +130,7 @@ export default async function Catalogue({
 
       {/* EXPÉRIENCE DE NAVIGATION — filtrage/tri instantané côté client */}
       <CatalogueBrowser
+        locale={locale}
         properties={prefiltered}
         mode={filterMode}
         baseHref={baseHref}

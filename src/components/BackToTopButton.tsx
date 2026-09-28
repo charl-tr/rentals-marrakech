@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { languagePath } from "@/lib/i18n/routes";
 import { ArrowUp } from "lucide-react";
 
 const CATALOGUE_PREFIXES = [
@@ -13,8 +14,8 @@ const CATALOGUE_PREFIXES = [
   "/favoris",
 ];
 
-export default function BackToTopButton() {
-  const pathname = usePathname();
+export default function BackToTopButton({ locale = "fr" }: { locale?: "fr" | "en" }) {
+  const pathname = languagePath(usePathname(), "fr");
   const [visible, setVisible] = useState(false);
   const isPropertyJourney = CATALOGUE_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
@@ -33,7 +34,7 @@ export default function BackToTopButton() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      aria-label="Revenir en haut de la page"
+      aria-label={locale === "en" ? "Back to top" : "Revenir en haut de la page"}
       className="fixed bottom-24 right-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-white/95 text-[var(--color-charcoal)] shadow-[var(--shadow-luxe)] backdrop-blur-md transition-transform hover:-translate-y-0.5 md:bottom-24 md:right-6"
     >
       <ArrowUp size={17} />

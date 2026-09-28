@@ -3,6 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, ChevronDown, Check } from "lucide-react";
+import { languagePath } from "@/lib/i18n/routes";
+import { useCurrency } from "@/hooks/useCurrency";
+import { budgetLabel } from "@/lib/fx";
+import { saleBudgets } from "@/lib/i18n/catalogue";
 
 // ════════════════════════════════════════════════════════════════════
 // HeroSearch — barre de recherche du hero avec dropdowns custom.
@@ -11,24 +15,20 @@ import { Search, ChevronDown, Check } from "lucide-react";
 
 export type HeroSearchOption = { value: string; label: string };
 
-const BUDGETS: HeroSearchOption[] = [
-  { value: "", label: "Tous budgets" },
-  { value: "300", label: "Jusqu'à 300 000 €" },
-  { value: "600", label: "300 000 € – 600 000 €" },
-  { value: "1000", label: "600 000 € – 1 M€" },
-  { value: "2000", label: "1 M€ – 2 M€" },
-  { value: "high", label: "Plus de 2 M€" },
-];
 
 export default function HeroSearch({
   typeOptions,
   zoneOptions,
   resultCount,
+  locale = "fr",
 }: {
   typeOptions: HeroSearchOption[];
   zoneOptions: HeroSearchOption[];
   resultCount: number;
+  locale?: "fr" | "en";
 }) {
+  const en = locale === "en";
+  const { currency, rates } = useCurrency();
   const router = useRouter();
   const [type, setType] = useState("");
   const [zone, setZone] = useState("");
@@ -42,7 +42,7 @@ export default function HeroSearch({
     if (budget) params.set("budget", budget);
     const qs = params.toString();
     const base = type === "programme-neuf" ? "/acheter/programmes-neufs" : "/acheter";
-    router.push(qs ? `${base}?${qs}` : base);
+    router.push(languagePath(qs ? `${base}?${qs}` : base, locale));
   }
 
   return (
@@ -54,10 +54,10 @@ export default function HeroSearch({
       >
         <span>
           <span className="block text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-accent)]">
-            Notre sélection
+            {en ? "Our selection" : "Notre sélection"}
           </span>
           <span className="mt-1 block text-sm font-medium">
-            Explorer {resultCount} bien{resultCount > 1 ? "s" : ""}
+            {en ? `Explore ${resultCount} ${resultCount === 1 ? "property" : "properties"}` : `Explorer ${resultCount} bien${resultCount > 1 ? "s" : ""}`}
           </span>
         </span>
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-charcoal)] text-white">
@@ -67,8 +67,8 @@ export default function HeroSearch({
 
       <div className="hidden grid-cols-[1fr_1fr_1fr_auto] md:grid">
         <Field
-          label="Type de bien"
-          options={[{ value: "", label: "Tous les biens" }, ...typeOptions]}
+          label={en ? "Property type" : "Type de bien"}
+          options={[{ value: "", label: en ? "All properties" : "Tous les biens" }, ...typeOptions]}
           value={type}
           onChange={setType}
           open={openKey === "type"}
@@ -77,8 +77,8 @@ export default function HeroSearch({
           className="border-b border-white/10 md:border-b-0 md:border-r"
         />
         <Field
-          label="Quartier"
-          options={[{ value: "", label: "Toutes les zones" }, ...zoneOptions]}
+          label={en ? "Area" : "Quartier"}
+          options={[{ value: "", label: en ? "All areas" : "Toutes les zones" }, ...zoneOptions]}
           value={zone}
           onChange={setZone}
           open={openKey === "zone"}
@@ -88,7 +88,7 @@ export default function HeroSearch({
         />
         <Field
           label="Budget"
-          options={BUDGETS}
+          options={[{ value: "", label: en ? "Any budget" : "Tous budgets" }, ...saleBudgets.map((b) => ({ value: b.key, label: budgetLabel(b, currency, rates, locale) }))]}
           value={budget}
           onChange={setBudget}
           open={openKey === "budget"}
@@ -102,7 +102,7 @@ export default function HeroSearch({
           className="flex items-center justify-center gap-2 rounded-[10px] bg-white/10 px-8 py-5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-all hover:bg-white hover:text-[var(--color-charcoal)]"
         >
           <Search size={15} />
-          Rechercher
+          {en ? "Search" : "Rechercher"}
         </button>
       </div>
     </div>

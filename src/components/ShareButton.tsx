@@ -12,12 +12,15 @@ export default function ShareButton({
   title,
   description,
   variant = "hero",
+  locale = "fr",
 }: {
   url: string;
   title: string;
   description?: string;
   variant?: "hero" | "inline";
+  locale?: "fr" | "en";
 }) {
+  const en = locale === "en";
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [absoluteUrl, setAbsoluteUrl] = useState(url);
@@ -61,7 +64,7 @@ export default function ShareButton({
   );
   const mailSubject = encodeURIComponent(title);
   const mailBody = encodeURIComponent(
-    `Bonjour,\n\nJe voulais partager ce bien avec vous :\n\n${title}\n${description ?? ""}\n\n${absoluteUrl}\n\n—`
+    `${en ? "Hello,\n\nI wanted to share this property with you:" : "Bonjour,\n\nJe voulais partager ce bien avec vous :"}\n\n${title}\n${description ?? ""}\n\n${absoluteUrl}\n\n—`
   );
 
   const buttonClasses =
@@ -74,11 +77,11 @@ export default function ShareButton({
       <button
         type="button"
         onClick={handleClick}
-        aria-label="Partager ce bien"
+        aria-label={en ? "Share this property" : "Partager ce bien"}
         className={buttonClasses}
       >
         <Share2 size={12} />
-        Partager
+        {en ? "Share" : "Partager"}
       </button>
 
       {open && (
@@ -105,7 +108,7 @@ export default function ShareButton({
               className="flex items-center gap-3 border-t border-[var(--color-beige-warm)] px-5 py-3.5 text-sm text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-cream)]"
             >
               <Mail size={15} className="text-[var(--color-terracotta)]" />
-              Par e-mail
+              {en ? "By email" : "Par e-mail"}
             </a>
             <button
               type="button"
@@ -116,13 +119,13 @@ export default function ShareButton({
                 <>
                   <Check size={15} className="text-[var(--color-terracotta)]" />
                   <span className="text-[var(--color-terracotta)]">
-                    Lien copié !
+                    {en ? "Link copied!" : "Lien copié !"}
                   </span>
                 </>
               ) : (
                 <>
                   <Copy size={15} className="text-[var(--color-terracotta)]" />
-                  Copier le lien
+                  {en ? "Copy link" : "Copier le lien"}
                 </>
               )}
             </button>

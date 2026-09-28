@@ -1264,6 +1264,9 @@ export interface PropertyPin {
   slug: string;
   title: string;
   price: number;
+  priceMad?: number;
+  sourcePriceEur?: string;
+  sourcePriceMad?: string;
   priceUnit?: "semaine" | "mois";
   listing: Listing;
   type: PropertyType;
@@ -1279,20 +1282,23 @@ export async function getPropertyPins(): Promise<PropertyPin[]> {
   const { data, error } = await supabase
     .from("properties")
     .select(
-      "slug,title,price_eur,price_unit,listing,type,neighborhood_slug,city,images,bedrooms,surface"
+      "slug,title,price_eur,price_mad,source_price_eur:source_payload->>originalPriceEur,source_price_mad:source_payload->>originalPriceMad,price_unit,listing,type,neighborhood_slug,city,images,bedrooms,surface"
     )
     .eq("published", true)
     .in("status", ACTIVE_PROPERTY_STATUSES)
     .order("featured", { ascending: false });
   if (error) throw error;
   return (data as {
-    slug: string; title: string; price_eur: number; price_unit: "semaine" | "mois" | null;
+    slug: string; title: string; price_eur: number; price_mad: number | null; source_price_eur?: string | null; source_price_mad?: string | null; price_unit: "semaine" | "mois" | null;
     listing: Listing; type: PropertyType; neighborhood_slug: string | null;
     city: string; images: string[]; bedrooms: number | null; surface: number | null;
   }[]).map((r) => ({
     slug: r.slug,
     title: r.title,
     price: r.price_eur,
+    priceMad: r.price_mad ?? undefined,
+    sourcePriceEur: r.source_price_eur ?? undefined,
+    sourcePriceMad: r.source_price_mad ?? undefined,
     priceUnit: r.price_unit ?? undefined,
     listing: r.listing,
     type: r.type,

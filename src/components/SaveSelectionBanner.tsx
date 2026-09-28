@@ -33,10 +33,13 @@ const DISMISS_KEY_PREFIX = "mr:save-selection-dismissed:";
 export default function SaveSelectionBanner({
   kind,
   slugs,
+  locale = "fr",
 }: {
   kind: "favoris" | "comparateur";
   slugs: string[];
+  locale?: "fr" | "en";
 }) {
+  const en = locale === "en";
   const [checked, setChecked] = useState(false);
   const [dismissed, setDismissed] = useState(true);
   const [hidden, setHidden] = useState(false); // masquage transitoire (états liés)
@@ -93,9 +96,9 @@ export default function SaveSelectionBanner({
         const newLink: SelectionLink = { ...link, savedSlugs: [...slugs] };
         setSelectionLink(kind, newLink);
         setLink(newLink);
-        toast.success("Sélection mise à jour.");
+        toast.success(en ? "Selection updated." : "Sélection mise à jour.");
       } catch {
-        toast.error("La mise à jour a échoué. Vos favoris sont conservés ; réessayez.");
+        toast.error(en ? "The update failed. Your saved properties are kept; please try again." : "La mise à jour a échoué. Vos favoris sont conservés ; réessayez.");
       }
     });
   };
@@ -110,9 +113,9 @@ export default function SaveSelectionBanner({
           <Check size={15} strokeWidth={2.5} />
         </div>
         <p className="text-sm leading-relaxed text-[var(--color-charcoal)]">
-          <span className="font-medium">Sélection sauvegardée.</span>{" "}
-          {state.emailSent ? "L’email contenant votre lien a été transmis au service d’envoi. Vérifiez aussi vos indésirables." : "L’envoi de l’email n’a pas été confirmé. Vos favoris restent accessibles ici."}
-          {state.token && <a href={`/ma-selection/${state.token}`} className="ml-2 underline underline-offset-4">Ouvrir ma sélection sauvegardée</a>}
+          <span className="font-medium">{en ? "Selection saved." : <>Sélection sauvegardée.</>}</span>{" "}
+          {en ? state.emailSent ? "Your link was passed to the email service. Check your spam folder too." : "Email delivery was not confirmed. Your saved properties are still available here." : state.emailSent ? "L’email contenant votre lien a été transmis au service d’envoi. Vérifiez aussi vos indésirables." : "L’envoi de l’email n’a pas été confirmé. Vos favoris restent accessibles ici."}
+          {state.token && <a href={`/ma-selection/${state.token}`} className="ml-2 underline underline-offset-4">{en ? "Open my saved selection (French)" : <>Ouvrir ma sélection sauvegardée</>}</a>}
         </p>
       </div>
     );
@@ -130,13 +133,13 @@ export default function SaveSelectionBanner({
             <Check size={15} strokeWidth={2.5} />
           </div>
           <p className="flex-1 text-sm text-[var(--color-charcoal)]">
-            <span className="font-medium">Sélection enregistrée</span>
-            {link.email ? ` · ${link.email}` : ""}. <a href={`/ma-selection/${link.token}`} className="underline underline-offset-4">Ouvrir le lien de ma sélection</a>
+            <span className="font-medium">{en ? "Selection saved" : <>Sélection enregistrée</>}</span>
+            {link.email ? ` · ${link.email}` : ""}. <a href={`/ma-selection/${link.token}`} className="underline underline-offset-4">{en ? "Open my selection link (French)" : <>Ouvrir le lien de ma sélection</>}</a>
           </p>
           <button
             type="button"
             onClick={() => setHidden(true)}
-            aria-label="Masquer"
+            aria-label={en ? "Hide" : "Masquer"}
             className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-[var(--color-stone)] transition-colors hover:bg-white hover:text-[var(--color-charcoal)]"
           >
             <X size={14} />
@@ -154,9 +157,8 @@ export default function SaveSelectionBanner({
             className="mt-0.5 flex-shrink-0 text-[var(--color-accent)]"
           />
           <p className="text-sm text-[var(--color-charcoal)]">
-            <span className="font-medium">Vous avez modifié votre sélection.</span>{" "}
-            Mettez à jour l&apos;enregistrement
-            {link.email ? ` lié à ${link.email}` : ""}.
+            <span className="font-medium">{en ? "Your selection has changed." : <>Vous avez modifié votre sélection.</>}</span>{" "}
+            {en ? "Update the saved selection" : <>Mettez à jour l&apos;enregistrement</>}{link.email ? ` · ${link.email}` : ""}.
           </p>
         </div>
         <button
@@ -165,7 +167,7 @@ export default function SaveSelectionBanner({
           disabled={isUpdating}
           className="btn-gold flex-shrink-0 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isUpdating ? "Mise à jour…" : "Mettre à jour"}
+          {en ? isUpdating ? "Updating…" : "Update" : isUpdating ? "Mise à jour…" : "Mettre à jour"}
           {!isUpdating && <RefreshCw size={14} />}
         </button>
       </div>
@@ -180,7 +182,7 @@ export default function SaveSelectionBanner({
       <button
         type="button"
         onClick={dismissForever}
-        aria-label="Fermer"
+        aria-label={en ? "Close" : "Fermer"}
         className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full text-[var(--color-stone)] transition-colors hover:bg-white hover:text-[var(--color-charcoal)]"
       >
         <X size={14} />
@@ -190,12 +192,12 @@ export default function SaveSelectionBanner({
         <summary className="cursor-pointer pr-8 text-sm font-medium text-[var(--color-charcoal)]">
           <span className="inline-flex items-center gap-2">
             <Mail size={15} className="text-[var(--color-accent)]" />
-            Retrouver ma sélection par email
+            {en ? "Get my selection by email" : <>Retrouver ma sélection par email</>}
           </span>
         </summary>
           <p className="mt-1 text-xs text-[var(--color-stone)]">
-            Gardez les biens qui vous plaisent et retrouvez-les sur un autre
-            appareil. Aucun compte à créer.
+            {en ? "Keep the properties you like and access them from another device. No account needed. The selection email and private page are currently in French." : <>Gardez les biens qui vous plaisent et retrouvez-les sur un autre
+            appareil. Aucun compte à créer.</>}
           </p>
 
         <form
@@ -210,7 +212,7 @@ export default function SaveSelectionBanner({
             <EmailField
               value={email}
               onChange={setEmail}
-              placeholder="vous@exemple.com"
+              placeholder={en ? "you@example.com" : "vous@exemple.com"}
             />
           </div>
           <button
@@ -218,17 +220,16 @@ export default function SaveSelectionBanner({
             disabled={isPending || !email.trim()}
             className="btn-gold flex-shrink-0 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isPending ? "…" : "Recevoir"}
+            {isPending ? "…" : en ? "Send my selection" : "Recevoir"}
           </button>
         </form>
 
       {state.status === "error" && (
-        <p role="alert" className="mt-2 text-xs text-[var(--color-accent-deep)]">{state.message}</p>
+        <p role="alert" className="mt-2 text-xs text-[var(--color-accent-deep)]">{en ? "Could not save your selection. Check your email address and try again." : state.message}</p>
       )}
 
       <p className="mt-3 text-[10px] leading-relaxed text-[var(--color-stone)]">
-        En renseignant votre email, vous acceptez d&apos;être recontacté(e) par
-        l&apos;équipe Marrakech Realty au sujet de cette sélection. <a href="/politique-confidentialite" className="underline">Confidentialité</a>.
+        {en ? "By entering your email, you agree to be contacted by Marrakech Realty about this selection." : <>En renseignant votre email, vous acceptez d&apos;être recontacté(e) par l&apos;équipe Marrakech Realty au sujet de cette sélection.</>} <a href="/politique-confidentialite" className="underline">{en ? "Privacy (French)" : "Confidentialité"}</a>.
       </p>
       </details>
     </div>

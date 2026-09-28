@@ -10,8 +10,10 @@ import { useFavorites } from "@/hooks/useFavorites";
  */
 export default function FavoriteCounter({
   variant = "light",
+  locale = "fr",
 }: {
   variant?: "light" | "dark"; // light = texte foncé (fond clair), dark = texte clair (fond sombre)
+  locale?: "fr" | "en";
 }) {
   const { count, hydrated } = useFavorites();
 
@@ -19,8 +21,8 @@ export default function FavoriteCounter({
   if (!hydrated) {
     return (
       <Link
-        href="/favoris"
-        aria-label="Mes favoris"
+        href={locale === "en" ? "/en/saved-properties" : "/favoris"}
+        aria-label={locale === "en" ? "Saved properties" : "Mes favoris"}
         className={`flex items-center transition-colors ${
           variant === "dark"
             ? "text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
@@ -39,8 +41,8 @@ export default function FavoriteCounter({
 
   return (
     <Link
-      href="/favoris"
-      aria-label={`Mes favoris (${count})`}
+      href={locale === "en" ? "/en/saved-properties" : "/favoris"}
+      aria-label={`${locale === "en" ? "Saved properties" : "Mes favoris"} (${count})`}
       className={`relative inline-flex items-center transition-colors ${linkClass}`}
     >
       <Heart

@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     // une allow-list explicite et ramenait sinon toutes les demandes à 75.
     qualities: [50, 55, 68, 75],
     remotePatterns: [
+      // Existing editorial illustrations used by area guides and journal.
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/photo-*" },
       // Photos MR (Wayback-scraped, hébergées sur WP)
       { protocol: "https", hostname: "www.marrakechrealty.com" },
       // Supabase Storage public bucket
@@ -74,9 +76,9 @@ const nextConfig: NextConfig = {
       { source: "/recherche", destination: "/acheter", permanent: true },
       { source: "/blog", destination: "/journal", permanent: true },
       { source: "/blog/:slug", destination: "/journal/:slug", permanent: true },
-      // ── i18n EN — placeholder en attendant l'i18n complète ─────────
-      { source: "/en", destination: "/", permanent: false },
-      { source: "/en/:path*", destination: "/", permanent: false },
+      // Existing French URLs stay canonical. /fr is an alias, never a copy.
+      { source: "/fr", destination: "/", permanent: true },
+      { source: "/fr/:path*", destination: "/:path*", permanent: true },
       // Note : /deposer-un-bien et /mentions-legales gardent leur slug —
       // donc pas de redirect (sinon 308 sur soi-même = boucle infinie).
     ];

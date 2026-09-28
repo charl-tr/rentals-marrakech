@@ -46,6 +46,7 @@ export type SlaTier = (typeof SLA_TIERS)[number];
 
 // Mapping libellés option <select> → intent canonique
 export const INTENT_FROM_PROJECT_LABEL: Record<string, LeadIntent> = {
+  "Acheter un bien": "acheter",
   "Acheter un riad": "acheter",
   "Acheter une villa": "acheter",
   "Acheter un appartement": "acheter",

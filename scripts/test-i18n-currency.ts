@@ -1,0 +1,46 @@
+import assert from "node:assert/strict";
+import { parseEcbRates, validRates, convertFromEUR, formatInCurrency, budgetLabel, isCurrency } from "../src/lib/fx";
+import { displayPropertyPrice } from "../src/lib/display-price";
+import { languagePath } from "../src/lib/i18n/routes";
+
+const now = Date.parse("2026-09-28T12:00:00Z");
+const xml = "<Cube time='2026-09-25'><Cube currency='USD' rate='1.14'/><Cube currency='GBP' rate='0.86'/></Cube>";
+const rates = parseEcbRates(xml, now);
+assert.equal(Math.round(convertFromEUR(100_000, "USD", rates)!), 114_000);
+assert.equal(Math.round(convertFromEUR(100_000, "GBP", rates)!), 86_000);
+assert.equal(convertFromEUR(100_000, "USD", null), null);
+assert.equal(convertFromEUR(100_000, "EUR", null), 100_000);
+assert.equal(isCurrency("MAD"), false);
+assert.equal(validRates({ ...rates, date: "2020-01-01" }, now), false);
+assert.equal(validRates({ ...rates, date: "2027-01-01" }, now), false);
+assert.equal(validRates({ ...rates, rates: { EUR: 1, USD: -1, GBP: 0.86 } }, now), false);
+assert.throws(() => parseEcbRates("<Cube time='2026-09-25'/>", now));
+assert.match(formatInCurrency(100, "USD", null), /€/);
+const p = { priceEur: 100_000, priceMad: 1_050_000, listing: "vente" };
+const usd = displayPropertyPrice(p, "USD", rates, "en");
+const eur = displayPropertyPrice(p, "EUR", rates, "en");
+assert.equal(usd.secondary, eur.secondary);
+assert.match(usd.primary, /^≈ /);
+assert.equal(usd.estimated, true);
+assert.equal(eur.estimated, false);
+assert.equal(p.priceEur, 100_000);
+assert.equal(p.priceMad, 1_050_000);
+const unavailable = displayPropertyPrice(p, "GBP", null, "en");
+assert.equal(unavailable.fallback, true);
+assert.match(unavailable.primary, /€/);
+const missing = displayPropertyPrice({ ...p, priceEur: 0 }, "USD", rates, "en");
+assert.equal(missing.estimated, false);
+assert.match(missing.primary, /EUR price on request/);
+assert.equal(missing.secondary, eur.secondary);
+const rental = displayPropertyPrice({ ...p, listing: "location", priceUnit: "mois" }, "GBP", rates, "en");
+assert.match(rental.primary, /\/ month$/);
+assert.match(rental.secondary, /\/ month$/);
+const range = displayPropertyPrice({ priceEur: 0, listing: "location-saisonniere", sourcePriceEur: "300-500 € / nuit", sourcePriceMad: "3200-5400 Dhs / nuit" }, "USD", rates, "en");
+assert.match(range.primary, /^≈ .*night$/);
+assert.match(range.secondary, /3,200 MAD – 5,400 MAD \/ night/);
+assert.match(budgetLabel({ min: 300_000, max: 600_000 }, "GBP", rates, "en"), /^≈ /);
+for (const fr of ["/", "/louer/villa?budget=3000&chambres=4&page=2", "/acheter/programmes-neufs", "/quartiers/amelkis", "/journal/restaurer-un-riad-medina", "/comparer", "/carte", "/acheter/un-riad#contact-bien"]) {
+  assert.equal(languagePath(languagePath(fr, "en"), "fr"), fr);
+}
+assert.equal(languagePath("//external.example", "en"), "//external.example");
+console.log("i18n/currency regression checks passed");

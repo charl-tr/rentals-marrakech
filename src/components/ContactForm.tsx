@@ -24,6 +24,7 @@ import FormGuard from "@/components/FormGuard";
 import MeasurementField from "@/components/MeasurementField";
 
 interface ContactFormProps {
+  locale?: "fr" | "en";
   advisors: Advisor[];
   propertySlug?: string;
   sourcePage?: string;
@@ -45,6 +46,8 @@ const PROJECT_OPTIONS = [
   "Autre",
 ];
 
+const PROJECT_EN: Record<string, string> = {"Acheter un riad":"Buy a riad","Acheter une villa":"Buy a villa","Acheter un appartement":"Buy an apartment","Programme neuf":"New development","Louer (longue durée)":"Long-term rental","Louer (saisonnier)":"Holiday rental","Vendre — estimation":"Sell — valuation","Gestion locative":"Rental management","Autre":"Other"};
+
 const PHONE = "+212660629444";
 const WHATSAPP = "https://wa.me/212660629444";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,12 +64,14 @@ type Values = {
 };
 
 export default function ContactForm({
+  locale = "fr",
   advisors,
   propertySlug,
   sourcePage,
   defaultProject,
   channel = "contact_form",
 }: ContactFormProps) {
+  const en = locale === "en";
   const [state, action, isPending] = useActionState(submitLead, initialState);
 
   const [step, setStep] = useState(0);
@@ -142,7 +147,7 @@ export default function ContactForm({
     !forceForm && (state.status === "success" || (mounted && memory !== null));
   if (showSuccess) {
     const advisor = advisors.find((a) => a.slug === advisorSlug) ?? advisors[0];
-    return <SuccessPanel advisor={advisor} onReopen={handleReopen} />;
+    return <SuccessPanel locale={locale} advisor={advisor} onReopen={handleReopen} />;
   }
 
   const set = (patch: Partial<Values>) => {
@@ -153,25 +158,25 @@ export default function ContactForm({
   const STEPS = [
     {
       key: "name",
-      question: "Comment vous appelez-vous ?",
-      hint: "Pour savoir qui vous répond.",
+      question: en ? "What is your name?" : "Comment vous appelez-vous ?",
+      hint: en ? "So we know who we are speaking with." : "Pour savoir qui vous répond.",
       valid: () =>
         values.firstName.trim() !== "" && values.lastName.trim() !== "",
-      invalidMsg: "Indiquez votre prénom et votre nom.",
+      invalidMsg: en ? "Please enter your first and last name." : "Indiquez votre prénom et votre nom.",
     },
     {
       key: "contact",
-      question: "Comment vous rappeler ?",
-      hint: "Un conseiller vous rappelle sous 24 h — le plus rapide pour avancer.",
+      question: en ? "How can we reach you?" : "Comment vous rappeler ?",
+      hint: en ? "Leave your contact details so an advisor can get back to you." : "Un conseiller vous rappelle sous 24 h — le plus rapide pour avancer.",
       valid: () =>
         values.phone.replace(/\D/g, "").length >= 8 &&
         EMAIL_RE.test(values.email.trim()),
-      invalidMsg: "Indiquez un téléphone et un e-mail valides.",
+      invalidMsg: en ? "Please enter a valid phone number and email." : "Indiquez un téléphone et un e-mail valides.",
     },
     {
       key: "message",
-      question: "Dites-nous en plus.",
-      hint: "Votre projet en quelques mots — ou rien, on en parlera.",
+      question: en ? "Tell us a little more." : "Dites-nous en plus.",
+      hint: en ? "A few words about your plans — or leave this blank and we can discuss them." : "Votre projet en quelques mots — ou rien, on en parlera.",
       valid: () => true,
       invalidMsg: "",
     },
@@ -207,8 +212,7 @@ export default function ContactForm({
       {/* Contact immédiat */}
       <div className="flex flex-col gap-3 rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--color-charcoal)]">
-          <span className="font-medium">Plus rapide&nbsp;?</span> Écrivez-nous
-          directement.
+          <span className="font-medium">{en ? "Prefer a quick chat?" : <>Plus rapide&nbsp;?</>}</span> {en ? "Message us directly." : "Écrivez-nous directement."}
         </p>
         <div className="flex gap-2">
           <a
@@ -225,7 +229,7 @@ export default function ContactForm({
             className="inline-flex items-center gap-2 rounded-[10px] border border-[var(--color-charcoal)] px-4 py-2.5 text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white"
           >
             <Phone size={14} />
-            Appeler
+            {en ? "Call" : "Appeler"}
           </a>
         </div>
       </div>
@@ -235,6 +239,7 @@ export default function ContactForm({
         className="rounded-[16px] border border-[var(--color-border)] bg-white p-8 shadow-[var(--shadow-card)] md:p-10"
       >
         <FormGuard />
+        <input type="hidden" name="locale" value={locale} />
         <MeasurementField />
         <input type="hidden" name="channel" value={channel} />
         {propertySlug && (
@@ -253,10 +258,10 @@ export default function ContactForm({
 
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
-            Étape {step + 1} sur {total}
+            {en ? "Step" : "Étape"} {step + 1} {en ? "of" : "sur"} {total}
           </span>
           <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-accent)]">
-            Réponse sous 24h
+            {en ? "Personal assistance" : "Réponse sous 24h"}
           </span>
         </div>
         <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
@@ -278,7 +283,7 @@ export default function ContactForm({
                 <input
                   ref={firstInputRef}
                   className="field"
-                  placeholder="Prénom"
+                  placeholder={en ? "First name" : "Prénom"}
                   autoComplete="given-name"
                   value={values.firstName}
                   onChange={(e) => set({ firstName: e.target.value })}
@@ -286,7 +291,7 @@ export default function ContactForm({
                 />
                 <input
                   className="field"
-                  placeholder="Nom"
+                  placeholder={en ? "Last name" : "Nom"}
                   autoComplete="family-name"
                   value={values.lastName}
                   onChange={(e) => set({ lastName: e.target.value })}
@@ -302,13 +307,13 @@ export default function ContactForm({
                   value={values.phone}
                   onChange={(v) => set({ phone: v })}
                   onKeyDown={onKeyDown}
-                  placeholder="Téléphone — pour être rappelé·e"
+                  placeholder={en ? "Phone — for your callback" : "Téléphone — pour être rappelé·e"}
                 />
                 <EmailField
                   value={values.email}
                   onChange={(v) => set({ email: v })}
                   onKeyDown={onKeyDown}
-                  placeholder="E-mail — pour l'écrit et votre espace"
+                  placeholder={en ? "Email — for your enquiry" : "E-mail — pour l'écrit et votre espace"}
                 />
               </div>
             )}
@@ -320,17 +325,17 @@ export default function ContactForm({
                   value={values.project}
                   onChange={(e) => set({ project: e.target.value })}
                 >
-                  <option value="">— Votre projet (facultatif) —</option>
+                  <option value="">{en ? "— Your project (optional) —" : "— Votre projet (facultatif) —"}</option>
                   {PROJECT_OPTIONS.map((label) => (
                     <option key={label} value={label}>
-                      {label}
+                      {en ? PROJECT_EN[label] ?? label : label}
                     </option>
                   ))}
                 </select>
                 <textarea
                   rows={4}
                   className="field resize-none"
-                  placeholder="Votre message (facultatif)…"
+                  placeholder={en ? "Your message (optional)…" : "Votre message (facultatif)…"}
                   value={values.message}
                   onChange={(e) => set({ message: e.target.value })}
                 />
@@ -343,7 +348,7 @@ export default function ContactForm({
           )}
           {state.status === "error" && !state.fieldErrors && (
             <p className="mt-3 rounded-[10px] border-l-2 border-[var(--color-accent)] bg-[var(--color-bg-alt)] px-4 py-2.5 text-sm text-[var(--color-charcoal)]">
-              {state.message}
+              {en ? "Your enquiry could not be sent. Please try again or contact us directly." : state.message}
             </p>
           )}
         </div>
@@ -352,7 +357,7 @@ export default function ContactForm({
           {step > 0 && (
             <button type="button" onClick={goBack} className="btn-back">
               <ArrowLeft size={12} />
-              Retour
+              {en ? "Back" : "Retour"}
             </button>
           )}
           {/* Un seul bouton, toujours type="submit" — le comportement (avancer
@@ -371,13 +376,13 @@ export default function ContactForm({
             }}
             className="btn-gold ml-auto disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLast ? (isPending ? "Envoi…" : "Envoyer") : "Continuer"}
+            {en ? isLast ? isPending ? "Sending…" : "Send" : "Continue" : isLast ? (isPending ? "Envoi…" : "Envoyer") : "Continuer"}
             {!(isLast && isPending) && <ArrowRight size={14} />}
           </button>
         </div>
 
         <p className="mt-6 text-center text-[11px] text-[var(--color-stone)]">
-          Vos données ne sont jamais transmises à des tiers.
+          {en ? "Your details are used to respond to your enquiry." : "Vos données ne sont jamais transmises à des tiers."}
         </p>
       </form>
     </div>
@@ -388,21 +393,24 @@ export default function ContactForm({
 // État de succès — "Je sais qui est mon interlocuteur, comment le joindre."
 
 function SuccessPanel({
+  locale = "fr",
   advisor,
   onReopen,
 }: {
+  locale?: "fr" | "en";
   advisor: Advisor | undefined;
   onReopen?: () => void;
 }) {
+  const en = locale === "en";
   if (!advisor) {
     return (
       <div className="rounded-[14px] border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-10">
-        <div className="eyebrow">Message reçu</div>
-        <h2 className="mt-4 font-serif text-3xl">Merci.</h2>
+        <div className="eyebrow">{en ? "Message received" : "Message reçu"}</div>
+        <h2 className="mt-4 font-serif text-3xl">{en ? "Thank you." : "Merci."}</h2>
         <p className="mt-3 text-sm text-[var(--color-stone)]">
-          Un conseiller vous recontacte sous 24 heures ouvrées.
+          {en ? "An advisor will be in touch." : "Un conseiller vous recontacte sous 24 heures ouvrées."}
         </p>
-        {onReopen && <ReopenLink onReopen={onReopen} />}
+        {onReopen && <ReopenLink locale={locale} onReopen={onReopen} />}
       </div>
     );
   }
@@ -420,16 +428,15 @@ function SuccessPanel({
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-white">
           <Check size={16} strokeWidth={2.5} />
         </div>
-        <div className="eyebrow">Message reçu</div>
+        <div className="eyebrow">{en ? "Message received" : "Message reçu"}</div>
       </div>
 
       <h2 className="mt-6 font-serif text-3xl leading-tight">
-        Merci. Votre demande<br />est entre de bonnes mains.
+        {en ? <>Thank you. Your enquiry<br />is in good hands.</> : <>Merci. Votre demande<br />est entre de bonnes mains.</>}
       </h2>
 
       <p className="mt-4 text-sm text-[var(--color-stone)]">
-        {advisor.name.split(" ")[0]}, {advisor.role.toLowerCase()}, est votre
-        interlocuteur. Elle·il vous rappelle sous 24 heures ouvrées.
+        {en ? `${advisor.name.split(" ")[0]} is your contact and will be in touch.` : <>{advisor.name.split(" ")[0]}, {advisor.role.toLowerCase()}, est votre interlocuteur. Elle·il vous rappelle sous 24 heures ouvrées.</>}
       </p>
 
       <div className="mt-10 flex items-start gap-5 border-t border-[var(--color-border)] pt-8">
@@ -453,7 +460,7 @@ function SuccessPanel({
             {advisor.name}
           </div>
           <div className="mt-0.5 text-[10px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
-            {advisor.role.split("—")[1]?.trim() ?? advisor.role}
+            {en ? "Your advisor" : advisor.role.split("—")[1]?.trim() ?? advisor.role}
           </div>
 
           <div className="mt-5 space-y-2 text-sm">
@@ -474,7 +481,7 @@ function SuccessPanel({
                 className="flex items-center gap-2.5 text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
               >
                 <MessageCircle size={14} className="text-[var(--color-accent)]" />
-                WhatsApp direct
+                {en ? "WhatsApp direct" : "WhatsApp direct"}
               </a>
             )}
             {advisor.email && (
@@ -490,7 +497,7 @@ function SuccessPanel({
         </div>
       </div>
 
-      {onReopen && <ReopenLink onReopen={onReopen} />}
+      {onReopen && <ReopenLink locale={locale} onReopen={onReopen} />}
     </div>
   );
 }
@@ -498,7 +505,8 @@ function SuccessPanel({
 // Réouverture explicite — envoyer une AUTRE demande (efface la mémoire locale
 // de ce contexte et réaffiche un formulaire vierge). Empêche la re-soumission
 // accidentelle sans jamais bloquer une relance volontaire.
-function ReopenLink({ onReopen }: { onReopen: () => void }) {
+function ReopenLink({ onReopen, locale = "fr" }: { onReopen: () => void; locale?: "fr" | "en" }) {
+  const en = locale === "en";
   return (
     <div className="mt-8 border-t border-[var(--color-border)] pt-6">
       <button
@@ -506,7 +514,7 @@ function ReopenLink({ onReopen }: { onReopen: () => void }) {
         onClick={onReopen}
         className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-stone)] underline-offset-4 transition-colors hover:text-[var(--color-accent)] hover:underline"
       >
-        Envoyer un autre message
+        {en ? "Send another message" : "Envoyer un autre message"}
       </button>
     </div>
   );

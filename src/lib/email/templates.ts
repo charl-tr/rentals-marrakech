@@ -48,6 +48,7 @@ export interface ClientConfirmParams {
   property?: Pick<Property, "title" | "reference" | "slug" | "city" | "neighborhood"> | null;
   slaHours: number;
   portalUrl?: string;
+  locale?: "fr" | "en";
 }
 
 export function renderClientConfirmation(params: ClientConfirmParams): {
@@ -55,6 +56,14 @@ export function renderClientConfirmation(params: ClientConfirmParams): {
   html: string;
 } {
   const { firstName, advisor, property, slaHours, portalUrl } = params;
+
+  if (params.locale === "en") {
+    const escape = (value: string) => value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+    return {
+      subject: "Your enquiry has been received — Marrakech Realty",
+      html: baseLayout(`<h1 style="font-size:28px;font-weight:400">Thank you, ${escape(firstName)}.</h1><p style="font-family:Arial,sans-serif;line-height:1.7">We have received your enquiry${property ? ` about property ${escape(property.reference)}` : ""}. Our team will contact you using the details you provided.</p><p style="font-family:Arial,sans-serif;line-height:1.7">For assistance, call +212 660 62 94 44 or reply to this email.</p>`).replace("<html>", '<html lang="en">'),
+    };
+  }
 
   const firstNameAdvisor = advisor?.name.split(" ")[0] ?? "Un conseiller";
 

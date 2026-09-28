@@ -1,6 +1,11 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
+import { useMapLocale } from "./MapLocale";
+import { useCurrency } from "@/hooks/useCurrency";
+import { displayPropertyPrice } from "@/lib/display-price";
+import type { Currency, FxRates } from "@/lib/fx";
+import type { Locale } from "@/lib/i18n/routes";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
 import { useEffect, useMemo, useState } from "react";
@@ -133,16 +138,9 @@ function makeClusterBadge(count: number) {
 }
 
 // ── Price-badge marker ────────────────────────────────────────────────────────
-function makeBadge(pin: PropertyPin, state: "default" | "hover" | "active") {
+function makeBadge(pin: PropertyPin, state: "default" | "hover" | "active", locale: Locale, currency: Currency, rates: FxRates | null) {
   const isVente = pin.listing === "vente" || pin.type === "programme-neuf";
-  const price =
-    pin.price <= 0
-      ? "Sur demande"
-      : pin.price >= 1_000_000
-      ? `${(pin.price / 1_000_000).toFixed(pin.price % 1_000_000 === 0 ? 0 : 1)}M`
-      : pin.price >= 1_000
-      ? `${Math.round(pin.price / 1_000)}k`
-      : String(pin.price);
+  const price = displayPropertyPrice({ priceEur: pin.price, priceMad: pin.priceMad, sourcePriceEur: pin.sourcePriceEur, sourcePriceMad: pin.sourcePriceMad, listing: pin.listing, priceUnit: pin.priceUnit }, currency, rates, locale);
 
   // Tokens v7 : vente = accent (#9c7256), location = success (#5e7266).
   const base  = isVente ? "#9c7256" : "#5e7266";
@@ -178,7 +176,7 @@ function makeBadge(pin: PropertyPin, state: "default" | "hover" | "active") {
       transform:scale(${scale});transform-origin:center bottom;
       transition:transform .18s cubic-bezier(.34,1.56,.64,1),background .14s,box-shadow .14s;
       box-shadow:${shadow};cursor:pointer;
-    ">${price}${pin.price > 0 ? "€" : ""}${pin.priceUnit && pin.price > 0 ? `<span style="font-size:8px;opacity:.65">/${pin.priceUnit}</span>` : ""}${tip}</span>`,
+    ">${price.primary}<span style="display:block;margin-top:3px;font-size:8px;opacity:.85">${price.secondary}</span>${tip}</span>`,
     className: "",
     iconSize: undefined as unknown as L.PointExpression,
     iconAnchor: [0, 0],
@@ -224,7 +222,9 @@ function PinMarker({
   onHover: () => void;
   onLeave: () => void;
 }) {
-  const icon = useMemo(() => makeBadge(pin, state), [pin, state]);
+  const locale = useMapLocale();
+  const { currency, rates } = useCurrency();
+  const icon = useMemo(() => makeBadge(pin, state, locale, currency, rates), [pin, state, locale, currency, rates]);
   return (
     <Marker
       position={[pin.coordinates.lat, pin.coordinates.lng]}
@@ -300,6 +300,7 @@ function ClusterLayer({
 
 // ── Custom zoom controls ──────────────────────────────────────────────────────
 function CustomZoomControl() {
+  const en = useMapLocale() === "en";
   const map = useMap();
   return (
     <div className="leaflet-bottom leaflet-right" style={{ marginBottom: 28, marginRight: 16 }}>
@@ -312,7 +313,7 @@ function CustomZoomControl() {
             key={label}
             type="button"
             onClick={fn}
-            aria-label={label === "+" ? "Zoomer" : "Dézoomer"}
+            aria-label={label === "+" ? (en ? "Zoom in" : "Zoomer") : (en ? "Zoom out" : "Dézoomer")}
             className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[var(--color-border-strong)] bg-[rgba(255,255,255,0.92)] font-serif text-lg leading-none text-[var(--color-charcoal)] shadow-[var(--shadow-card)] backdrop-blur transition-colors hover:bg-[var(--color-cream)]"
             style={{ outline: "none" }}
           >

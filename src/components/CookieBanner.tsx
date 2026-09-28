@@ -25,7 +25,8 @@ function getConsentSnapshot(): Consent {
   return choice === "accepted" && localStorage.getItem("mr:measurement-consent") !== "v1" ? null : choice;
 }
 
-export default function CookieBanner() {
+export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }) {
+  const en = locale === "en";
   const consent = useSyncExternalStore(subscribe, getConsentSnapshot, () => "loading");
 
   const accept = (value: "accepted" | "essential-only") => {
@@ -48,7 +49,7 @@ export default function CookieBanner() {
           <button
             type="button"
             onClick={() => accept("essential-only")}
-            aria-label="Fermer (cookies essentiels uniquement)"
+            aria-label={en ? "Close (essential cookies only)" : "Fermer (cookies essentiels uniquement)"}
             className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full text-[var(--color-stone)] transition-colors hover:bg-[var(--color-cream)] hover:text-[var(--color-charcoal)] md:right-3 md:top-3"
           >
             <X size={16} />
@@ -60,17 +61,17 @@ export default function CookieBanner() {
                 id="cookie-banner-title"
                 className="text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]"
               >
-                Cookies et confidentialité
+                {en ? "Cookies and privacy" : "Cookies et confidentialité"}
               </div>
               <p className="mt-2 text-xs leading-relaxed text-[var(--color-charcoal)] md:mt-3 md:text-sm">
-                Des cookies <strong>essentiels</strong> font fonctionner le site.
+                {en ? <>Essential cookies keep this site working. With your consent, journey measurement helps us connect property views with enquiries and improve our service. No third-party advertising cookies. </> : <>Des cookies <strong>essentiels</strong> font fonctionner le site.
                 Avec votre accord, une <strong>mesure du parcours</strong> nous aide à
-                relier vos consultations à vos demandes et améliorer le service. Aucun cookie publicitaire tiers.{" "}
+                relier vos consultations à vos demandes et améliorer le service. Aucun cookie publicitaire tiers.{" "}</>}
                 <Link
                   href="/cookies"
                   className="text-[var(--color-terracotta)] underline-offset-2 hover:underline"
                 >
-                  En savoir plus
+                  {en ? "Read the policy (French)" : "En savoir plus"}
                 </Link>
                 .
               </p>
@@ -80,17 +81,17 @@ export default function CookieBanner() {
               <button
                 type="button"
                 onClick={() => accept("essential-only")}
-                aria-label="Continuer avec les cookies essentiels uniquement"
+                aria-label={en ? "Continue with essential cookies only" : "Continuer avec les cookies essentiels uniquement"}
                 className="rounded-[10px] border border-[var(--color-charcoal)] bg-transparent px-3 py-3 text-[9px] font-medium uppercase tracking-[0.14em] text-[var(--color-charcoal)] transition-colors hover:bg-[var(--color-charcoal)] hover:text-white md:px-5 md:text-[11px] md:tracking-[0.22em]"
               >
-                Essentiels
+                {en ? "Essential only" : "Essentiels"}
               </button>
               <button
                 type="button"
                 onClick={() => accept("accepted")}
                 className="rounded-[10px] bg-[var(--color-charcoal)] px-3 py-3 text-[9px] font-medium uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--color-terracotta)] md:px-6 md:text-[11px] md:tracking-[0.22em]"
               >
-                Accepter
+                {en ? "Accept" : "Accepter"}
               </button>
             </div>
           </div>

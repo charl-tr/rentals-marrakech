@@ -13,13 +13,17 @@ import { useCurrency, formatInCurrency } from "@/hooks/useCurrency";
 export default function MoroccoFeesCalculator({
   initialPrice = 500_000,
   compact = false,
+  locale = "fr",
 }: {
   initialPrice?: number;
   compact?: boolean;
+  locale?: "fr" | "en";
 }) {
+  const en = locale === "en";
+  const feeNames: Record<string, string> = { "Droits d'enregistrement": "Registration fees", "Conservation foncière": "Land registry", "Taxe notariale": "Notarial tax", "Honoraires notaire": "Notary fees", "Frais divers": "Other costs" };
   const [price, setPrice] = useState(initialPrice);
   const [listing, setListing] = useState<"ancien" | "neuf">("ancien");
-  const { currency, hydrated } = useCurrency();
+  const { currency, hydrated, rates } = useCurrency();
   const effective = hydrated ? currency : "EUR";
 
   const result = calculateMoroccoFees({
@@ -36,25 +40,25 @@ export default function MoroccoFeesCalculator({
     >
       <div className="flex items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
         <Calculator size={12} />
-        Calculette frais d&apos;acquisition Maroc
+        {en ? "Morocco buying cost estimate" : <>Calculette frais d&apos;acquisition Maroc</>}
       </div>
 
       {!compact && (
         <h3 className="mt-3 font-serif text-2xl text-[var(--color-charcoal)]">
-          Combien va me coûter l&apos;acquisition au total ?
+          {en ? "What could the total purchase cost be?" : <>Combien va me coûter l&apos;acquisition au total ?</>}
         </h3>
       )}
 
       <p className="mt-2 text-xs text-[var(--color-stone)]">
-        Les frais d&apos;acquisition au Maroc représentent 6 à 8 % du prix. Détail
-        des composantes, calculé en temps réel.
+        {en ? "Indicative estimate using the same assumptions as the French calculator. Confirm the applicable fees with your notary before committing." : <>Les frais d&apos;acquisition au Maroc représentent 6 à 8 % du prix. Détail des composantes, calculé en temps réel.</>}
       </p>
 
+      {effective !== "EUR" && <p className="mt-2 text-xs text-[var(--color-stone)]">{rates ? (en ? `≈ Currency estimate · ECB ${rates.date}` : `≈ Conversion indicative · BCE ${rates.date}`) : (en ? "Conversion unavailable · EUR shown" : "Conversion indisponible · affichage EUR")}</p>}
       {/* Inputs */}
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]">
         <label className="block">
           <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-            Prix du bien (EUR)
+            {en ? "Property price (EUR)" : "Prix du bien (EUR)"}
           </span>
           <input
             type="number"
@@ -68,15 +72,15 @@ export default function MoroccoFeesCalculator({
 
         <label className="block">
           <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-            Type de bien
+            {en ? "Property type" : "Type de bien"}
           </span>
           <select
             value={listing}
             onChange={(e) => setListing(e.target.value as "ancien" | "neuf")}
             className="field mt-1.5"
           >
-            <option value="ancien">Ancien (bien d&apos;occasion)</option>
-            <option value="neuf">Neuf (promoteur)</option>
+            <option value="ancien">{en ? "Resale property" : <>Ancien (bien d&apos;occasion)</>}</option>
+            <option value="neuf">{en ? "New development" : "Neuf (promoteur)"}</option>
           </select>
         </label>
       </div>
@@ -89,22 +93,22 @@ export default function MoroccoFeesCalculator({
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-[var(--color-charcoal)]">
-                    {b.item}
+                    {en ? feeNames[b.item] ?? b.item : b.item}
                   </span>
                   {b.baseRate && (
                     <span className="text-[10px] text-[var(--color-stone)]">
-                      ({b.baseRate})
+                      ({en ? b.baseRate.replace("frais fixes", "fixed fees") : b.baseRate})
                     </span>
                   )}
                 </div>
                 {!compact && (
                   <p className="mt-0.5 text-[11px] text-[var(--color-stone)]">
-                    {b.description}
+                    <span lang={en ? "fr" : undefined}>{b.description}</span>
                   </p>
                 )}
               </div>
               <span className="font-serif text-sm text-[var(--color-charcoal)]">
-                {formatInCurrency(b.amount, effective)}
+                {formatInCurrency(b.amount, effective, rates, locale)}
               </span>
             </div>
           </div>
@@ -115,23 +119,23 @@ export default function MoroccoFeesCalculator({
       <div className="mt-4 rounded-[10px] border-t-2 border-[var(--color-charcoal)] bg-[var(--color-cream)] p-4">
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-            Frais totaux
+            {en ? "Total fees" : "Frais totaux"}
           </span>
           <span className="font-serif text-xl text-[var(--color-terracotta)]">
-            {formatInCurrency(result.totalFees, effective)}
+            {formatInCurrency(result.totalFees, effective, rates, locale)}
           </span>
         </div>
         <div className="mt-1 flex items-baseline justify-between">
           <span className="text-[9px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
-            Soit {result.feesAsPct.toFixed(1).replace(".", ",")} % du prix
+            {en ? "Approximately" : "Soit"} {result.feesAsPct.toFixed(1).replace(".", en ? "." : ",")} % {en ? "of the price" : "du prix"}
           </span>
         </div>
         <div className="mt-3 flex items-baseline justify-between border-t border-[var(--color-beige-warm)] pt-3">
           <span className="text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]">
-            Coût total acquisition
+            {en ? "Total purchase cost" : "Coût total acquisition"}
           </span>
           <span className="font-serif text-2xl text-[var(--color-charcoal)]">
-            {formatInCurrency(result.totalWithFees, effective)}
+            {formatInCurrency(result.totalWithFees, effective, rates, locale)}
           </span>
         </div>
       </div>
@@ -140,9 +144,7 @@ export default function MoroccoFeesCalculator({
         <div className="mt-5 flex items-start gap-2 rounded-[10px] bg-[var(--color-cream)] p-3 text-[11px] text-[var(--color-stone)]">
           <Info size={12} className="mt-0.5 flex-shrink-0 text-[var(--color-terracotta)]" />
           <span>
-            Estimation indicative. Les taux peuvent varier selon le notaire, la
-            zone, et des cas particuliers (partage, viager). Votre conseiller
-            vous fournira un devis précis avant signature.
+            {en ? "Illustrative estimate only. Rates and fees depend on your transaction. Obtain a quote from your notary before signing." : <>Estimation indicative. Les taux peuvent varier selon le notaire, la zone, et des cas particuliers (partage, viager). Votre conseiller vous fournira un devis précis avant signature.</>}
           </span>
         </div>
       )}

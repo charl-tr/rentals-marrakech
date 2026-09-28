@@ -8,10 +8,11 @@ import {
   type Currency,
 } from "@/hooks/useCurrency";
 
-const OPTIONS: Currency[] = ["EUR", "MAD", "GBP", "USD"];
+const OPTIONS: Currency[] = ["EUR", "USD", "GBP"];
 
-export default function CurrencySwitcher() {
-  const { currency, change, hydrated } = useCurrency();
+export default function CurrencySwitcher({ locale = "fr" }: { locale?: "fr" | "en" }) {
+  const en = locale === "en";
+  const { currency, change, hydrated, rates, ratesUnavailable } = useCurrency();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -25,11 +26,11 @@ export default function CurrencySwitcher() {
   }, [open]);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); ref.current?.querySelector("button")?.focus(); } }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Changer de devise"
+        aria-label={en ? "Change display currency" : "Changer de devise"}
         aria-expanded={open}
         className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--color-beige-warm)] bg-white px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
       >
@@ -48,6 +49,7 @@ export default function CurrencySwitcher() {
                 change(c);
                 setOpen(false);
               }}
+              aria-pressed={c === currency}
               className={`flex w-full items-center justify-between px-3 py-2 text-xs transition-colors ${
                 c === currency
                   ? "bg-[var(--color-cream)] text-[var(--color-terracotta)]"
@@ -56,13 +58,14 @@ export default function CurrencySwitcher() {
             >
               <span className="flex items-center gap-2">
                 <span className="font-mono">{CURRENCY_SYMBOLS[c]}</span>
-                <span>{CURRENCY_LABELS[c]}</span>
+                <span>{en ? ({ EUR: "Euro", USD: "US dollar", GBP: "Pound sterling" }[c]) : CURRENCY_LABELS[c]}</span>
               </span>
               <span className="text-[9px] uppercase tracking-[0.22em] text-[var(--color-stone)]">
                 {c}
               </span>
             </button>
           ))}
+          <p className="border-t border-[var(--color-border)] px-3 py-2 text-[10px] leading-relaxed text-[var(--color-stone)]">{en ? "MAD always shown. USD/GBP are estimates from EUR." : "MAD toujours affiché. USD/GBP estimés depuis l’EUR."} {rates ? `BCE / ECB · ${rates.date}` : ratesUnavailable ? (en ? "Rates unavailable · EUR retained." : "Taux indisponibles · EUR conservé.") : (en ? "Loading rates…" : "Chargement des taux…")}</p>
         </div>
       )}
     </div>

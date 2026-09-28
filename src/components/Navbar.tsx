@@ -7,6 +7,16 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ChevronRight, Heart } from "lucide-react";
 import FavoriteCounter from "@/components/FavoriteCounter";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { languagePath } from "@/lib/i18n/routes";
+
+const EN_LABELS: Record<string, string> = {
+  Acheter: "Buy", Louer: "Rent", Vendre: "Sell", "Programmes neufs": "New developments",
+  "Biens vendus": "Sold properties", "Riads rénovés": "Renovated riads", "Riads à rénover": "Riads to renovate",
+  Autres: "Other properties", Appartements: "Apartments", "Maisons d'hôtes": "Guesthouses", Terrains: "Land", Commerces: "Commercial",
+  Outils: "Tools", "Vue carte": "Map view", "Rapport marché": "Market report", "Estimation gratuite": "Property valuation", "Calculette de frais": "Buying costs calculator",
+  "Locations saisonnières": "Holiday rentals", "Vente villa": "Villas for sale", "Vente riad": "Riads for sale", "Vente terrain": "Land for sale", "Location villa": "Villas to rent",
+};
 
 type MegaColumn = {
   heading: string;
@@ -69,7 +79,11 @@ const ESSAOUIRA_LINKS = [
 
 // Only the home photo uses an overlay. Interior pages share a legible sand header.
 
-export default function Navbar() {
+export default function Navbar({ locale = "fr" }: { locale?: "fr" | "en" }) {
+  const en = locale === "en";
+  const t = (label: string) => en ? EN_LABELS[label] ?? label : label;
+  const href = (path: string) => languagePath(path, locale);
+  const localLinks = (links: { href: string; label: string }[]) => links.map((link) => ({ href: href(link.href), label: t(link.label) }));
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<
@@ -77,7 +91,7 @@ export default function Navbar() {
   >(null);
   const pathname = usePathname();
 
-  const isHome = pathname === "/";
+  const isHome = pathname === "/" || pathname === "/en";
   const hasDarkTop = isHome;
   const solid = scrolled || mobileOpen || !hasDarkTop;
 
@@ -118,7 +132,7 @@ export default function Navbar() {
       )}
 
       <div className="container-luxe relative flex h-14 items-center justify-between lg:h-16">
-        <Link href="/" aria-label="Marrakech Realty — Accueil" className="block">
+        <Link href={href("/")} aria-label={en ? "Marrakech Realty — Home" : "Marrakech Realty — Accueil"} className="block">
           <Image
             src="/logo-complete.png"
             alt="Marrakech Realty"
@@ -135,7 +149,7 @@ export default function Navbar() {
 
         <nav className="hidden items-center xl:flex">
           <NavDropdown
-            label="Acheter"
+            label={t("Acheter")}
             open={openMenu === "acheter"}
             onEnter={() => setOpenMenu("acheter")}
             onLeave={() => setOpenMenu(null)}
@@ -144,21 +158,21 @@ export default function Navbar() {
             align="left"
             width="w-[840px]"
           >
-            <MegaPanel columns={ACHETER_MEGA} footerHref="/acheter" footerLabel="Tous les biens à vendre" />
+            <MegaPanel columns={ACHETER_MEGA.map((column) => ({ heading: t(column.heading), links: localLinks(column.links) }))} footerHref={href("/acheter")} footerLabel={en ? "All properties for sale" : "Tous les biens à vendre"} />
           </NavDropdown>
 
           <NavDropdown
-            label="Louer"
+            label={t("Louer")}
             open={openMenu === "louer"}
             onEnter={() => setOpenMenu("louer")}
             onLeave={() => setOpenMenu(null)}
             textColor={textColor}
             underline={underline}
           >
-            <SimplePanel links={LOUER_LINKS} footerHref="/louer" footerLabel="Toutes les locations" />
+            <SimplePanel links={localLinks(LOUER_LINKS)} footerHref={href("/louer")} footerLabel={en ? "All rentals" : "Toutes les locations"} />
           </NavDropdown>
 
-          <NavLink href="/acheter/programmes-neufs" label="Programmes neufs" textColor={textColor} underline={underline} />
+          <NavLink href={href("/acheter/programmes-neufs")} label={t("Programmes neufs")} textColor={textColor} underline={underline} />
           <NavDropdown
             label="Essaouira"
             open={openMenu === "essaouira"}
@@ -167,39 +181,47 @@ export default function Navbar() {
             textColor={textColor}
             underline={underline}
           >
-            <SimplePanel links={ESSAOUIRA_LINKS} footerHref="/essaouira" footerLabel="Bord de mer" />
+            <SimplePanel links={localLinks(ESSAOUIRA_LINKS)} footerHref={href("/essaouira")} footerLabel={en ? "By the sea" : "Bord de mer"} />
           </NavDropdown>
 
-          <NavLink href="/deposer-un-bien" label="Vendre" textColor={textColor} underline={underline} />
+          <NavLink href={href("/deposer-un-bien")} label={t("Vendre")} textColor={textColor} underline={underline} />
 
-          <NavLink href="/journal" label="Journal" textColor={textColor} underline={underline} />
-          <NavLink href="/contact" label="Contact" textColor={textColor} underline={underline} />
+          <NavLink href={href("/journal")} label="Journal" textColor={textColor} underline={underline} />
+          <NavLink href={href("/contact")} label="Contact" textColor={textColor} underline={underline} />
 
           <span
             aria-hidden
             className={`mx-4 h-3 w-px ${solid ? "bg-[var(--color-border)]" : "bg-white/30"}`}
           />
-          <FavoriteCounter variant={solid ? "dark" : "light"} />
+          <FavoriteCounter locale={locale} variant={solid ? "dark" : "light"} />
           <span
             aria-hidden
             className={`mx-3 h-3 w-px ${solid ? "bg-[var(--color-border)]" : "bg-white/30"}`}
           />
-          <CurrencySwitcher />
+          <CurrencySwitcher locale={locale} />
         </nav>
 
+        <div className="flex shrink-0 items-center gap-3">
+        <LanguageSwitcher light={!solid} />
         <button
           onClick={() => setMobileOpen((s) => !s)}
           className={`xl:hidden ${solid ? "text-[var(--color-charcoal)]" : "text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"}`}
-          aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-label={en ? mobileOpen ? "Close menu" : "Open menu" : mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
+        </div>
       </div>
 
       {mobileOpen && (
         <div className="max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-[var(--color-border)] bg-[var(--color-bg-alt)] xl:hidden">
           <div className="container-luxe py-7">
-            <nav aria-label="Navigation mobile" className="space-y-1">
+            <div className="mb-4 flex items-center justify-between gap-3 border-b border-[var(--color-border)] pb-4">
+              <span className="text-xs text-[var(--color-stone)]">{en ? "Display currency · MAD always shown" : "Devise d’affichage · MAD toujours affiché"}</span>
+              <CurrencySwitcher locale={locale} />
+            </div>
+            <nav aria-label={en ? "Mobile navigation" : "Navigation mobile"} className="space-y-1">
               {[
                 ["/acheter", "Acheter"],
                 ["/acheter/programmes-neufs", "Programmes neufs"],
@@ -208,32 +230,32 @@ export default function Navbar() {
                 ["/essaouira", "Essaouira"],
                 ["/deposer-un-bien", "Vendre"],
                 ["/journal", "Journal"],
-              ].map(([href, label]) => (
+              ].map(([path, label]) => (
                 <Link
-                  key={href}
-                  href={href}
+                  key={path}
+                  href={href(path)}
                   className="group flex items-center justify-between border-b border-[var(--color-border)] py-4 font-serif text-[1.65rem] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
                 >
-                  {label}
+                  {t(label)}
                   <ChevronRight size={17} strokeWidth={1.4} className="transition-transform group-hover:translate-x-1" />
                 </Link>
               ))}
             </nav>
 
             <div className="mt-7 grid gap-3">
-              <Link href="/contact" className="btn-primary w-full">
-                Parler à un conseiller
+              <Link href={href("/contact")} className="btn-primary w-full">
+                {en ? "Talk to an advisor" : "Parler à un conseiller"}
               </Link>
-              <Link href="/estimer" className="btn-outline w-full">
-                Estimer mon bien
+              <Link href={href("/estimer")} className="btn-outline w-full">
+                {en ? "Value my property" : "Estimer mon bien"}
               </Link>
             </div>
 
             <div className="mt-7 flex items-center justify-between border-t border-[var(--color-border)] pt-5 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-stone)]">
-              <Link href="/favoris" className="inline-flex items-center gap-2 transition-colors hover:text-[var(--color-accent)]">
-                <Heart size={15} strokeWidth={1.5} /> Mes favoris
+              <Link href={href("/favoris")} className="inline-flex items-center gap-2 transition-colors hover:text-[var(--color-accent)]">
+                <Heart size={15} strokeWidth={1.5} /> {en ? "Saved properties" : "Mes favoris"}
               </Link>
-              <Link href="/contact" className="transition-colors hover:text-[var(--color-accent)]">Contact</Link>
+              <Link href={href("/contact")} className="transition-colors hover:text-[var(--color-accent)]">Contact</Link>
             </div>
           </div>
         </div>

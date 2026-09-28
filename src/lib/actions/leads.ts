@@ -160,6 +160,7 @@ export async function submitLead(
     portal_token: portalToken,
     meta: {
       project_label: project,
+      preferred_language: formData.get("locale") === "en" ? "en" : "fr",
       funnel_version: "conversion-v1",
       ...(z.uuid().safeParse(formData.get("measurementSession")).success ? { funnel_session_id: formData.get("measurementSession") } : {}),
     },
@@ -192,6 +193,7 @@ export async function submitLead(
   // Si RESEND_API_KEY absente → log console (mode démo local).
   // Si un envoi échoue → on ne bloque pas le lead (déjà sauvegardé).
   void sendTransactionalEmails({
+    locale: formData.get("locale") === "en" ? "en" : "fr",
     firstName: input.firstName,
     clientName: name,
     clientEmail: input.email,
@@ -213,6 +215,7 @@ export async function submitLead(
 }
 
 async function sendTransactionalEmails(params: {
+  locale: "fr" | "en";
   firstName: string;
   clientName: string;
   clientEmail: string;
@@ -233,6 +236,7 @@ async function sendTransactionalEmails(params: {
 
     // 1. Accusé au client
     const clientEmail = renderClientConfirmation({
+      locale: params.locale,
       firstName: params.firstName,
       advisor,
       property: params.property

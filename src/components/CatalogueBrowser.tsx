@@ -1,6 +1,8 @@
 "use client";
 import { meetsMinimum, matchesPriceBucket } from "@/lib/property-filter-values";
 
+import { useCurrency } from "@/hooks/useCurrency";
+import { budgetLabel } from "@/lib/fx";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
@@ -29,6 +31,9 @@ import {
 } from "@/data/properties";
 import type { PropertyPin } from "@/lib/db";
 import type { FilterMode } from "@/components/Catalogue";
+import { languagePath } from "@/lib/i18n/routes";
+import { englishTypes } from "@/lib/i18n/english";
+import { ui } from "@/lib/i18n/ui";
 
 type Bucket = { key: string; label: string; min?: number; max?: number };
 const MOBILE_PAGE_SIZE = 12;
@@ -49,12 +54,13 @@ const MapClientWrapper = dynamic(() => import("@/components/MapClientWrapper"), 
   ssr: false,
   loading: () => (
     <div className="flex h-full items-center justify-center bg-[var(--color-cream)] text-[11px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
-      Chargement de la carte…
+      …
     </div>
   ),
 });
 
 interface Props {
+  locale?: "fr" | "en";
   properties: PropertySummary[];
   mode: FilterMode;
   baseHref: string;
@@ -188,6 +194,9 @@ function toPin(p: PropertySummary): PropertyPin {
     slug: p.slug,
     title: p.title,
     price: p.price,
+    priceMad: p.priceMad,
+    sourcePriceEur: p.sourcePriceEur,
+    sourcePriceMad: p.sourcePriceMad,
     priceUnit: p.priceUnit ?? undefined,
     listing: p.listing,
     type: p.type,
@@ -201,6 +210,7 @@ function toPin(p: PropertySummary): PropertyPin {
 }
 
 export default function CatalogueBrowser({
+  locale = "fr",
   properties,
   mode,
   baseHref,
@@ -209,6 +219,13 @@ export default function CatalogueBrowser({
   availableTypes,
   initial,
 }: Props) {
+  const en = locale === "en";
+  const { currency, rates } = useCurrency();
+  const t = (label: string) => ui(locale, label);
+  const typeLabel = (type: PropertyType) => en ? englishTypes[type] : propertyTypeLabel(type);
+  const durationOptions = DURATION_OPTIONS.map((option) => ({ ...option, label: t(option.label) }));
+  const bedroomOptions = BEDROOM_OPTIONS.map((option) => ({ ...option, label: en ? `${option.value}+ bedrooms` : option.label }));
+  const sortOptions = SORT_OPTIONS.map((option) => ({ ...option, label: t(option.label) }));
   const [filters, setFilters] = useState<Filters>(initial);
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -251,7 +268,7 @@ export default function CatalogueBrowser({
     else if (filters.tri === "price-desc") out = [...out].sort((a, b) => b.price - a.price);
     else if (filters.tri === "surface-desc")
       out = [...out].sort((a, b) => (b.surface ?? 0) - (a.surface ?? 0));
-    else out = editorialOrder(out, !filters.type && baseHref === "/acheter");
+    else out = editorialOrder(out, !filters.type && ["/acheter", "/en/buy"].includes(baseHref));
     return out;
   }, [properties, filters, buckets, mode, baseHref]);
 
@@ -278,8 +295,8 @@ export default function CatalogueBrowser({
 
     return availableTypes
       .filter((type) => present.has(type) || type === filters.type)
-      .map((type) => ({ value: type, label: propertyTypeLabel(type) }));
-  }, [availableTypes, buckets, filters, mode, properties]);
+      .map((type) => ({ value: type, label: en ? englishTypes[type] : propertyTypeLabel(type) }));
+  }, [availableTypes, buckets, filters, mode, properties, en]);
 
   const zoneOpts = useMemo(() => {
     const labels = new Map<string, string>(NEIGHBORHOODS.map((n) => [n.slug, n.label]));
@@ -311,7 +328,7 @@ export default function CatalogueBrowser({
       .sort((a, b) => a.label.localeCompare(b.label, "fr"));
   }, [buckets, filters, mode, properties]);
 
-  const budgetOpts = buckets.map((b) => ({ value: b.key, label: b.label }));
+  const budgetOpts = buckets.map((b) => ({ value: b.key, label: budgetLabel(b, currency, rates, locale, mode === "location") }));
   const cityOpts = useMemo(() => {
     const candidates = properties.filter((property) =>
       matches(property, { ...filters, ville: undefined }, buckets, mode)
@@ -330,7 +347,7 @@ export default function CatalogueBrowser({
   ].filter(Boolean).length;
 
   const sortLabel =
-    SORT_OPTIONS.find((o) => o.value === (filters.tri ?? "default"))?.label ?? "Pertinence";
+    sortOptions.find((o) => o.value === (filters.tri ?? "default"))?.label ?? t("Pertinence");
 
   return (
     <>
@@ -341,7 +358,7 @@ export default function CatalogueBrowser({
             <div className="flex items-baseline gap-2">
               <span className="font-serif text-2xl text-[var(--color-charcoal)]">{items.length}</span>
               <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--color-stone)]">
-                {items.length > 1 ? "biens" : "bien"}
+                {en ? items.length === 1 ? "property" : "properties" : items.length > 1 ? "biens" : "bien"}
               </span>
             </div>
             <div className="flex items-center gap-4">
@@ -353,19 +370,19 @@ export default function CatalogueBrowser({
                 className="inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]"
               >
                 <SlidersHorizontal size={14} />
-                Filtres{activeCount > 0 ? ` (${activeCount})` : ""}
+                {t("Filtres")}{activeCount > 0 ? ` (${activeCount})` : ""}
               </button>
               {!isMap && (
                 <Pill
-                  label="Trier"
+                  label={t("Trier")}
                   value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
                   display={filters.tri && filters.tri !== "default" ? sortLabel : undefined}
-                  options={SORT_OPTIONS.filter((option) => option.value !== "default")}
+                  options={sortOptions.filter((option) => option.value !== "default")}
                   open={openKey === "mobile-tri"}
                   onToggle={() => setOpenKey((key) => (key === "mobile-tri" ? null : "mobile-tri"))}
                   onSelect={(value) => set({ tri: value })}
                   onClose={() => setOpenKey(null)}
-                  allLabel="Trier"
+                  allLabel={t("Trier")}
                   bare
                   align="right"
                 />
@@ -376,7 +393,7 @@ export default function CatalogueBrowser({
                 className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]"
               >
                 {isMap ? <LayoutGrid size={14} /> : <MapIcon size={14} />}
-                {isMap ? "Liste" : "Carte"}
+                {t(isMap ? "Liste" : "Carte")}
               </button>
             </div>
           </div>
@@ -387,50 +404,50 @@ export default function CatalogueBrowser({
               <div className="mr-1 hidden items-baseline gap-2 md:flex">
                 <span className="font-serif text-[1.6rem] text-[var(--color-charcoal)]">{items.length}</span>
                 <span className="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)]">
-                  {items.length > 1 ? "biens" : "bien"}
+                  {en ? items.length === 1 ? "property" : "properties" : items.length > 1 ? "biens" : "bien"}
                 </span>
               </div>
 
               {visibleFilters.type && (
-                <Pill label="Type" value={filters.type}
-                  display={filters.type ? propertyTypeLabel(filters.type as PropertyType) : undefined}
+                <Pill label={t("Type")} value={filters.type}
+                  display={filters.type ? typeLabel(filters.type as PropertyType) : undefined}
                   options={typeOpts} open={openKey === "type"}
                   onToggle={() => setOpenKey((k) => (k === "type" ? null : "type"))}
-                  onSelect={(v) => set({ type: v })} onClose={() => setOpenKey(null)} allLabel="Tous les types" />
+                  onSelect={(v) => set({ type: v })} onClose={() => setOpenKey(null)} allLabel={t("Tous les types")} />
               )}
               {visibleFilters.neighborhood && (
-                <Pill label="Quartier" value={filters.quartier}
+                <Pill label={t("Quartier")} value={filters.quartier}
                   display={filters.quartier ? zoneOpts.find((n) => n.value === filters.quartier)?.label : undefined}
                   options={zoneOpts} open={openKey === "quartier"}
                   onToggle={() => setOpenKey((k) => (k === "quartier" ? null : "quartier"))}
-                  onSelect={(v) => set({ quartier: v })} onClose={() => setOpenKey(null)} allLabel="Tous les quartiers" />
+                  onSelect={(v) => set({ quartier: v })} onClose={() => setOpenKey(null)} allLabel={t("Tous les quartiers")} />
               )}
               {visibleFilters.budget && (
-                <Pill label="Budget" value={filters.budget}
+                <Pill label={t("Budget")} value={filters.budget}
                   display={filters.budget ? budgetOpts.find((b) => b.value === filters.budget)?.label : undefined}
                   options={budgetOpts} open={openKey === "budget"}
                   onToggle={() => setOpenKey((k) => (k === "budget" ? null : "budget"))}
-                  onSelect={(v) => set({ budget: v })} onClose={() => setOpenKey(null)} allLabel="Tous budgets" />
+                  onSelect={(v) => set({ budget: v })} onClose={() => setOpenKey(null)} allLabel={t("Tous budgets")} />
               )}
               {visibleFilters.bedrooms && (
-                <Pill label="Chambres" value={filters.chambres}
-                  display={filters.chambres ? `${filters.chambres}+ ch.` : undefined}
-                  options={BEDROOM_OPTIONS} open={openKey === "chambres"}
+                <Pill label={t("Chambres")} value={filters.chambres}
+                  display={filters.chambres ? `${filters.chambres}+ ${en ? "beds" : "ch."}` : undefined}
+                  options={bedroomOptions} open={openKey === "chambres"}
                   onToggle={() => setOpenKey((k) => (k === "chambres" ? null : "chambres"))}
-                  onSelect={(v) => set({ chambres: v })} onClose={() => setOpenKey(null)} allLabel="Indifférent" />
+                  onSelect={(v) => set({ chambres: v })} onClose={() => setOpenKey(null)} allLabel={t("Indifférent")} />
               )}
               {visibleFilters.city && (
-                <Pill label="Ville" value={filters.ville} display={filters.ville}
+                <Pill label={t("Ville")} value={filters.ville} display={filters.ville}
                   options={cityOpts} open={openKey === "ville"}
                   onToggle={() => setOpenKey((k) => (k === "ville" ? null : "ville"))}
-                  onSelect={(v) => set({ ville: v })} onClose={() => setOpenKey(null)} allLabel="Toutes les villes" />
+                  onSelect={(v) => set({ ville: v })} onClose={() => setOpenKey(null)} allLabel={t("Toutes les villes")} />
               )}
               {visibleFilters.duration && (
-                <Pill label="Durée" value={filters.duree}
-                  display={filters.duree ? DURATION_OPTIONS.find((d) => d.value === filters.duree)?.label : undefined}
-                  options={DURATION_OPTIONS} open={openKey === "duree"}
+                <Pill label={t("Durée")} value={filters.duree}
+                  display={filters.duree ? durationOptions.find((d) => d.value === filters.duree)?.label : undefined}
+                  options={durationOptions} open={openKey === "duree"}
                   onToggle={() => setOpenKey((k) => (k === "duree" ? null : "duree"))}
-                  onSelect={(v) => set({ duree: v })} onClose={() => setOpenKey(null)} allLabel="Toutes durées" />
+                  onSelect={(v) => set({ duree: v })} onClose={() => setOpenKey(null)} allLabel={t("Toutes durées")} />
               )}
               <button
                 type="button"
@@ -441,7 +458,7 @@ export default function CatalogueBrowser({
                     : "border-[var(--color-border)] bg-white/45 text-[var(--color-charcoal)] hover:border-[var(--color-charcoal)]"
                 }`}
               >
-                Piscine
+                {t("Piscine")}
               </button>
 
               {activeCount > 0 && (
@@ -450,7 +467,7 @@ export default function CatalogueBrowser({
                   onClick={clearAll}
                   className="ml-1 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--color-stone)] transition-colors hover:text-[var(--color-accent)]"
                 >
-                  Effacer ({activeCount})
+                  {en ? "Clear" : "Effacer"} ({activeCount})
                 </button>
               )}
             </div>
@@ -458,21 +475,21 @@ export default function CatalogueBrowser({
             {/* Groupe Tri + Vue (droite) */}
             <div className="hidden items-center gap-5 md:flex md:gap-7">
               {!isMap && (
-                <Pill label="Trier" value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
+                <Pill label={t("Trier")} value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
                   display={filters.tri && filters.tri !== "default" ? sortLabel : undefined}
-                  options={SORT_OPTIONS.filter((o) => o.value !== "default")} open={openKey === "tri"}
+                  options={sortOptions.filter((o) => o.value !== "default")} open={openKey === "tri"}
                   onToggle={() => setOpenKey((k) => (k === "tri" ? null : "tri"))}
-                  onSelect={(v) => set({ tri: v })} onClose={() => setOpenKey(null)} allLabel="Pertinence"
+                  onSelect={(v) => set({ tri: v })} onClose={() => setOpenKey(null)} allLabel={t("Pertinence")}
                   bare align="right" />
               )}
               <button
                 type="button"
                 onClick={() => set({ vue: isMap ? undefined : "carte" })}
-                aria-label={isMap ? "Afficher en liste" : "Afficher sur une carte"}
+                aria-label={t(isMap ? "Afficher en liste" : "Afficher sur une carte")}
                 className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.24em] text-[var(--color-charcoal)] transition-colors hover:text-[var(--color-accent)]"
               >
                 {isMap ? <LayoutGrid size={13} /> : <MapIcon size={13} />}
-                <span className="hidden sm:inline">{isMap ? "Liste" : "Carte"}</span>
+                <span className="hidden sm:inline">{t(isMap ? "Liste" : "Carte")}</span>
               </button>
             </div>
           </div>
@@ -482,45 +499,44 @@ export default function CatalogueBrowser({
       {/* ═══ VUE ═══ */}
       {isMap ? (
         <div className="h-[calc(100dvh-6.5rem)] lg:h-[calc(100dvh-7.5rem)]">
-          <MapClientWrapper pins={items.map(toPin)} />
+          <MapClientWrapper locale={locale} pins={items.map(toPin)} />
         </div>
       ) : (
         <section className="min-h-[60vh] bg-[var(--color-cream)] py-5 md:py-6">
           <div className="container-luxe">
-            {baseHref === "/acheter" && activeCount === 0 && (
+            {["/acheter", "/en/buy"].includes(baseHref) && activeCount === 0 && (
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] pb-3">
                 <div>
-                  <div className="eyebrow">La sélection</div>
+                  <div className="eyebrow">{t("La sélection")}</div>
                   <p className="mt-1 text-sm text-[var(--color-stone)]">
-                    Les propriétés les plus remarquables du portefeuille.
+                    {t("Les propriétés les plus remarquables du portefeuille.")}
                   </p>
                 </div>
                 <div className="flex items-center gap-5 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-charcoal)]">
-                  <Link href="/acheter/terrain" className="transition-colors hover:text-[var(--color-accent)]">
-                    Terrains
+                  <Link href={languagePath("/acheter/terrain", locale)} className="transition-colors hover:text-[var(--color-accent)]">
+                    {t("Terrains")}
                   </Link>
-                  <Link href="/acheter/autre" className="transition-colors hover:text-[var(--color-accent)]">
-                    Commerces
+                  <Link href={languagePath("/acheter/autre", locale)} className="transition-colors hover:text-[var(--color-accent)]">
+                    {t("Commerces")}
                   </Link>
                 </div>
               </div>
             )}
             {items.length === 0 ? (
               <div className="mx-auto max-w-lg py-20 text-center">
-                <div className="eyebrow">Aucun résultat</div>
+                <div className="eyebrow">{t("Aucun résultat")}</div>
                 <div className="mt-4 font-serif text-3xl text-[var(--color-charcoal)] md:text-4xl">
-                  Aucun bien correspondant<br />à ces critères.
+                  {en ? <>No properties match<br />these criteria.</> : <>Aucun bien correspondant<br />à ces critères.</>}
                 </div>
                 <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[var(--color-stone)]">
-                  Élargissez vos critères, ou confiez-nous votre recherche — nous
-                  activerons notre réseau et notre fichier off-market.
+                  {en ? "Try fewer criteria, or tell us what you are looking for so our team can help." : <>Élargissez vos critères, ou confiez-nous votre recherche — nous activerons notre réseau et notre fichier off-market.</>}
                 </p>
                 <div className="mt-8 flex items-center justify-center gap-4">
                   <button type="button" onClick={clearAll} className="btn-outline">
-                    Réinitialiser
+                    {t("Réinitialiser")}
                   </button>
-                  <Link href="/contact" className="btn-gold">
-                    Nous décrire votre projet
+                  <Link href={languagePath("/contact", locale)} className="btn-gold">
+                    {t("Nous décrire votre projet")}
                     <ArrowRight size={14} />
                   </Link>
                 </div>
@@ -528,13 +544,13 @@ export default function CatalogueBrowser({
             ) : (
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
                 {visibleItems.map((p, i) => (
-                  <PropertyCard key={p.slug} property={p} priority={i === 0} />
+                  <PropertyCard locale={locale} key={p.slug} property={p} priority={i === 0} />
                 ))}
               </div>
             )}
 
             {!isMap && items.length > 0 && totalPages > 1 && (
-              <Pagination currentPage={effectivePage} totalPages={totalPages} onChange={goToPage} />
+              <Pagination locale={locale} currentPage={effectivePage} totalPages={totalPages} onChange={goToPage} />
             )}
           </div>
         </section>
@@ -545,29 +561,32 @@ export default function CatalogueBrowser({
 }
 
 function Pagination({
+  locale = "fr",
   currentPage,
   totalPages,
   onChange,
 }: {
+  locale?: "fr" | "en";
   currentPage: number;
   totalPages: number;
   onChange: (page: number) => void;
 }) {
+  const t = (label: string) => ui(locale, label);
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1).filter(
     (page) => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
   );
 
   return (
-    <nav aria-label="Pagination des biens" className="mt-12 flex flex-col items-center gap-4 md:mt-16">
+    <nav aria-label={t("Pagination des biens")} className="mt-12 flex flex-col items-center gap-4 md:mt-16">
       <div className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-stone)]">
-        Page {currentPage} sur {totalPages}
+        Page {currentPage} {locale === "en" ? "of" : "sur"} {totalPages}
       </div>
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={() => onChange(currentPage - 1)}
           disabled={currentPage === 1}
-          aria-label="Page précédente"
+          aria-label={t("Page précédente")}
           className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-[var(--color-border)] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)] disabled:cursor-not-allowed disabled:opacity-30"
         >
           <ArrowLeft size={15} />
@@ -598,7 +617,7 @@ function Pagination({
           type="button"
           onClick={() => onChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          aria-label="Page suivante"
+          aria-label={t("Page suivante")}
           className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-[var(--color-border)] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)] disabled:cursor-not-allowed disabled:opacity-30"
         >
           <ArrowRight size={15} />
@@ -668,7 +687,7 @@ function Pill({
               }`
         }
       >
-        {bare && <span className="hidden text-[var(--color-stone)] sm:inline">Trier&nbsp;·</span>}
+        {bare && <span className="hidden text-[var(--color-stone)] sm:inline">{label}&nbsp;·</span>}
         <span>{active && display ? display : bare ? allLabel : label}</span>
         <ChevronDown size={12} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>

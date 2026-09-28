@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ArrowRight, LockKeyhole, Mail, MapPin, Phone } from "lucide-react";
 
-export default function Footer() {
+import { languagePath } from "@/lib/i18n/routes";
+export default function Footer({ locale = "fr" }: { locale?: "fr" | "en" }) {
+  const en = locale === "en";
   const year = new Date().getFullYear();
 
   return (
@@ -11,17 +13,17 @@ export default function Footer() {
         <div className="container-luxe flex flex-col gap-5 py-8 md:flex-row md:items-center md:justify-between md:py-9">
           <div className="max-w-xl">
             <div className="text-[10px] font-medium uppercase tracking-[0.3em] text-white/65">
-              Parlons de votre projet
+              {en ? "Let’s talk about your project" : <>Parlons de votre projet</>}
             </div>
             <h3 className="mt-2 font-serif text-3xl leading-tight text-white md:text-[2rem]">
-              Un projet immobilier à Marrakech&nbsp;?
+              {en ? "A property project in Marrakech?" : <>Un projet immobilier à Marrakech&nbsp;?</>}
             </h3>
             <p className="mt-2 text-sm text-white/65">
-              Un bien à vendre ou une recherche à préciser ? Échangeons sur votre projet.
+              {en ? "Selling a property or refining your search? Let’s discuss your plans." : <>Un bien à vendre ou une recherche à préciser ? Échangeons sur votre projet.</>}
             </p>
           </div>
-          <div className="flex flex-wrap gap-3"><Link href="/deposer-un-bien" className="btn-outline-light shrink-0">Vendre mon bien</Link><Link href="/contact" className="btn-outline-light shrink-0">
-            Prendre rendez-vous
+          <div className="flex flex-wrap gap-3"><Link href={languagePath("/deposer-un-bien", locale)} className="btn-outline-light shrink-0">{en ? "Sell my property" : <>Vendre mon bien</>}</Link><Link href={languagePath("/contact", locale)} className="btn-outline-light shrink-0">
+            {en ? "Make an appointment" : <>Prendre rendez-vous</>}
             <ArrowRight size={16} />
           </Link></div>
         </div>
@@ -33,35 +35,35 @@ export default function Footer() {
           <div className="lg:col-span-4">
             <div className="font-serif text-2xl">Marrakech Realty</div>
             <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-white/40">
-              Immobilier · Depuis 2000
+              {en ? "Real estate · Since 2000" : <>Immobilier · Depuis 2000</>}
             </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/65">
-              Agence immobilière de caractère à Marrakech et Essaouira. Riads, villas,
-              appartements et programmes neufs, en vente comme en location.
+              {en ? "Distinctive real estate in Marrakech and Essaouira. Riads, villas, apartments and new developments, for sale and to rent." : <>Agence immobilière de caractère à Marrakech et Essaouira. Riads, villas,
+              appartements et programmes neufs, en vente comme en location.</>}
             </p>
           </div>
 
           <div className="lg:col-span-2">
-            <h4 className="font-serif text-lg text-white">Acheter</h4>
+            <h4 className="font-serif text-lg text-white">{en ? "Buy" : <>Acheter</>}</h4>
             <ul className="mt-3 space-y-2 text-sm text-white/65">
-              <li><Link href="/biens-vendus" className="transition-colors hover:text-white">Biens vendus</Link></li>
-              <li><Link href="/acheter/riad-renove" className="transition-colors hover:text-white">Riads rénovés</Link></li>
-              <li><Link href="/acheter/riad-a-renover" className="transition-colors hover:text-white">Riads à rénover</Link></li>
-              <li><Link href="/acheter/villa" className="transition-colors hover:text-white">Villas</Link></li>
-              <li><Link href="/acheter/appartement" className="transition-colors hover:text-white">Appartements</Link></li>
-              <li><Link href="/acheter/programmes-neufs" className="transition-colors hover:text-white">Programmes neufs</Link></li>
-              <li><Link href="/essaouira" className="transition-colors hover:text-white">Essaouira</Link></li>
+              <li><Link href={languagePath("/biens-vendus", locale)} className="transition-colors hover:text-white">{en ? "Sold properties" : <>Biens vendus</>}</Link></li>
+              <li><Link href={languagePath("/acheter/riad-renove", locale)} className="transition-colors hover:text-white">{en ? "Renovated riads" : <>Riads rénovés</>}</Link></li>
+              <li><Link href={languagePath("/acheter/riad-a-renover", locale)} className="transition-colors hover:text-white">{en ? "Riads to renovate" : <>Riads à rénover</>}</Link></li>
+              <li><Link href={languagePath("/acheter/villa", locale)} className="transition-colors hover:text-white">Villas</Link></li>
+              <li><Link href={languagePath("/acheter/appartement", locale)} className="transition-colors hover:text-white">{en ? "Apartments" : <>Appartements</>}</Link></li>
+              <li><Link href={languagePath("/acheter/programmes-neufs", locale)} className="transition-colors hover:text-white">{en ? "New developments" : <>Programmes neufs</>}</Link></li>
+              <li><Link href={languagePath("/essaouira", locale)} className="transition-colors hover:text-white">Essaouira</Link></li>
             </ul>
           </div>
 
           <div className="lg:col-span-3">
             <h4 className="font-serif text-lg text-white">Services</h4>
             <ul className="mt-3 space-y-2 text-sm text-white/65">
-              <li><Link href="/louer/villa" className="transition-colors hover:text-white">Location longue durée</Link></li>
-              <li><Link href="/louer/saisonnier" className="transition-colors hover:text-white">Location saisonnière</Link></li>
-              <li><Link href="/deposer-un-bien" className="transition-colors hover:text-white">Vendre mon bien</Link></li>
-              <li><Link href="/savoir-acheter" className="transition-colors hover:text-white">Guide juridique</Link></li>
-              <li><Link href="/favoris" className="transition-colors hover:text-white">Mes favoris</Link></li>
+              <li><Link href={languagePath("/louer/villa", locale)} className="transition-colors hover:text-white">{en ? "Long-term rentals" : <>Location longue durée</>}</Link></li>
+              <li><Link href={languagePath("/louer/saisonnier", locale)} className="transition-colors hover:text-white">{en ? "Holiday rentals" : <>Location saisonnière</>}</Link></li>
+              <li><Link href={languagePath("/deposer-un-bien", locale)} className="transition-colors hover:text-white">{en ? "Sell my property" : <>Vendre mon bien</>}</Link></li>
+              <li><Link href={languagePath("/savoir-acheter", locale)} className="transition-colors hover:text-white">{en ? "Buying guide" : <>Guide juridique</>}</Link></li>
+              <li><Link href={languagePath("/favoris", locale)} className="transition-colors hover:text-white">{en ? "Saved properties" : <>Mes favoris</>}</Link></li>
             </ul>
           </div>
 
@@ -73,7 +75,7 @@ export default function Footer() {
                 <span>
                   42 rue de la Liberté<br />
                   Guéliz, Marrakech 40000<br />
-                  Maroc
+                  {en ? "Morocco" : <>Maroc</>}
                 </span>
               </li>
               <li>
@@ -94,24 +96,24 @@ export default function Footer() {
 
         {/* Nav secondaire condensée sur une ligne desktop. */}
         <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2.5 border-t border-white/15 pt-5 text-xs text-white/55">
-          <Link href="/a-propos" className="transition-colors hover:text-white">À propos</Link>
-          <Link href="/equipe" className="transition-colors hover:text-white">L&apos;équipe</Link>
-          <Link href="/journal" className="transition-colors hover:text-white">Journal</Link>
-          <Link href="/quartiers" className="transition-colors hover:text-white">Quartiers</Link>
-          <Link href="/faq" className="transition-colors hover:text-white">Questions fréquentes</Link>
-          <Link href="/mentions-legales" className="transition-colors hover:text-white">Mentions légales</Link>
-          <Link href="/politique-confidentialite" className="transition-colors hover:text-white">Confidentialité</Link>
-          <Link href="/cookies" className="transition-colors hover:text-white">Cookies</Link>
-          <Link href="/cgu" className="transition-colors hover:text-white">CGU</Link>
+          <Link href={languagePath("/a-propos", locale)} className="transition-colors hover:text-white">{en ? "About us" : <>À propos</>}</Link>
+          <Link href={languagePath("/equipe", locale)} className="transition-colors hover:text-white">{en ? "Our team" : <>L&apos;équipe</>}</Link>
+          <Link href={languagePath("/journal", locale)} className="transition-colors hover:text-white">Journal</Link>
+          <Link href={languagePath("/quartiers", locale)} className="transition-colors hover:text-white">{en ? "Areas" : <>Quartiers</>}</Link>
+          <Link href={languagePath("/faq", locale)} className="transition-colors hover:text-white">{en ? "FAQs" : <>Questions fréquentes</>}</Link>
+          <Link href={languagePath("/mentions-legales", locale)} className="transition-colors hover:text-white">{en ? "Legal information" : <>Mentions légales</>}</Link>
+          <Link href={languagePath("/politique-confidentialite", locale)} className="transition-colors hover:text-white">{en ? "Privacy" : <>Confidentialité</>}</Link>
+          <Link href={languagePath("/cookies", locale)} className="transition-colors hover:text-white">Cookies</Link>
+          <Link href={languagePath("/cgu", locale)} className="transition-colors hover:text-white">{en ? "Terms of use" : <>CGU</>}</Link>
           <Link href="/admin" className="inline-flex items-center gap-1.5 transition-colors hover:text-white">
-            <LockKeyhole size={12} aria-hidden="true" /> Espace équipe
+            <LockKeyhole size={12} aria-hidden="true" /> {en ? "Team access" : <>Espace équipe</>}
           </Link>
         </div>
 
         <div className="mt-4 flex flex-col gap-2 border-t border-white/15 pt-4 text-[11px] text-white/45 md:flex-row md:items-center md:justify-between">
-          <div>© {year} Marrakech Realty — Tous droits réservés.</div>
+          <div>© {year} Marrakech Realty — {en ? "All rights reserved." : "Tous droits réservés."}</div>
           <div className="text-white/30">
-            Agence immobilière depuis 2000 · Marrakech &amp; Essaouira
+            {en ? "Real estate since 2000 · Marrakech & Essaouira" : <>Agence immobilière depuis 2000 · Marrakech &amp; Essaouira</>}
           </div>
         </div>
       </div>

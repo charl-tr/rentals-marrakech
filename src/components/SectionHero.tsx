@@ -11,6 +11,7 @@ export default function SectionHero({
  backHref = "/",
  backLabel,
  showBack = true,
+ locale = "fr",
 }: {
  eyebrow: string;
  title: React.ReactNode;
@@ -21,10 +22,11 @@ export default function SectionHero({
  backHref?: string;
  backLabel?: string;
  showBack?: boolean;
+ locale?: "fr" | "en";
 }) {
  const backButton = (variant: "light" | "dark") => showBack ? (
  <div className="mb-5 md:mb-10">
- <BackToList fallbackHref={backHref} fallbackLabel={backLabel} variant={variant} compactOnMobile />
+ <BackToList locale={locale} fallbackHref={backHref === "/" && locale === "en" ? "/en" : backHref} fallbackLabel={backLabel ?? (locale === "en" ? "Back" : undefined)} variant={variant} compactOnMobile />
  </div>
  ) : null;
 

@@ -12,11 +12,13 @@ export default function BackToList({
   fallbackLabel = "Retour aux biens",
   variant = "dark",
   compactOnMobile = false,
+  locale = "fr",
 }: {
   fallbackHref: string;
   fallbackLabel?: string;
   variant?: "light" | "dark";
   compactOnMobile?: boolean;
+  locale?: "fr" | "en";
 }) {
   const router = useRouter();
 
@@ -39,7 +41,7 @@ export default function BackToList({
       <ArrowLeft size={12} />
       {compactOnMobile ? (
         <>
-          <span className="sm:hidden">Retour</span>
+          <span className="sm:hidden">{locale === "en" ? "Back" : "Retour"}</span>
           <span className="hidden sm:inline">{fallbackLabel}</span>
         </>
       ) : (

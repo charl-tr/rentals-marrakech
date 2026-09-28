@@ -7,9 +7,11 @@ import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 export default function PropertyGallery({
   images,
   title,
+  locale = "fr",
 }: {
   images: string[];
   title: string;
+  locale?: "fr" | "en";
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -49,7 +51,7 @@ export default function PropertyGallery({
             key={i}
             type="button"
             onClick={() => setOpenIndex(i)}
-            aria-label={`Ouvrir l'image ${i + 1} en plein écran`}
+            aria-label={locale === "en" ? `Open image ${i + 1} full screen` : `Ouvrir l'image ${i + 1} en plein écran`}
             className="group relative aspect-[4/3] h-[420px] flex-shrink-0 snap-start overflow-hidden rounded-[16px] bg-[var(--color-charcoal)] md:h-[520px]"
           >
             <Image
@@ -80,7 +82,7 @@ export default function PropertyGallery({
           className="fixed inset-0 z-[100] flex flex-col bg-[var(--color-charcoal)] animate-fade-in"
           role="dialog"
           aria-modal="true"
-          aria-label="Galerie photo plein écran"
+          aria-label={locale === "en" ? "Full-screen photo gallery" : "Galerie photo plein écran"}
         >
           {/* Top bar : compteur + keyboard hint + close */}
           <div className="flex items-center justify-between px-5 py-5 md:px-10">
@@ -108,7 +110,7 @@ export default function PropertyGallery({
             <button
               type="button"
               onClick={close}
-              aria-label="Fermer"
+              aria-label={locale === "en" ? "Close gallery" : "Fermer"}
               className="flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 hover:text-[var(--color-terracotta-light)]"
             >
               <X size={22} />
@@ -134,7 +136,7 @@ export default function PropertyGallery({
                 <button
                   type="button"
                   onClick={prev}
-                  aria-label="Image précédente"
+                  aria-label={locale === "en" ? "Previous image" : "Image précédente"}
                   className="absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white hover:text-[var(--color-charcoal)] md:left-8 md:h-14 md:w-14"
                 >
                   <ChevronLeft size={22} />
@@ -142,7 +144,7 @@ export default function PropertyGallery({
                 <button
                   type="button"
                   onClick={next}
-                  aria-label="Image suivante"
+                  aria-label={locale === "en" ? "Next image" : "Image suivante"}
                   className="absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white hover:text-[var(--color-charcoal)] md:right-8 md:h-14 md:w-14"
                 >
                   <ChevronRight size={22} />
@@ -160,7 +162,7 @@ export default function PropertyGallery({
                     key={i}
                     type="button"
                     onClick={() => setOpenIndex(i)}
-                    aria-label={`Voir image ${i + 1}`}
+                    aria-label={locale === "en" ? `View image ${i + 1}` : `Voir image ${i + 1}`}
                     className={`relative h-14 w-20 flex-shrink-0 overflow-hidden rounded-[8px] transition-opacity ${
                       i === openIndex
                         ? "opacity-100 ring-2 ring-[var(--color-terracotta)]"

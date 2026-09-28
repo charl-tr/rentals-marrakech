@@ -1,19 +1,23 @@
 "use client";
 
+import { MapLocale, useMapLocale } from "./MapLocale";
+import { languagePath, type Locale } from "@/lib/i18n/routes";
+import { englishTypes } from "@/lib/i18n/english";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ChevronRight, X } from "lucide-react";
 import type { PropertyPin } from "@/lib/db";
-import { formatPrice, propertyTypeLabel } from "@/data/properties";
+import PriceDisplay from "./PriceDisplay";
+import { propertyTypeLabel } from "@/data/properties";
 
 const MapView = dynamic(() => import("./MapView"), {
   ssr: false,
   loading: () => (
     <div className="flex h-full w-full items-center justify-center bg-[var(--color-cream)]">
       <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-[var(--color-stone)]">
-        Chargement…
+        …
       </span>
     </div>
   ),
@@ -44,9 +48,6 @@ function isVente(pin: PropertyPin) {
   return pin.listing === "vente" || pin.type === "programme-neuf";
 }
 
-function fmt(pin: PropertyPin) {
-  return formatPrice(pin.price, pin.listing, "EUR", pin.priceUnit ?? "semaine");
-}
 
 // ── Shared filter tab strip ───────────────────────────────────────────────────
 function FilterTabs({
@@ -58,6 +59,8 @@ function FilterTabs({
   onChange: (f: Filter) => void;
   count: number;
 }) {
+  const locale = useMapLocale();
+  const en = locale === "en";
   return (
     <div className="flex items-center gap-2">
       <span className="font-serif text-sm text-[var(--color-charcoal)]">
@@ -74,7 +77,7 @@ function FilterTabs({
               : "text-[var(--color-stone)] hover:text-[var(--color-charcoal)]"
           }`}
         >
-          {f.label}
+          {en ? ({ all: "All", vente: "Buy", location: "Rent" }[f.value]) : f.label}
         </button>
       ))}
     </div>
@@ -97,6 +100,8 @@ function PropertyCard({
   onHover: () => void;
   onLeave: () => void;
 }) {
+  const locale = useMapLocale();
+  const en = locale === "en";
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -129,7 +134,7 @@ function PropertyCard({
         {pin.image ? (
           <Image
             src={pin.image}
-            alt={pin.title}
+            alt={en ? `${englishTypes[pin.type]} · ${pin.city}` : pin.title}
             fill
             sizes="96px"
             quality={50}
@@ -143,7 +148,7 @@ function PropertyCard({
             isVente(pin) ? "bg-[var(--color-accent)]" : "bg-[var(--color-success)]"
           }`}
         >
-          {isVente(pin) ? "Achat" : "Location"}
+          {isVente(pin) ? (en ? "Buy" : "Achat") : (en ? "Rent" : "Location")}
         </div>
       </div>
 
@@ -151,28 +156,28 @@ function PropertyCard({
       <div className="flex min-w-0 flex-1 flex-col justify-between">
         <div>
           <div className="text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--color-terracotta)] sm:text-[10px]">
-            {propertyTypeLabel(pin.type)}
+            {en ? englishTypes[pin.type] : propertyTypeLabel(pin.type)}
           </div>
           <div className="mt-0.5 truncate font-serif text-sm text-[var(--color-charcoal)]">
-            {pin.title}
+            {en ? `${englishTypes[pin.type]} · ${pin.city}` : pin.title}
           </div>
         </div>
-        <div className="flex items-end justify-between">
+        <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
-            <div className="text-sm font-medium text-[var(--color-charcoal)]">{fmt(pin)}</div>
+            <div className="text-sm font-medium text-[var(--color-charcoal)]"><PriceDisplay locale={locale} priceEur={pin.price} priceMad={pin.priceMad} sourcePriceEur={pin.sourcePriceEur} sourcePriceMad={pin.sourcePriceMad} listing={pin.listing} priceUnit={pin.priceUnit} /></div>
             {pin.surface > 0 && (
               <div className="text-[10px] text-[var(--color-stone)]">
                 {pin.surface} m²
-                {pin.bedrooms > 0 && ` · ${pin.bedrooms} ch.`}
+                {pin.bedrooms > 0 && ` · ${pin.bedrooms} ${en ? "beds" : "ch."}`}
               </div>
             )}
           </div>
           <Link
-            href={href}
+            href={languagePath(href, locale)}
             className="ml-2 inline-flex shrink-0 items-center gap-1 rounded-[10px] border border-[var(--color-border-strong)] px-2.5 py-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-white"
             onClick={(e) => e.stopPropagation()}
           >
-            Découvrir <ChevronRight size={11} />
+            {en ? "Discover" : "Découvrir"} <ChevronRight size={11} />
           </Link>
         </div>
       </div>
@@ -188,6 +193,8 @@ function MobileActiveCard({
   pin: PropertyPin;
   onClose: () => void;
 }) {
+  const locale = useMapLocale();
+  const en = locale === "en";
   const href = `/${isVente(pin) ? "acheter" : "louer"}/${pin.slug}`;
   return (
     <div className="absolute bottom-[84px] left-3 right-3 z-[450] flex animate-fade-in items-center gap-3 rounded-[14px] border border-[var(--color-border)] bg-white p-3 shadow-[var(--shadow-luxe)]">
@@ -196,7 +203,7 @@ function MobileActiveCard({
         {pin.image ? (
           <Image
             src={pin.image}
-            alt={pin.title}
+            alt={en ? `${englishTypes[pin.type]} · ${pin.city}` : pin.title}
             width={80}
             height={64}
             quality={50}
@@ -210,13 +217,13 @@ function MobileActiveCard({
       {/* Info */}
       <div className="min-w-0 flex-1">
         <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-[var(--color-terracotta)]">
-          {propertyTypeLabel(pin.type)}
+          {en ? englishTypes[pin.type] : propertyTypeLabel(pin.type)}
         </div>
         <div className="truncate font-serif text-sm text-[var(--color-charcoal)]">
-          {pin.title}
+          {en ? `${englishTypes[pin.type]} · ${pin.city}` : pin.title}
         </div>
         <div className="mt-0.5 text-sm font-medium text-[var(--color-charcoal)]">
-          {fmt(pin)}
+          <PriceDisplay locale={locale} priceEur={pin.price} priceMad={pin.priceMad} sourcePriceEur={pin.sourcePriceEur} sourcePriceMad={pin.sourcePriceMad} listing={pin.listing} priceUnit={pin.priceUnit} />
         </div>
       </div>
 
@@ -226,15 +233,15 @@ function MobileActiveCard({
           type="button"
           onClick={onClose}
           className="text-[var(--color-stone)] hover:text-[var(--color-charcoal)]"
-          aria-label="Fermer"
+          aria-label={en ? "Close" : "Fermer"}
         >
           <X size={14} />
         </button>
         <Link
-          href={href}
+          href={languagePath(href, locale)}
           className="inline-flex items-center gap-1 rounded-[10px] bg-[var(--color-accent-deep)] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-white"
         >
-          Découvrir <ChevronRight size={11} />
+          {en ? "Discover" : "Découvrir"} <ChevronRight size={11} />
         </Link>
       </div>
     </div>
@@ -261,6 +268,8 @@ function MobileSheet({
   hoveredSlug: string | null;
   setHoveredSlug: (s: string | null) => void;
 }) {
+  const locale = useMapLocale();
+  const en = locale === "en";
   const [snap, setSnap] = useState<SheetSnap>("peek");
   const dragRef = useRef({ startY: 0 });
 
@@ -300,7 +309,7 @@ function MobileSheet({
           onTouchEnd={handleTouchEnd}
           onClick={handleHandleTap}
           role="button"
-          aria-label={snap === "peek" ? "Voir la liste" : "Réduire"}
+          aria-label={snap === "peek" ? (en ? "Show list" : "Voir la liste") : (en ? "Collapse" : "Réduire")}
         >
           <div className="h-1 w-10 rounded-full bg-[var(--color-beige-warm)]" />
         </div>
@@ -317,7 +326,7 @@ function MobileSheet({
               type="button"
               onClick={() => setSnap("peek")}
               className="ml-2 text-[var(--color-stone)]"
-              aria-label="Réduire"
+              aria-label={en ? "Collapse" : "Réduire"}
             >
               <X size={15} />
             </button>
@@ -329,7 +338,7 @@ function MobileSheet({
           <div className="flex-1 overflow-y-auto overscroll-contain">
             {pins.length === 0 ? (
               <div className="flex h-24 items-center justify-center text-[11px] text-[var(--color-stone)]">
-                Aucun bien pour ce filtre.
+                {en ? "No properties match this filter." : "Aucun bien pour ce filtre."}
               </div>
             ) : (
               pins.map((pin) => (
@@ -373,6 +382,8 @@ function DesktopPanel({
   open: boolean;
   onClose: () => void;
 }) {
+  const locale = useMapLocale();
+  const en = locale === "en";
   return (
     <div
       className={`relative flex flex-col overflow-hidden rounded-[16px] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)] transition-[width] duration-300 ease-in-out ${
@@ -391,17 +402,17 @@ function DesktopPanel({
         <div className="flex items-center gap-3">
           <div className="hidden flex-col gap-1 text-[10px] text-[var(--color-stone)] xl:flex">
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-accent)]" />Achat
+              <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-accent)]" />{en ? "Buy" : "Achat"}
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success)]" />Location
+              <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success)]" />{en ? "Rent" : "Location"}
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="ml-1 text-[var(--color-stone)] hover:text-[var(--color-charcoal)]"
-            aria-label="Masquer le panneau"
+            aria-label={en ? "Hide panel" : "Masquer le panneau"}
           >
             <X size={16} />
           </button>
@@ -414,7 +425,7 @@ function DesktopPanel({
       >
         {pins.length === 0 ? (
           <div className="flex h-full items-center justify-center text-[11px] text-[var(--color-stone)]">
-            Aucun bien pour ce filtre.
+            {en ? "No properties match this filter." : "Aucun bien pour ce filtre."}
           </div>
         ) : (
           pins.map((pin) => (
@@ -435,7 +446,12 @@ function DesktopPanel({
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-export default function MapClientWrapper({ pins }: { pins: PropertyPin[] }) {
+export default function MapClientWrapper({ pins, locale = "fr" }: { pins: PropertyPin[]; locale?: Locale }) {
+  return <MapLocale.Provider value={locale}><MapContents pins={pins} /></MapLocale.Provider>;
+}
+
+function MapContents({ pins }: { pins: PropertyPin[] }) {
+  const en = useMapLocale() === "en";
   const isDesktop = useIsDesktop();
 
   const [filter, setFilter] = useState<Filter>("all");
@@ -515,10 +531,10 @@ export default function MapClientWrapper({ pins }: { pins: PropertyPin[] }) {
             type="button"
             onClick={() => setPanelOpen(true)}
             className="absolute left-4 top-1/2 z-[500] -translate-y-1/2 flex items-center gap-1.5 rounded-[10px] border border-[var(--color-border-strong)] bg-white px-3 py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-charcoal)] shadow-[var(--shadow-card)] transition-colors hover:bg-[var(--color-cream)]"
-            aria-label="Afficher la liste"
+            aria-label={en ? "Show list" : "Afficher la liste"}
           >
             <ChevronRight size={14} />
-            Liste
+            {en ? "List" : "Liste"}
           </button>
         )}
         <MapView {...mapProps} />

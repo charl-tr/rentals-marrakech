@@ -1,0 +1,1 @@
+export default function Loading() { return <div role="status" className="container-luxe py-12"><p className="mb-6 text-sm">Loading properties…</p><div className="grid animate-pulse gap-6 md:grid-cols-3">{[1,2,3].map((n) => <div key={n} className="h-80 rounded-2xl bg-[var(--color-beige)]" />)}</div></div>; }

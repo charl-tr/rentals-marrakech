@@ -9,8 +9,11 @@ import {
 import FavoriteButton from "@/components/FavoriteButton";
 import CompareToggleButton from "@/components/CompareToggleButton";
 import PriceDisplay from "@/components/PriceDisplay";
+import { languagePath } from "@/lib/i18n/routes";
+import { englishPropertyHeading, englishStatus, englishTypes } from "@/lib/i18n/english";
 
 interface Props {
+  locale?: "fr" | "en";
   property: PropertySummary;
   priority?: boolean;
 }
@@ -18,24 +21,26 @@ interface Props {
 // ── Carte de bien — Aman : carte contenue, calme, élégante.
 // Conteneur blanc arrondi + bordure fine + ombre douce. L'image porte,
 // les specs sont lisibles d'un coup d'œil, le prix domine le pied de carte.
-export default function PropertyCard({ property, priority = false }: Props) {
+export default function PropertyCard({ property, priority = false, locale = "fr" }: Props) {
+  const en = locale === "en";
+  const title = en ? englishPropertyHeading(property) : property.title;
   const isLocation = property.listing !== "vente";
-  const href = `${isLocation ? "/louer" : "/acheter"}/${property.slug}`;
+  const href = languagePath(`${isLocation ? "/louer" : "/acheter"}/${property.slug}`, locale);
   const isUnavailable =
     property.status === "sold" || property.status === "rented";
 
   const specs = [
     property.bedrooms > 0
-      ? { icon: BedDouble, value: `${property.bedrooms}`, label: "chambres" }
+      ? { icon: BedDouble, value: `${property.bedrooms}`, label: en ? "bedrooms" : "chambres" }
       : null,
     property.bathrooms > 0
-      ? { icon: Bath, value: `${property.bathrooms}`, label: "salles de bain" }
+      ? { icon: Bath, value: `${property.bathrooms}`, label: en ? "bathrooms" : "salles de bain" }
       : null,
     property.surface > 0
-      ? { icon: Maximize, value: `${property.surface} m²`, label: "habitable" }
+      ? { icon: Maximize, value: `${property.surface} m²`, label: en ? "living area" : "habitable" }
       : null,
     property.landSurface && property.landSurface > 0
-      ? { icon: Trees, value: `${property.landSurface} m²`, label: "terrain" }
+      ? { icon: Trees, value: `${property.landSurface} m²`, label: en ? "land area" : "terrain" }
       : null,
   ].filter(Boolean) as {
     icon: typeof BedDouble;
@@ -53,7 +58,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
       <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-charcoal-deep)]">
         <Image
           src={property.images[0]}
-          alt={property.title}
+          alt={title}
           fill
           preload={priority}
           quality={55}
@@ -75,19 +80,19 @@ export default function PropertyCard({ property, priority = false }: Props) {
                   : "bg-[var(--color-charcoal-deep)]/85 text-white backdrop-blur-sm"
               }`}
             >
-              {STATUS_LABELS[property.status]}
+              {en ? englishStatus[property.status] : STATUS_LABELS[property.status]}
             </span>
           ) : property.exclusivity ? (
             <span className="rounded-full bg-[var(--color-charcoal-deep)]/85 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
-              Exclusivité
+              {en ? "Exclusive" : "Exclusivité"}
             </span>
           ) : null}
         </div>
 
         {/* Actions */}
         <div className="absolute right-0 top-0 z-20 flex flex-col items-end gap-2 p-4">
-          <FavoriteButton slug={property.slug} />
-          <CompareToggleButton slug={property.slug} variant="card" />
+          <FavoriteButton locale={locale} slug={property.slug} />
+          <CompareToggleButton locale={locale} slug={property.slug} variant="card" />
         </div>
       </div>
 
@@ -99,13 +104,13 @@ export default function PropertyCard({ property, priority = false }: Props) {
             {[property.neighborhood, property.city].filter(Boolean).join(" · ")}
           </span>
           <span className="shrink-0 text-[var(--color-accent)]">
-            {displayPropertyType(property)}
+            {en ? englishTypes[property.type] : displayPropertyType(property)}
           </span>
         </div>
 
         {/* Titre — 2 lignes max, hauteur stable */}
         <h3 className="mt-2.5 line-clamp-2 min-h-[2.5em] font-serif text-[1.5rem] leading-[1.25] text-[var(--color-charcoal)]">
-          <Link href={href} className="after:absolute after:inset-0 after:z-10 focus:outline-none">{property.title}</Link>
+          <Link href={href} className="after:absolute after:inset-0 after:z-10 focus:outline-none">{title}</Link>
         </h3>
 
         {/* Specs — icônes fines, lisibles d'un coup d'œil */}
@@ -136,6 +141,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
           <div>
             <div className="font-serif text-[1.7rem] leading-none text-[var(--color-charcoal)]">
               <PriceDisplay
+                locale={locale}
                 priceEur={property.price}
                 priceMad={property.priceMad}
                 sourcePriceEur={property.sourcePriceEur}
@@ -146,7 +152,7 @@ export default function PropertyCard({ property, priority = false }: Props) {
             </div>
           </div>
           <span className="flex shrink-0 items-center gap-1.5 pb-1 text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-charcoal)] transition-colors group-hover:text-[var(--color-accent)]">
-            Découvrir
+            {en ? "Discover" : "Découvrir"}
             <ArrowRight
               size={13}
               className="transition-transform duration-500 group-hover:translate-x-1"
