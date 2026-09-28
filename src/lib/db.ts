@@ -615,61 +615,13 @@ export async function getEditorializedNeighborhoods(): Promise<NeighborhoodPage[
 // Journal
 // ════════════════════════════════════════════════════════════════════
 
-export interface JournalArticle {
-  slug: string;
-  title: string;
-  lead: string;
-  category: string;
-  author: string;
-  publishedAt: string;
-  readingTime: number;
-  imageHero: string;
-  paragraphs: string[];
+// Only source-verified editorial content is public. Legacy demo rows are not read.
+export async function getAllArticles() {
+  const { journalArticles } = await import("@/data/verified-journal");
+  return journalArticles();
 }
-
-interface JournalRow {
-  slug: string;
-  title: string;
-  lead: string | null;
-  category: string | null;
-  author: string | null;
-  published_at: string | null;
-  reading_time: number | null;
-  image_hero: string | null;
-  paragraphs: string[];
-}
-
-function rowToArticle(r: JournalRow): JournalArticle {
-  return {
-    slug: r.slug,
-    title: r.title,
-    lead: r.lead ?? "",
-    category: r.category ?? "",
-    author: r.author ?? "",
-    publishedAt: r.published_at ?? "",
-    readingTime: r.reading_time ?? 0,
-    imageHero: r.image_hero ?? "",
-    paragraphs: r.paragraphs ?? [],
-  };
-}
-
-export async function getAllArticles(): Promise<JournalArticle[]> {
-  const { data, error } = await supabase
-    .from("journal_articles")
-    .select("*")
-    .order("published_at", { ascending: false });
-  if (error) throw error;
-  return (data as JournalRow[]).map(rowToArticle);
-}
-
-export async function getArticle(slug: string): Promise<JournalArticle | null> {
-  const { data, error } = await supabase
-    .from("journal_articles")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (error) throw error;
-  return data ? rowToArticle(data as JournalRow) : null;
+export async function getArticle(slug: string) {
+  return (await getAllArticles()).find(article => article.slug === slug) ?? null;
 }
 
 // ════════════════════════════════════════════════════════════════════

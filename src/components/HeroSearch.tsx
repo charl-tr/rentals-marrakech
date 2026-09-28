@@ -33,6 +33,7 @@ export default function HeroSearch({
   const [type, setType] = useState("");
   const [zone, setZone] = useState("");
   const [budget, setBudget] = useState("");
+  const [step, setStep] = useState(0);
   const [openKey, setOpenKey] = useState<string | null>(null);
 
   function submit() {
@@ -47,23 +48,45 @@ export default function HeroSearch({
 
   return (
     <div className="relative z-20 max-w-4xl animate-fade-up overflow-visible rounded-[16px] border border-white/15 bg-[rgba(23,20,15,0.42)] p-2 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
-      <button
-        type="button"
-        onClick={submit}
-        className="flex w-full items-center justify-between rounded-[10px] bg-white px-5 py-4 text-left text-[var(--color-charcoal)] md:hidden"
-      >
-        <span>
-          <span className="block text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--color-accent)]">
-            {en ? "Our selection" : "Notre sélection"}
-          </span>
-          <span className="mt-1 block text-sm font-medium">
-            {en ? `Explore ${resultCount} ${resultCount === 1 ? "property" : "properties"}` : `Explorer ${resultCount} bien${resultCount > 1 ? "s" : ""}`}
-          </span>
-        </span>
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-charcoal)] text-white">
-          <Search size={16} />
-        </span>
-      </button>
+      <div className="md:hidden">
+        <div className="flex items-center justify-between px-3 pt-2 text-xs text-white/85">
+          <span>{en ? "Find a property to buy" : "Trouver un bien à acheter"}</span>
+          <span aria-live="polite">{step + 1} / 3</span>
+        </div>
+        <div className="mt-2 flex gap-1 px-2" aria-label={en ? "Search steps" : "Étapes de recherche"}>
+          {(en ? ["Type", "Area", "Budget"] : ["Type", "Quartier", "Budget"]).map((label, index) =>
+            <button key={label} type="button" disabled={index > step}
+              aria-current={step === index ? "step" : undefined}
+              onClick={() => { setStep(index); setOpenKey(null); }}
+              className={`min-h-10 flex-1 rounded-lg px-2 text-xs transition-colors ${step === index ? "bg-white/20 text-white" : "text-white/65 disabled:opacity-40"}`}>
+              {index + 1}. {label}
+            </button>)}
+        </div>
+        <Field
+          label={step === 0 ? en ? "Property type" : "Type de bien" : step === 1 ? en ? "Area" : "Quartier" : "Budget"}
+          options={step === 0 ? [{ value: "", label: en ? "All properties" : "Tous les biens" }, ...typeOptions] : step === 1 ? [{ value: "", label: en ? "All areas" : "Tous les quartiers" }, ...zoneOptions] : [{ value: "", label: en ? "Any budget" : "Tous budgets" }, ...saleBudgets.map(b => ({ value: b.key, label: budgetLabel(b, currency, rates, locale) }))]}
+          value={step === 0 ? type : step === 1 ? zone : budget}
+          onChange={value => {
+            if (step === 0) setType(value);
+            else if (step === 1) setZone(value);
+            else setBudget(value);
+            if (step < 2) setStep(step + 1);
+          }}
+          open={openKey === "mobile"}
+          onToggle={() => setOpenKey(openKey === "mobile" ? null : "mobile")}
+          onClose={() => setOpenKey(null)}
+        />
+        <button type="button"
+          onClick={() => { if (step < 2) { setStep(step + 1); setOpenKey(null); } else submit(); }}
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-medium text-[var(--color-accent-deep)]">
+          {step < 2 ? en ? "Continue" : "Continuer" : en ? "Show properties" : "Voir les biens"}
+          {step === 2 && <Search size={16} />}
+        </button>
+        <button type="button" onClick={submit} className="min-h-10 w-full px-2 py-2 text-xs text-white/85 underline underline-offset-4">
+          {en ? "Search without more filters" : "Rechercher sans affiner davantage"}
+        </button>
+        <span className="sr-only">{resultCount} {en ? "properties in the full selection" : "biens dans la sélection complète"}</span>
+      </div>
 
       <div className="hidden grid-cols-[1fr_1fr_1fr_auto] md:grid">
         <Field

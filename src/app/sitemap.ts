@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { ALL_TYPES, NEIGHBORHOODS } from "@/data/properties";
 import {
-  getAllArticles,
   getAllNeighborhoods,
   getAllPropertySlugs,
 } from "@/lib/db";
@@ -10,10 +9,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.marrakechrealt
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const [propertiesList, neighborhoodsList, articlesList] = await Promise.all([
+  const [propertiesList, neighborhoodsList] = await Promise.all([
     getAllPropertySlugs(),
     getAllNeighborhoods(),
-    getAllArticles(),
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
@@ -74,13 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-  // Articles journal
-  const journalPages: MetadataRoute.Sitemap = articlesList.map((a) => ({
-    url: `${SITE_URL}/journal/${a.slug}`,
-    lastModified: a.publishedAt ? new Date(a.publishedAt) : now,
-    changeFrequency: "monthly",
-    priority: 0.65,
-  }));
+  // Short archive reading notes are noindex, not full migrated articles.
 
   return [
     ...staticPages,
@@ -88,6 +80,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...geoPages,
     ...propertyPages,
     ...quartierPages,
-    ...journalPages,
   ];
 }

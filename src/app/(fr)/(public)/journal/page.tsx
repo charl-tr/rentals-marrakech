@@ -3,7 +3,7 @@ import Content from "@/components/JournalPageContent";
 export const metadata: Metadata = {
   title: "Journal — Marrakech Realty",
   description:
-    "Le magazine éditorial de l'agence : marché, restauration, art de vivre marocain, portraits de quartiers et de propriétaires.",
+    "Une sélection de lectures du blog original de Marrakech Realty : frais d’achat, démarches et achat depuis l’étranger. Sources et dates indiquées.",
   alternates: { canonical: "/journal" },
 };
 export default function Page() { return <Content />; }

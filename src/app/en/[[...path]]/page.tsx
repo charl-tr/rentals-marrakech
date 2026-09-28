@@ -17,8 +17,13 @@ import ContactPageContent from "@/components/ContactPageContent";
 import SellerPageContent from "@/components/SellerPageContent";
 import FavoritesPageContent from "@/components/FavoritesPageContent";
 import PropertyDetail from "@/components/PropertyDetail";
+import { journalArticles } from "@/data/verified-journal";
 
 type Props = { params: Promise<{ path?: string[] }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
+export async function generateViewport({ params }: Props) {
+  const { path = [] } = await params;
+  return { themeColor: path.length ? "#f7f5f0" : "#075581", viewportFit: "cover" as const };
+}
 
 // French editorial content has not been translated yet. Preserve the exact
 // equivalent route and offer an explicit FR link, never pretend it is English.
@@ -30,6 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const fr = languagePath(pathname, "fr").split("/").filter(Boolean);
   const labels: Record<string, string> = { acheter: "Properties for sale", louer: "Properties to rent", "biens-vendus": "Sold properties", "deposer-un-bien": "Sell your property", contact: "Contact", favoris: "Saved properties", comparer: "Compare properties", carte: "Property map", journal: "Journal", quartiers: "Areas", essaouira: "Property in Essaouira" };
   let title = labels[fr[0]] || "Property in Marrakech & Essaouira";
+  if (fr[0] === "journal" && fr.length === 2) {
+    title = journalArticles("en").find(a => a.slug === fr[1])?.title ?? "Article not found";
+  }
   if (["acheter", "louer"].includes(fr[0]) && fr.length === 2 && ![...ALL_TYPES, "programmes-neufs", "saisonnier"].includes(fr[1])) {
     const p = await getPropertyBySlug(fr[1]);
     if (p) title = englishPropertyHeading(p);

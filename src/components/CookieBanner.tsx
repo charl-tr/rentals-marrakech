@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
 const STORAGE_KEY = "mr:consent";
@@ -28,6 +28,19 @@ function getConsentSnapshot(): Consent {
 export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }) {
   const en = locale === "en";
   const consent = useSyncExternalStore(subscribe, getConsentSnapshot, () => "loading");
+  const bannerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const node = bannerRef.current;
+    if (!node) return;
+    const measure = () => document.documentElement.style.setProperty("--cookie-banner-height", node.getBoundingClientRect().height + "px");
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    measure();
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.removeProperty("--cookie-banner-height");
+    };
+  }, [consent]);
 
   const accept = (value: "accepted" | "essential-only") => {
     window.localStorage.setItem(STORAGE_KEY, value);
@@ -40,6 +53,7 @@ export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }
 
   return (
     <div
+      ref={bannerRef}
       role="dialog"
       aria-labelledby="cookie-banner-title"
       className="fixed inset-x-0 bottom-0 z-[90] animate-fade-up"
@@ -64,9 +78,7 @@ export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }
                 {en ? "Cookies and privacy" : "Cookies et confidentialité"}
               </div>
               <p className="mt-2 text-xs leading-relaxed text-[var(--color-charcoal)] md:mt-3 md:text-sm">
-                {en ? <>Essential cookies keep this site working. With your consent, journey measurement helps us connect property views with enquiries and improve our service. No third-party advertising cookies. </> : <>Des cookies <strong>essentiels</strong> font fonctionner le site.
-                Avec votre accord, une <strong>mesure du parcours</strong> nous aide à
-                relier vos consultations à vos demandes et améliorer le service. Aucun cookie publicitaire tiers.{" "}</>}
+                {en ? <>Essential cookies keep the site working. Optional analytics link your visits to your enquiries. No advertising cookies. </> : <>Cookies essentiels au fonctionnement. Avec votre accord, la mesure du parcours relie vos visites à vos demandes. Aucun cookie publicitaire.{" "}</>}
                 <Link
                   href="/cookies"
                   className="text-[var(--color-terracotta)] underline-offset-2 hover:underline"

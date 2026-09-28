@@ -131,7 +131,7 @@ export default function Navbar({ locale = "fr" }: { locale?: "fr" | "en" }) {
         />
       )}
 
-      <div className="container-luxe relative flex h-14 items-center justify-between lg:h-16">
+      <div className="container-luxe relative flex min-h-14 items-center justify-between gap-2 pt-[env(safe-area-inset-top)] lg:min-h-16">
         <Link href={href("/")} aria-label={en ? "Marrakech Realty — Home" : "Marrakech Realty — Accueil"} className="block">
           <Image
             src="/logo-complete.png"
@@ -139,7 +139,7 @@ export default function Navbar({ locale = "fr" }: { locale?: "fr" | "en" }) {
             width={331}
             height={70}
             priority
-            className={`h-7 w-auto object-contain transition-[filter] duration-500 lg:h-8 ${
+            className={`h-auto w-[140px] object-contain transition-[filter] duration-500 sm:w-[165px] lg:w-[190px] ${
               solid
                 ? ""
                 : "brightness-0 invert drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)]"

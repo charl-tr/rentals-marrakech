@@ -1,142 +1,45 @@
-import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight, ArrowRight, BookOpen } from "lucide-react";
 import { languagePath } from "@/lib/i18n/routes";
-import OriginalEditorialNotice from "@/components/OriginalEditorialNotice";
-import { ArrowRight } from "lucide-react";
+import { journalArticles, journalDate } from "@/data/verified-journal";
 import SectionHero from "@/components/SectionHero";
-import { getAllArticles } from "@/lib/db";
 
-
-
-const formatDate = (iso: string, locale: "fr" | "en") =>
-  new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(iso));
-
-export default async function JournalPage({ locale = "fr" }: { locale?: "fr" | "en" }) {
+export default function JournalPage({ locale = "fr" }: { locale?: "fr" | "en" }) {
   const en = locale === "en";
-  const articles = await getAllArticles();
-  const [hero, ...rest] = articles;
-
-  return (
-    <>
-      <SectionHero locale={locale}
-        eyebrow={en ? "Journal" : "Journal éditorial"}
-        title={
-          <>
-            {en ? "Stories, perspectives," : "Histoires, regards,"}<br />
-            <span className="italic text-[var(--color-accent-light)]">{en ? "insights" : "analyses"}</span>.
-          </>
-        }
-        subtitle={en ? "Moroccan property, riad restoration and life in Marrakech. Stories from neighbourhoods, owners and our team." : "Marché immobilier marocain, restauration des riads, art de vivre marrakchi, portraits de quartiers et de propriétaires. Les coulisses de notre métier."}
-      />
-
-      <OriginalEditorialNotice locale={locale} href="/journal" />
-      {hero && (
-        <section className="bg-white py-20">
-          <div className="container-luxe">
-            <Link
-              href={languagePath(`/journal/${hero.slug}`, locale)}
-              className="group grid gap-12 lg:grid-cols-[1.3fr_1fr] lg:items-center"
-            >
-              <div className="relative aspect-[5/4] overflow-hidden rounded-[16px] bg-[var(--color-charcoal)]">
-                <Image
-                  src={hero.imageHero}
-                  alt={hero.title}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-cover transition-transform duration-[900ms] group-hover:scale-105"
-                />
-              </div>
-              <div>
-                <div className="text-[10px] font-medium uppercase tracking-[0.32em] text-[var(--color-terracotta)]">
-                  {en ? "Featured" : "À la une"} · {hero.category}
-                </div>
-                <h2 lang="fr" className="mt-5 font-serif text-4xl leading-[1.1] text-[var(--color-charcoal)] md:text-5xl group-hover:text-[var(--color-terracotta)] transition-colors">
-                  {hero.title}
-                </h2>
-                <p className="mt-6 text-lg leading-relaxed text-[var(--color-stone)]">
-                  {hero.lead}
-                </p>
-                <div className="mt-8 flex items-center gap-4 text-xs uppercase tracking-[0.18em] text-[var(--color-stone)]">
-                  <span>{hero.author}</span>
-                  <span>·</span>
-                  <span>{formatDate(hero.publishedAt, locale)}</span>
-                  <span>·</span>
-                  <span>{hero.readingTime} {en ? "min read" : "min de lecture"}</span>
-                </div>
-                <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)] group-hover:text-[var(--color-terracotta)]">
-                  {en ? "Read article" : <>Lire l&apos;article</>}
-                  <ArrowRight size={16} />
-                </span>
-              </div>
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {rest.length > 0 && (
-        <section className="bg-[var(--color-cream)] py-20">
-          <div className="container-luxe">
-            <div className="mb-12 text-center">
-              <div className="eyebrow">{en ? "All stories" : "Tout le journal"}</div>
-              <h3 lang="fr" className="mt-3 font-serif text-3xl text-[var(--color-charcoal)]">
-                {en ? "Recent articles." : "Articles récents."}
-              </h3>
-            </div>
-            <div className="grid gap-12 md:grid-cols-2">
-              {rest.map((a) => (
-                <Link
-                  key={a.slug}
-                  href={languagePath(`/journal/${a.slug}`, locale)}
-                  className="group block"
-                >
-                  <div className="relative aspect-[3/2] overflow-hidden rounded-[14px] bg-[var(--color-charcoal)]">
-                    <Image
-                      src={a.imageHero}
-                      alt={a.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-[900ms] group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="mt-6">
-                    <div className="text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
-                      {a.category}
-                    </div>
-                    <h3 lang="fr" className="mt-3 font-serif text-2xl leading-snug text-[var(--color-charcoal)] group-hover:text-[var(--color-terracotta)] transition-colors md:text-3xl">
-                      {a.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-[var(--color-stone)]">
-                      {a.lead}
-                    </p>
-                    <div className="mt-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.18em] text-[var(--color-stone)]">
-                      <span>{a.author}</span>
-                      <span>·</span>
-                      <span>{formatDate(a.publishedAt, locale)}</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-16">
-        <div className="container-luxe text-center">
-          <div className="eyebrow">
-            {en ? "Stay in touch" : "Gardons le contact"}
-          </div>
-          <h2 lang="fr" className="mt-4 font-serif text-3xl md:text-4xl">
-            {en ? "Talk to our team about your project." : "Échangeons sur votre projet."}
-          </h2>
-          <Link href={languagePath("/contact", locale)} className="btn-gold mt-8 inline-flex">{en ? "Contact our team" : "Contacter l’équipe"}</Link>
+  const articles = journalArticles(locale);
+  return <>
+    <SectionHero locale={locale} showBack={false}
+      eyebrow={en ? "Journal · Buying in Morocco" : "Journal · Acheter au Maroc"}
+      title={en ? "A clearer view of your project." : "Des repères pour votre projet."}
+      subtitle={en ? "Purchase costs, paperwork, buying from abroad. A selection of practical reading from the agency’s original blog." : "Frais d’achat, démarches, achat depuis l’étranger. Une sélection de lectures pratiques issues du blog original de l’agence."}
+    />
+    <section className="bg-[var(--color-cream)] py-8 md:py-12">
+      <div className="container-luxe">
+        <div className="mb-8 flex max-w-3xl items-start gap-3 text-sm leading-relaxed text-[var(--color-stone)]">
+          <BookOpen size={20} className="mt-0.5 shrink-0 text-[var(--color-terracotta)]" aria-hidden />
+          <p>{en ? "From the archives · Originally published in June 2020. These reading notes link to the original French articles. Regulations and tax rates may have changed; confirm current requirements with your notary." : "Les archives · Articles publiés en juin 2020. Ces notes de lecture renvoient aux textes originaux. La réglementation et les taux ont pu évoluer : faites confirmer les règles actuelles par votre notaire."}</p>
         </div>
-      </section>
-    </>
-  );
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map(a => <a key={a.slug} href={a.sourceUrl} target="_blank" rel="noopener noreferrer"
+            className="group flex flex-col rounded-2xl border border-[var(--color-border)] bg-white p-6 transition-colors hover:border-[var(--color-terracotta)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-terracotta)] md:p-8">
+            <span className="text-xs font-medium text-[var(--color-terracotta)]">{a.category}</span>
+            <h2 className="mt-4 font-serif text-3xl leading-tight text-[var(--color-charcoal)]">{a.title}</h2>
+            <p className="mt-4 flex-1 text-sm leading-7 text-[var(--color-stone)]">{a.lead}</p>
+            <time dateTime={a.publishedAt} className="mt-6 text-xs text-[var(--color-stone)]">{journalDate(a.publishedAt, locale)}</time>
+            <span className="mt-4 flex items-center justify-between gap-2 border-t border-[var(--color-border)] pt-4 text-sm font-medium text-[var(--color-terracotta)]">
+              {en ? "Read original · French" : "Lire l’article original"} <ArrowUpRight size={18} aria-hidden />
+            </span>
+            <span className="sr-only">{en ? "Opens in a new tab" : "S’ouvre dans un nouvel onglet"}</span>
+          </a>)}
+        </div>
+        <div className="mt-10 flex flex-col items-start justify-between gap-6 rounded-2xl bg-[var(--color-beige)] p-6 md:flex-row md:items-center md:p-8">
+          <div>
+            <h2 className="font-serif text-3xl">{en ? "Let’s talk about your next step." : "Parlons de votre prochaine étape."}</h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--color-stone)]">{en ? "Share your criteria and questions with the team to prepare your property search." : "Partagez vos critères et vos questions avec l’équipe pour préparer votre recherche."}</p>
+          </div>
+          <Link href={languagePath("/contact", locale)} className="btn-gold inline-flex shrink-0 items-center gap-3">{en ? "Discuss my project" : "Parler de mon projet"}<ArrowRight size={16} aria-hidden /></Link>
+        </div>
+      </div>
+    </section>
+  </>;
 }

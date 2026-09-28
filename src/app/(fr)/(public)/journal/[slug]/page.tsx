@@ -18,7 +18,8 @@ export async function generateMetadata({
  title: `${a.title} — Journal · Marrakech Realty`,
  description: a.lead,
  alternates: { canonical: `/journal/${a.slug}` },
- openGraph: { title: a.title, description: a.lead, images: [a.imageHero] },
+ robots: { index: false, follow: true },
+ openGraph: { title: a.title, description: a.lead },
  };
 }
 
