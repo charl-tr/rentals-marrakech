@@ -1,12 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 import Catalogue from "@/components/Catalogue";
-import PropertyCard from "@/components/PropertyCard";
-import SectionHero from "@/components/SectionHero";
+import EssaouiraDestination from "@/components/EssaouiraDestination";
 import { type PropertySummary } from "@/data/properties";
-import { getCatalogueProperties, getFirstEssaouiraProperty } from "@/lib/db";
 
 const ESSAOUIRA_BASE = (p: PropertySummary) => p.city === "Essaouira";
 
@@ -30,9 +26,9 @@ const SUB_TYPES = {
  },
  "vente-terrain": {
  eyebrow: "Essaouira · Vente terrain",
- title: "Terrains constructibles — Essaouira.",
+ title: "Terrains à vendre — Essaouira.",
  subtitle:
- "Parcelles à bâtir à Diabat, Ghazoua et alentours d'Essaouira, sous titres fonciers garantis.",
+ "Découvrez les terrains proposés à Essaouira et dans ses environs.",
  filter: (p: PropertySummary) => ESSAOUIRA_BASE(p) && p.type === "terrain" && p.listing === "vente",
  },
  "location-villa": {
@@ -108,115 +104,5 @@ export default async function EssaouiraPage({
 
  if (path.length > 0) notFound();
 
- // Hub Essaouira
- const allProperties = await getCatalogueProperties();
- const essaouiraProperties = allProperties.filter(ESSAOUIRA_BASE);
- const featured = essaouiraProperties.find((p) => p.featured) ?? essaouiraProperties[0];
- const heroSource = featured ?? (await getFirstEssaouiraProperty());
- const heroImage = heroSource?.images[0];
-
- return (
- <>
- {/* HERO — via SectionHero (langage hero unifié) */}
- <SectionHero
- eyebrow="Bord de mer · Cité des Alizés"
- title={
- <>
- Essaouira,<br />
- <span className="italic text-[var(--color-accent-light)]">
- l&apos;autre Maroc
- </span>
- .
- </>
- }
- subtitle="À trois heures de Marrakech, la cité des Alizés conjugue médina UNESCO, plages infinies et douceur de vivre. Notre département dédié, conduit par Hamza Bennouna, vous accompagne sur chaque transaction."
- imageSrc={heroImage}
- imageAlt={heroSource?.title ?? "Essaouira — cité des Alizés"}
- showBack={false}
- />
-
- {/* SOUS-CATÉGORIES */}
- <section className="bg-[var(--color-cream)] py-24">
- <div className="container-luxe">
- <div className="text-center">
- <div className="eyebrow">Quatre portes d&apos;entrée</div>
- <h2 className="mt-4 font-serif text-3xl md:text-4xl">
- Choisir son projet à Essaouira.
- </h2>
- <div className="gold-rule" />
- </div>
-
- <div className="mt-16 grid gap-px bg-[var(--color-beige-warm)] md:grid-cols-2 lg:grid-cols-4">
- {(Object.keys(SUB_TYPES) as SubKey[]).map((key) => (
- <Link
- key={key}
- href={`/essaouira/${key}`}
- className="group flex flex-col items-start rounded-[14px] bg-white p-8 transition-colors hover:bg-[var(--color-beige)]"
- >
- <div className="text-[10px] font-medium uppercase tracking-[0.28em] text-[var(--color-terracotta)]">
- {SUB_TYPES[key].eyebrow.split("·")[1]?.trim()}
- </div>
- <h3 className="mt-4 font-serif text-2xl leading-snug text-[var(--color-charcoal)] group-hover:text-[var(--color-terracotta)]">
- {SUB_TYPES[key].title.split("—")[0]?.trim() ?? SUB_TYPES[key].title}
- </h3>
- <span className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--color-charcoal)]">
- Voir la sélection
- <ArrowRight size={14} />
- </span>
- </Link>
- ))}
- </div>
- </div>
- </section>
-
- {/* SELECTION ESSAOUIRA */}
- {essaouiraProperties.length > 0 && (
- <section className="bg-white py-24">
- <div className="container-luxe">
- <div className="text-center">
- <div className="eyebrow">Sélection en cours</div>
- <h2 className="mt-4 font-serif text-3xl md:text-4xl">
- Quelques biens d&apos;Essaouira.
- </h2>
- <div className="gold-rule" />
- </div>
- <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
- {essaouiraProperties.slice(0, 6).map((p) => (
- <PropertyCard key={p.slug} property={p} />
- ))}
- </div>
- </div>
- </section>
- )}
-
- {/* CTA conseiller */}
- {featured && (
- <section className="border-y border-[var(--color-border)] bg-[var(--color-beige)] py-20">
- <div className="container-luxe text-center">
- <div className="eyebrow">Conseil dédié</div>
- <h2 className="mt-4 font-serif text-4xl md:text-5xl">
- Hamza Bennouna est votre interlocuteur à Essaouira.
- </h2>
- <p className="mx-auto mt-6 max-w-2xl text-[var(--color-stone)]">
- Douze ans à composer les plus belles transactions de la cité des Alizés.
- Riads, villas pieds dans l&apos;eau, terrains à bâtir : un seul appel suffit.
- </p>
- <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
- <Link href="/equipe" className="btn-outline">
- Le rencontrer
- </Link>
- <a
- href="https://wa.me/212660629447"
- target="_blank"
- rel="noopener noreferrer"
- className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-[var(--color-accent-deep)] px-7 py-3.5 text-sm font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[var(--color-charcoal)]"
- >
- WhatsApp Essaouira
- </a>
- </div>
- </div>
- </section>
- )}
- </>
- );
+ return <EssaouiraDestination />;
 }

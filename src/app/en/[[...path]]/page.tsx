@@ -17,6 +17,7 @@ import ContactPageContent from "@/components/ContactPageContent";
 import SellerPageContent from "@/components/SellerPageContent";
 import FavoritesPageContent from "@/components/FavoritesPageContent";
 import PropertyDetail from "@/components/PropertyDetail";
+import EssaouiraDestination from "@/components/EssaouiraDestination";
 import { journalArticles } from "@/data/verified-journal";
 
 type Props = { params: Promise<{ path?: string[] }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
@@ -78,6 +79,7 @@ export default async function EnglishPage({ params, searchParams }: Props) {
   }
   if (section === "comparer" && parts.length === 1) return <ComparePageContent locale="en" />;
   if (section === "carte" && parts.length === 1) return <div className="h-[calc(100dvh-3.5rem)] lg:h-[calc(100dvh-4rem)]"><MapClientWrapper locale="en" pins={await getPropertyPins()} /></div>;
+  if (section === "essaouira" && parts.length === 1) return <EssaouiraDestination locale="en" />;
   if (["acheter", "louer", "essaouira", "biens-vendus"].includes(section)) {
     let properties = await getCatalogueProperties(section === "biens-vendus" ? "sold" : "active");
     let title = "Properties";

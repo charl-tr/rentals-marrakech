@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 
 export default function PropertyGallery({
@@ -14,6 +14,26 @@ export default function PropertyGallery({
   locale?: "fr" | "en";
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [loadedIndex, setLoadedIndex] = useState<number | null>(null);
+  const [failedIndex, setFailedIndex] = useState<number | null>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const [nearby, setNearby] = useState<Set<number>>(() => new Set([0, 1]));
+
+  // Mount only the strip images within roughly one photo of the viewport.
+  // Native lazy loading alone can fetch many horizontal slides in advance.
+  useEffect(() => {
+    const root = stripRef.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(entries => {
+      const indexes = entries.filter(e => e.isIntersecting).map(e => Number((e.target as HTMLElement).dataset.slide));
+      if (indexes.length) setNearby(previous => {
+        if (indexes.every(i => previous.has(i))) return previous;
+        return new Set([...previous, ...indexes]);
+      });
+    }, { root, rootMargin: "0px 100% 0px 100%" });
+    root.querySelectorAll("[data-slide]").forEach(node => observer.observe(node));
+    return () => observer.disconnect();
+  }, [images]);
 
   const close = useCallback(() => setOpenIndex(null), []);
   const next = useCallback(() => {
@@ -45,28 +65,30 @@ export default function PropertyGallery({
   return (
     <>
       {/* Horizontal scroll gallery — thumbnails grandeur nature */}
-      <div className="snap-x snap-mandatory flex gap-4 overflow-x-auto scroll-smooth px-6 pb-6 lg:px-10">
+      <div ref={stripRef} className="snap-x snap-mandatory flex gap-4 overflow-x-auto scroll-smooth px-6 pb-6 lg:px-10">
         {images.map((img, i) => (
           <button
             key={i}
+            data-slide={i}
             type="button"
             onClick={() => setOpenIndex(i)}
             aria-label={locale === "en" ? `Open image ${i + 1} full screen` : `Ouvrir l'image ${i + 1} en plein écran`}
-            className="group relative aspect-[4/3] h-[420px] flex-shrink-0 snap-start overflow-hidden rounded-[16px] bg-[var(--color-charcoal)] md:h-[520px]"
+            className="group relative aspect-[4/3] w-[calc(100vw-48px)] flex-shrink-0 snap-start overflow-hidden rounded-[16px] bg-[var(--color-beige)] md:h-[520px] md:w-auto"
           >
-            <Image
+            {nearby.has(i) && <Image
               src={img}
               alt={`${title} — vue ${i + 1}`}
               fill
-              sizes="700px"
+              sizes="(max-width: 767px) calc(100vw - 48px), 700px"
+              loading="eager"
               quality={68}
               className="object-cover transition-transform duration-[900ms] group-hover:scale-[1.02]"
-            />
+            />}
             {/* Hover overlay — fullscreen hint */}
             <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-charcoal)]/0 opacity-0 transition-all duration-300 group-hover:bg-[var(--color-charcoal)]/20 group-hover:opacity-100">
               <span className="flex items-center gap-2 rounded-[10px] border border-white/60 bg-[var(--color-charcoal)]/60 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.22em] text-white backdrop-blur-sm">
                 <Maximize2 size={12} />
-                Agrandir
+                {locale === "en" ? "Enlarge" : "Agrandir"}
               </span>
             </div>
             <div className="absolute bottom-3 left-3 rounded-full bg-[var(--color-charcoal)]/75 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white">
@@ -119,16 +141,31 @@ export default function PropertyGallery({
 
           {/* Main image area */}
           <div className="relative flex-1 overflow-hidden">
+            {loadedIndex !== null && loadedIndex !== openIndex && images[loadedIndex] && <Image
+              src={images[loadedIndex]} alt="" fill sizes="100vw" quality={68}
+              className="object-contain" aria-hidden
+            />}
             <Image
               key={openIndex}
               src={images[openIndex]}
               alt={`${title} — vue ${openIndex + 1}`}
               fill
-              preload
+              loading="eager"
+              fetchPriority="high"
               sizes="100vw"
-              quality={75}
-              className="animate-fade-in object-contain"
+              quality={68}
+              onLoad={() => { setLoadedIndex(openIndex); setFailedIndex(null); }}
+              onError={() => setFailedIndex(openIndex)}
+              className={`object-contain ${loadedIndex === openIndex ? "opacity-100" : "opacity-0"}`}
             />
+            {loadedIndex !== openIndex && <div role="status" className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 text-xs text-white">
+              {failedIndex === openIndex ? locale === "en" ? "Photo unavailable. Try another image." : "Photo indisponible. Essayez une autre image." : locale === "en" ? "Loading photo…" : "Chargement de la photo…"}
+            </div>}
+            {/* Same srcset and quality as the displayed photo: reuse browser cache.
+                Wait for the current photo before warming only its two neighbours. */}
+            {loadedIndex === openIndex && images.length > 1 && [...new Set([(openIndex + 1) % images.length, (openIndex - 1 + images.length) % images.length])].filter(i => i !== openIndex).map(i =>
+              <Image key={`warm-${i}`} src={images[i]} alt="" fill sizes="100vw" quality={68} loading="eager" fetchPriority="low" aria-hidden className="pointer-events-none opacity-0" />
+            )}
 
             {/* Prev / next buttons */}
             {images.length > 1 && (
