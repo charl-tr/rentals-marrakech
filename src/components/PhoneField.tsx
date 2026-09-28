@@ -16,10 +16,12 @@ interface Props {
   onChange: (value: string) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  required?: boolean;
+  countryLabel?: string;
 }
 
 const PhoneField = forwardRef<HTMLInputElement, Props>(function PhoneField(
-  { value, onChange, onKeyDown, placeholder },
+  { value, onChange, onKeyDown, placeholder, required = false, countryLabel = "Choisir l’indicatif pays" },
   ref
 ) {
   const [country, setCountry] = useState<CountryPhone>(DEFAULT_COUNTRY);
@@ -72,7 +74,7 @@ const PhoneField = forwardRef<HTMLInputElement, Props>(function PhoneField(
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Choisir l'indicatif pays"
+        aria-label={countryLabel}
         aria-expanded={open}
         className="flex flex-shrink-0 items-center gap-1.5 rounded-[10px] border border-[var(--color-border)] bg-white px-3 text-[14px] text-[var(--color-charcoal)] transition-colors hover:border-[var(--color-charcoal)]"
       >
@@ -86,6 +88,8 @@ const PhoneField = forwardRef<HTMLInputElement, Props>(function PhoneField(
         type="tel"
         inputMode="tel"
         autoComplete="tel"
+        required={required}
+        minLength={8}
         className="field flex-1"
         placeholder={placeholder}
         value={displayValue}

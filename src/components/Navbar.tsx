@@ -289,7 +289,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`group relative px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] ${textColor}`}
+      className={`group relative whitespace-nowrap px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] ${textColor}`}
     >
       {label}
       <Underline color={underline} active={false} />
@@ -322,7 +322,7 @@ function NavDropdown({
     <div className="relative" onMouseEnter={onEnter} onMouseLeave={onLeave}>
       <button
         type="button"
-        className={`group relative px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] ${textColor}`}
+        className={`group relative whitespace-nowrap px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] ${textColor}`}
       >
         {label}
         <Underline color={underline} active={open} />
