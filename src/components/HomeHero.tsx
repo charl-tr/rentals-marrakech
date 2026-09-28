@@ -9,7 +9,7 @@ export default function HomeHero({ locale = "fr", typeOptions, zoneOptions, resu
   resultCount: number;
 }) {
   const en = locale === "en";
-  return <section data-home-hero className="home-hero relative flex min-h-[100svh] items-end bg-[#075581] pt-28 md:h-[100dvh] md:min-h-[720px] md:pb-20">
+  return <section data-home-hero style={{ paddingBottom: "max(clamp(2rem, 6vw, 5rem), calc(var(--cookie-banner-height, 0px) + 1.5rem))" }} className="home-hero relative flex min-h-[100svh] items-end bg-[#075581] pt-28 md:h-[100dvh] md:min-h-[720px]">
     <Image src="/hero-home.jpg" alt={en ? "Villa with a pool in Marrakech — ochre walls and palm trees" : "Villa avec piscine à Marrakech — murs ocre et palmiers"} fill priority sizes="100vw" className="object-cover" />
     <div className="absolute inset-0 hero-overlay-bottom" />
     <div className="container-luxe relative z-10">

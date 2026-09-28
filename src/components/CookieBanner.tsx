@@ -58,7 +58,7 @@ export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }
       aria-labelledby="cookie-banner-title"
       className="fixed inset-x-0 bottom-0 z-[90] animate-fade-up"
     >
-      <div className="px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:container-luxe md:pb-6">
+      <div className="px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:container-luxe md:pb-3">
         <div className="relative rounded-[14px] border border-[var(--color-beige-warm)] bg-white shadow-[var(--shadow-luxe)]">
           <button
             type="button"
@@ -69,7 +69,7 @@ export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }
             <X size={16} />
           </button>
 
-          <div className="flex flex-col gap-3 p-4 pr-11 md:flex-row md:items-center md:gap-10 md:p-8 md:pr-14">
+          <div className="flex flex-col gap-3 p-4 pr-11 md:flex-row md:items-center md:gap-5 md:px-5 md:py-3 md:pr-12">
             <div className="flex-1">
               <div
                 id="cookie-banner-title"
@@ -77,7 +77,7 @@ export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }
               >
                 {en ? "Cookies and privacy" : "Cookies et confidentialité"}
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-[var(--color-charcoal)] md:mt-3 md:text-sm">
+              <p className="mt-2 text-xs leading-relaxed text-[var(--color-charcoal)] md:mt-1">
                 {en ? <>Essential cookies keep the site working. Optional analytics link your visits to your enquiries. No advertising cookies. </> : <>Cookies essentiels au fonctionnement. Avec votre accord, la mesure du parcours relie vos visites à vos demandes. Aucun cookie publicitaire.{" "}</>}
                 <Link
                   href="/cookies"
@@ -89,7 +89,7 @@ export default function CookieBanner({ locale = "fr" }: { locale?: "fr" | "en" }
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 md:flex md:gap-3">
+            <div className="grid grid-cols-2 gap-2 md:flex md:shrink-0 md:gap-2">
               <button
                 type="button"
                 onClick={() => accept("essential-only")}
