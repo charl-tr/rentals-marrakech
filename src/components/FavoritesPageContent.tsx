@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Heart, Trash2 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useCompareList } from "@/hooks/useCompareList";
 import PropertyCard from "@/components/PropertyCard";
 import SectionHero from "@/components/SectionHero";
 import SaveSelectionBanner from "@/components/SaveSelectionBanner";
+import ContactForm from "@/components/ContactForm";
 import type { PropertySummary } from "@/data/properties";
 
 const supabase = createClient(
@@ -77,10 +79,13 @@ function rowToProperty(row: FavoriteRow): PropertySummary {
 export default function FavoritesPageContent({ locale = "fr" }: { locale?: "fr" | "en" }) {
   const en = locale === "en";
   const { favorites, hydrated, count } = useFavorites();
+  const comparison = useCompareList();
   const [properties, setProperties] = useState<PropertySummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [retry, setRetry] = useState(0);
+  const [visit, setVisit] = useState(false);
+  const selected = comparison.items.filter(slug => favorites.includes(slug) && properties.some(p => p.slug === slug));
 
   useEffect(() => {
     if (!hydrated) return;
@@ -129,8 +134,7 @@ export default function FavoritesPageContent({ locale = "fr" }: { locale?: "fr" 
         eyebrow={en ? "Your selection" : "Votre sélection"}
         title={
           <>
-            {en ? "Your" : "Mes biens"}{" "}
-            <span className="italic text-[var(--color-accent-light)]">{en ? "saved properties" : "favoris"}</span>.
+            {en ? "My selection" : "Ma sélection"}.
           </>
         }
         subtitle={
@@ -156,7 +160,11 @@ export default function FavoritesPageContent({ locale = "fr" }: { locale?: "fr" 
             </div>
           ) : (
             <>
-              <SaveSelectionBanner locale={locale} kind="favoris" slugs={favorites} />
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[var(--color-border)] bg-white p-5">
+                <div><h2 className="font-serif text-2xl">{en ? "Which one feels right?" : "Vous hésitez entre plusieurs biens ?"}</h2>
+                  <p className="mt-1 text-sm text-[var(--color-stone)]">{en ? "Select 2 or 3 properties to compare their details." : "Cochez 2 ou 3 biens pour comparer leurs caractéristiques."}</p></div>
+                {selected.length >= 2 ? <Link href={en ? "/en/compare" : "/comparer"} className="btn-primary">{en ? `Compare (${selected.length})` : `Comparer (${selected.length})`}</Link> : <button disabled className="btn-outline opacity-50">{en ? `Compare (${selected.length}/2)` : `Comparer (${selected.length}/2)`}</button>}
+              </div>
 
               <div className="mb-8 flex items-center justify-between">
                 <div className="text-sm text-[var(--color-stone)]">
@@ -170,10 +178,26 @@ export default function FavoritesPageContent({ locale = "fr" }: { locale?: "fr" 
 
               <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {properties.map((p, i) => (
-                  <PropertyCard locale={locale} key={p.slug} property={p} priority={i < 3} />
+                  <div key={p.slug}>
+                    <label className="mb-3 flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-[var(--color-border)] bg-white px-4 py-2 text-sm">
+                      <input type="checkbox" className="h-5 w-5 accent-[var(--color-accent-deep)]" checked={selected.includes(p.slug)} disabled={!selected.includes(p.slug) && selected.length >= 3} onChange={() => {
+                        comparison.items.filter(s => !selected.includes(s)).forEach(comparison.remove);
+                        comparison.toggle(p.slug);
+                      }} aria-label={(en ? "Compare: " : "Comparer : ") + p.title} />
+                      {selected.includes(p.slug) ? en ? "Selected for comparison" : "Choisi pour comparer" : en ? "Compare this property" : "Comparer ce bien"}
+                    </label>
+                    <PropertyCard locale={locale} property={p} priority={i < 3} />
+                  </div>
                 ))}
               </div>
               {properties.length < count && <p className="mt-5 text-sm text-[var(--color-stone)]">{count - properties.length} {en ? "saved properties are no longer published. Your other favourites are kept." : "bien(s) de votre sélection ne sont plus publiés. Les autres favoris sont conservés."}</p>}
+              <div className="mt-8"><SaveSelectionBanner locale={locale} kind="favoris" slugs={favorites} /></div>
+              {properties.length > 0 && <div className="mt-8 rounded-2xl border border-[var(--color-border)] bg-white p-6">
+                <h2 className="font-serif text-2xl">{en ? "See your favourites in person." : "Et si vous les découvriez sur place ?"}</h2>
+                <p className="mt-2 text-sm text-[var(--color-stone)]">{en ? "Send your selection to the agency to discuss availability and arrange viewings." : "Transmettez votre sélection à l’agence pour vérifier les disponibilités et organiser vos visites."}</p>
+                <button type="button" className="btn-gold mt-5" aria-expanded={visit} onClick={() => setVisit(!visit)}>{visit ? en ? "Close" : "Fermer" : en ? "Arrange viewings" : "Organiser une visite de ma sélection"}</button>
+                {visit && <div className="mt-6"><ContactForm key={properties.map(p => p.slug).join(",")} locale={locale} advisors={[]} sourcePage={en ? "/en/saved-properties" : "/favoris"} defaultProject="Autre" defaultMessage={(en ? "I would like to arrange viewings for my selection:\n" : "Je souhaite organiser des visites pour ma sélection :\n") + properties.map(p => p.title + " — " + p.slug).join("\n")} /></div>}
+              </div>}
             </>
           )}
         </div>

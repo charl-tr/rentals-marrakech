@@ -12,7 +12,6 @@ import ContactForm from "@/components/ContactForm";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BackToList from "@/components/BackToList";
 import FavoriteButton from "@/components/FavoriteButton";
-import CompareToggleButton from "@/components/CompareToggleButton";
 import PropertyGallery from "@/components/PropertyGallery";
 import ShareButton from "@/components/ShareButton";
 import StickyContactBar from "@/components/StickyContactBar";
@@ -166,7 +165,6 @@ export default async function PropertyDetail({ property, locale = "fr" }: { prop
               </span>
               <div className="ml-auto hidden items-center gap-2 md:flex">
                 <FavoriteButton locale={locale} slug={property.slug} variant="hero" />
-                <CompareToggleButton locale={locale} slug={property.slug} variant="hero" />
                 <ShareButton
                   locale={locale}
                   url={href(`${isLocation ? "/louer" : "/acheter"}/${property.slug}`)}

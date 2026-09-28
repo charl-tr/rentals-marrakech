@@ -22,7 +22,7 @@ export default function FavoriteCounter({
     return (
       <Link
         href={locale === "en" ? "/en/saved-properties" : "/favoris"}
-        aria-label={locale === "en" ? "Saved properties" : "Mes favoris"}
+        aria-label={locale === "en" ? "My selection" : "Ma sélection"}
         className={`flex items-center transition-colors ${
           variant === "dark"
             ? "text-[var(--color-charcoal)] hover:text-[var(--color-terracotta)]"
@@ -42,7 +42,8 @@ export default function FavoriteCounter({
   return (
     <Link
       href={locale === "en" ? "/en/saved-properties" : "/favoris"}
-      aria-label={`${locale === "en" ? "Saved properties" : "Mes favoris"} (${count})`}
+      aria-label={`${locale === "en" ? "My selection" : "Ma sélection"} (${count})`}
+      title={locale === "en" ? "My selection" : "Ma sélection"}
       className={`relative inline-flex items-center transition-colors ${linkClass}`}
     >
       <Heart

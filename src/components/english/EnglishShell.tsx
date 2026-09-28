@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import CompareFloatingDock from "@/components/CompareFloatingDock";
 import FloatingContact from "@/components/FloatingContact";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTopButton from "@/components/BackToTopButton";
@@ -19,7 +18,6 @@ export default function EnglishShell({ children }: { children: React.ReactNode }
     <main className={`min-h-screen ${fullBleed ? "" : "pt-14 lg:pt-16"}`}>{children}</main>
     <CookieBanner locale="en" />
     <Footer locale="en" />
-    <CompareFloatingDock locale="en" />
     <FloatingContact locale="en" />
     <BackToTopButton locale="en" />
   </>;

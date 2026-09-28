@@ -29,6 +29,13 @@ export function useFavorites() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    // Preserve the old, separate comparison list when moving to one selection.
+    try {
+      if (!window.localStorage.getItem("mr:selection-migrated")) {
+        writeFavorites([...new Set([...readFavorites(), ...readSelection("mr:compare", 3)])]);
+        window.localStorage.setItem("mr:selection-migrated", "1");
+      }
+    } catch { /* Storage can be unavailable in private browsing. */ }
     setFavorites(readFavorites());
     setHydrated(true);
 

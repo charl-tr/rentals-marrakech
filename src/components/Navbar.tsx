@@ -253,7 +253,7 @@ export default function Navbar({ locale = "fr" }: { locale?: "fr" | "en" }) {
 
             <div className="mt-7 flex items-center justify-between border-t border-[var(--color-border)] pt-5 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-stone)]">
               <Link href={href("/favoris")} className="inline-flex items-center gap-2 transition-colors hover:text-[var(--color-accent)]">
-                <Heart size={15} strokeWidth={1.5} /> {en ? "Saved properties" : "Mes favoris"}
+                <Heart size={15} strokeWidth={1.5} /> {en ? "My selection" : "Ma sélection"}
               </Link>
               <Link href={href("/contact")} className="transition-colors hover:text-[var(--color-accent)]">Contact</Link>
             </div>

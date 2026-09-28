@@ -29,6 +29,7 @@ interface ContactFormProps {
   propertySlug?: string;
   sourcePage?: string;
   defaultProject?: string;
+  defaultMessage?: string;
   channel?: "contact_form" | "property_form";
   title?: string;
   subtitle?: string;
@@ -69,6 +70,7 @@ export default function ContactForm({
   propertySlug,
   sourcePage,
   defaultProject,
+  defaultMessage = "",
   channel = "contact_form",
 }: ContactFormProps) {
   const en = locale === "en";
@@ -81,7 +83,7 @@ export default function ContactForm({
     email: "",
     phone: "",
     project: defaultProject ?? "",
-    message: "",
+    message: defaultMessage,
   });
   const [error, setError] = useState<string | null>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);

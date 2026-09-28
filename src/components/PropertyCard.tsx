@@ -7,7 +7,6 @@ import {
   type PropertySummary,
 } from "@/data/properties";
 import FavoriteButton from "@/components/FavoriteButton";
-import CompareToggleButton from "@/components/CompareToggleButton";
 import PriceDisplay from "@/components/PriceDisplay";
 import { languagePath } from "@/lib/i18n/routes";
 import { englishPropertyHeading, englishStatus, englishTypes } from "@/lib/i18n/english";
@@ -92,7 +91,6 @@ export default function PropertyCard({ property, priority = false, locale = "fr"
         {/* Actions */}
         <div className="absolute right-0 top-0 z-20 flex flex-col items-end gap-2 p-4">
           <FavoriteButton locale={locale} slug={property.slug} />
-          <CompareToggleButton locale={locale} slug={property.slug} variant="card" />
         </div>
       </div>
 

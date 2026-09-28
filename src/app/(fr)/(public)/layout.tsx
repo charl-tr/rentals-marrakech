@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
-import CompareFloatingDock from "@/components/CompareFloatingDock";
 import FloatingContact from "@/components/FloatingContact";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTopButton from "@/components/BackToTopButton";
@@ -64,7 +63,6 @@ export default function PublicLayout({
       <main className="min-h-screen">{children}</main>
       <Footer />
       <CookieBanner />
-      <CompareFloatingDock />
       <FloatingContact />
       <BackToTopButton />
       <script

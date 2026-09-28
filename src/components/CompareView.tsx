@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Bath, BedDouble, Maximize, MapPin, Trees, Waves, X } from "lucide-react";
 import { useCompareList } from "@/hooks/useCompareList";
+import { useFavorites } from "@/hooks/useFavorites";
 import PriceDisplay from "@/components/PriceDisplay";
 import { languagePath } from "@/lib/i18n/routes";
 import { englishPropertyHeading, englishTypes } from "@/lib/i18n/english";
@@ -50,13 +51,14 @@ export default function CompareView({
   properties: ComparisonProperty[];
 }) {
   const { items, remove, hydrated } = useCompareList();
+  const { favorites, hydrated: favoritesReady } = useFavorites();
   const en = locale === "en";
 
   // Dérivé directement de localStorage : aucun rendu intermédiaire ni effet
   // de synchronisation supplémentaire.
   const bySlug = new Map(properties.map((property) => [property.slug, property]));
-  const displayed = items.map((slug) => bySlug.get(slug)).filter((property): property is ComparisonProperty => Boolean(property));
-  if (!hydrated) return <div role="status" className="container-luxe py-24">{en ? "Loading your comparison…" : "Chargement de votre comparaison…"}</div>;
+  const displayed = items.filter(slug => favorites.includes(slug)).map((slug) => bySlug.get(slug)).filter((property): property is ComparisonProperty => Boolean(property));
+  if (!hydrated || !favoritesReady) return <div role="status" className="container-luxe py-24">{en ? "Loading your comparison…" : "Chargement de votre comparaison…"}</div>;
 
   if (displayed.length === 0) {
     return (
@@ -66,10 +68,10 @@ export default function CompareView({
           {en ? "Your comparison is empty." : "Votre comparateur est vide."}
         </h2>
         <p className="mt-3 text-sm text-[var(--color-stone)]">
-          {en ? "Add up to 3 properties to compare them side by side." : <>Ajoutez jusqu&apos;à 3 biens depuis leurs fiches pour les comparer côte à côte.</>}
+          {en ? "Choose 2 or 3 saved properties to compare." : "Choisissez 2 ou 3 biens dans votre sélection pour les comparer."}
         </p>
-        <Link href={languagePath("/acheter", locale)} className="btn-outline mt-8">
-          <ArrowLeft size={14} /> {en ? "Browse properties" : "Parcourir les biens"}
+        <Link href={languagePath("/favoris", locale)} className="btn-outline mt-8">
+          <ArrowLeft size={14} /> {en ? "My selection" : "Ma sélection"}
         </Link>
       </div>
     );
@@ -85,6 +87,7 @@ export default function CompareView({
 
   return (
     <div className="container-luxe pb-10 pt-24 md:pb-14">
+      <Link href={languagePath("/favoris", locale)} className="mb-6 inline-flex min-h-11 items-center gap-2 text-sm"><ArrowLeft size={16} />{en ? "Back to my selection" : "Retour à ma sélection"}</Link>
       <div className="mb-8 flex items-center justify-between">
         <div>
           <div className="eyebrow">{en ? "Compare" : "Comparateur"}</div>
@@ -102,7 +105,15 @@ export default function CompareView({
         slugs={displayed.map((p) => p.slug)}
       />
 
-      <div className="overflow-x-auto">
+      <div className="mb-6 space-y-4 md:hidden">
+        {displayed.map(p => <article key={p.slug} className="rounded-2xl border border-[var(--color-border)] bg-white p-4">
+          <div className="flex items-start justify-between gap-3"><Link className="font-serif text-xl" href={languagePath(`/${p.listing === "vente" ? "acheter" : "louer"}/${p.slug}`, locale)}>{en ? englishPropertyHeading(p) : p.title}</Link><button type="button" className="min-h-11 min-w-11" onClick={() => remove(p.slug)} aria-label={en ? "Remove from comparison" : "Retirer de la comparaison"}><X size={18}/></button></div>
+          <p className="my-3 text-sm text-[var(--color-stone)]">{p.neighborhood} · {p.city}</p>
+          <PriceDisplay priceEur={p.price} priceMad={p.priceMad} listing={p.listing} priceUnit={p.priceUnit} locale={locale} />
+          <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">{[[en ? "Living area" : "Surface habitable", p.surface > 0 ? `${p.surface} m²` : "—"], [en ? "Bedrooms" : "Chambres", p.bedrooms > 0 ? p.bedrooms : "—"], [en ? "Land" : "Terrain", p.landSurface ? `${p.landSurface} m²` : "—"], [en ? "Pool" : "Piscine", p.pool ? en ? "Yes" : "Oui" : en ? "Not indicated" : "Non indiquée"]].map(([label,value]) => <div key={label}><dt className="text-[var(--color-stone)]">{label}</dt><dd className="mt-1 font-medium">{value}</dd></div>)}</dl>
+        </article>)}
+      </div>
+      <div className="hidden overflow-x-auto md:block">
         <div
           className="grid gap-4"
           style={{ gridTemplateColumns: `160px repeat(${displayed.length}, minmax(240px, 1fr))`, maxWidth: 160 + displayed.length * 376 }}
