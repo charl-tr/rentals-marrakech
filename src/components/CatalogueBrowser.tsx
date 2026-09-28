@@ -354,20 +354,20 @@ export default function CatalogueBrowser({
       {/* ═══ BARRE — filtres en ligne, instantanés ═══ */}
       <div ref={catalogueTopRef} className="sticky top-14 z-40 border-y border-[var(--color-border)] bg-[var(--color-cream)]/95 backdrop-blur-xl lg:top-16">
         <div className="container-luxe py-3 md:py-4">
-          <div className="flex items-center justify-between gap-4 md:hidden">
+          <div className="flex items-center justify-between gap-2 md:hidden">
             <div className="flex items-baseline gap-2">
               <span className="font-serif text-2xl text-[var(--color-charcoal)]">{items.length}</span>
               <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--color-stone)]">
                 {en ? items.length === 1 ? "property" : "properties" : items.length > 1 ? "biens" : "bien"}
               </span>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="mobile-catalogue-actions flex shrink-0 items-center gap-2">
               <button
                 type="button"
                 onClick={() => setMobileFiltersOpen((open) => !open)}
                 aria-expanded={mobileFiltersOpen}
                 aria-controls="catalogue-filters"
-                className="inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] px-3 text-xs font-medium text-[var(--color-charcoal)]"
               >
                 <SlidersHorizontal size={14} />
                 {t("Filtres")}{activeCount > 0 ? ` (${activeCount})` : ""}
@@ -376,7 +376,7 @@ export default function CatalogueBrowser({
                 <Pill
                   label={t("Trier")}
                   value={filters.tri && filters.tri !== "default" ? filters.tri : undefined}
-                  display={filters.tri && filters.tri !== "default" ? sortLabel : undefined}
+                  display={t("Trier")}
                   options={sortOptions.filter((option) => option.value !== "default")}
                   open={openKey === "mobile-tri"}
                   onToggle={() => setOpenKey((key) => (key === "mobile-tri" ? null : "mobile-tri"))}
@@ -387,14 +387,14 @@ export default function CatalogueBrowser({
                   align="right"
                 />
               )}
-              <button
+              {isMap && <button
                 type="button"
                 onClick={() => set({ vue: isMap ? undefined : "carte" })}
                 className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-charcoal)]"
               >
                 {isMap ? <LayoutGrid size={14} /> : <MapIcon size={14} />}
                 {t(isMap ? "Liste" : "Carte")}
-              </button>
+              </button>}
             </div>
           </div>
 
